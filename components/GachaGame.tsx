@@ -1,7 +1,7 @@
 // components/GachaGame.tsx
 "use client"
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { options, Option, Prize } from "./prizes";
 import Inventory from "./Inventory";
 import Image from "next/image";
@@ -16,15 +16,28 @@ export default function GachaGame() {
   const [totalCost, setTotalCost] = useState(0);
   const [inventory, setInventory] = useState<Prize[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
+  const [alerts, setAlerts] = useState<{ message: string; src: string; }[]>([]);
+
+  useEffect(() => {
+    if (alerts.length > 0) {
+      const timer = setTimeout(() => {
+        setAlerts((prevAlerts) => prevAlerts.slice(1));
+      }, 5000); // hide alert after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [alerts]);
 
   const handleDraw = (option: Option, times: number = 1) => {
     let newInventory: Prize[] = [];
     let gotRarePrize = false;
+    let rarePrizeMessage = '';
     for (let i = 0; i < times; i++) {
       const drawnPrize = drawPrize(option);
       newInventory.push(drawnPrize);
       if (drawnPrize.chance <= 0.1) {
         gotRarePrize = true;
+        rarePrizeMessage = `${drawnPrize.name}`;
+        setAlerts((prevAlerts) => [...prevAlerts, { message: rarePrizeMessage, src: drawnPrize.src }]);
       }
     }
     setInventory([...inventory, ...newInventory]);
@@ -44,6 +57,16 @@ export default function GachaGame() {
       {showConfetti && (
         <div className="fixed inset-0 z-10 pointer-events-none">
           <Confetti width={window.innerWidth} height={window.innerHeight} />
+        </div>
+      )}
+      {alerts.length > 0 && (
+        <div className="fixed top-0 left-0 right-0 flex flex-col items-center space-y-2 p-4 z-30">
+          {alerts.map((alert, index) => (
+            <div key={index} className="bg-green-500 text-white text-center p-2 rounded-md flex items-center space-x-2">
+              <Image src={alert.src} alt="Item" width={24} height={24} />
+              <span>{alert.message}</span>
+            </div>
+          ))}
         </div>
       )}
       <div className="mt-6 mb-6 z-20">
