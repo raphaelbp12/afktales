@@ -32,12 +32,12 @@ const Inventory: React.FC<InventoryProps> = ({ inventory }) => {
   const aggregatedInventory = aggregateInventory(inventory);
 
   return (
-    <div className="grid grid-cols-3 gap-4 mt-4">
+    <div className="grid grid-cols-8 gap-2 mt-4">
       {aggregatedInventory.map((item, index) => (
-        <Tooltip key={index} title={`${item.prize.name} - Quantity: ${item.quantity}`}>
+        <Tooltip key={index} title={`${item.prize.name} - Quantity: ${item.quantity}`} arrow>
           <div className="relative flex flex-col items-center">
             <Image src={item.prize.src} alt={item.prize.name} width={50} height={50} />
-              <span className="absolute top-0 right-0 px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full">
+              <span className="absolute top-0 right-0 px-1 text-xs font-bold text-white bg-red-600 rounded-full">
                 {item.quantity}
               </span>
           </div>

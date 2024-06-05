@@ -40,18 +40,18 @@ export default function GachaGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-h-screen overflow-hidden relative">
       {showConfetti && (
-        <div className="fixed inset-0">
+        <div className="fixed inset-0 z-10 pointer-events-none">
           <Confetti width={window.innerWidth} height={window.innerHeight} />
         </div>
       )}
-      <div className="mt-6 mb-6">
+      <div className="mt-6 mb-6 z-20">
         <h2 className="text-2xl font-semibold">Inventory:</h2>
         <Inventory inventory={inventory} />
       </div>
-      <h1 className="text-3xl font-bold mb-6">Rafa da Rifa</h1>
-      <table className="min-w-full">
+      <h1 className="text-3xl font-bold mb-6 z-20">Rafa da Rifa</h1>
+      <table className="min-w-full z-20">
         <thead>
           <tr>
             <th className="py-2">Option</th>
@@ -93,7 +93,7 @@ export default function GachaGame() {
           ))}
         </tbody>
       </table>
-      <div className="mt-6">
+      <div className="mt-6 z-20">
         <h2 className="text-2xl font-semibold">Total Cost: {formatNumber(totalCost)}</h2>
       </div>
     </div>
