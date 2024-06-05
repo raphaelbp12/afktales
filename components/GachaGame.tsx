@@ -47,20 +47,20 @@ export default function GachaGame() {
         </div>
       )}
       <div className="mt-6 mb-6 z-20">
-        <h2 className="text-2xl font-semibold">Inventory:</h2>
+        <h2 className="text-2xl font-semibold">Inventário:</h2>
         <Inventory inventory={inventory} />
       </div>
       <h1 className="text-3xl font-bold mb-6 z-20">Rafa da Rifa</h1>
       <table className="min-w-full z-20">
         <thead>
           <tr>
-            <th className="py-2">Option</th>
-            <th className="py-2">Price</th>
-            <th className="py-2">Main Prize</th>
+            <th className="py-2"></th>
+            <th className="py-2">Preço</th>
+            <th className="py-2">Prêmio Principal</th>
             <th className="py-2">Chance</th>
-            <th className="py-2">Consolation Prize</th>
+            <th className="py-2">Prêmio de Consolação</th>
             <th className="py-2">Chance</th>
-            <th className="py-2">Draw</th>
+            <th className="py-2">Comprar</th>
           </tr>
         </thead>
         <tbody>
@@ -80,13 +80,13 @@ export default function GachaGame() {
               <td className="py-2">{(option.consolationPrize.chance * 100).toFixed(2)}%</td>
               <td className="py-2 space-y-2">
                 <button onClick={() => handleDraw(option)} className="px-4 py-2 bg-blue-500 text-white rounded-md">
-                  Draw
+                  Comprar
                 </button>
                 <button onClick={() => handleDraw(option, 10)} className="px-4 py-2 bg-green-500 text-white rounded-md">
-                  Draw x10
+                  Comprar x10
                 </button>
                 <button onClick={() => handleDraw(option, 100)} className="px-4 py-2 bg-red-500 text-white rounded-md">
-                  Draw x100
+                  Comprar x100
                 </button>
               </td>
             </tr>
@@ -94,7 +94,7 @@ export default function GachaGame() {
         </tbody>
       </table>
       <div className="mt-6 z-20">
-        <h2 className="text-2xl font-semibold">Total Cost: {formatNumber(totalCost)}</h2>
+        <h2 className="text-2xl font-semibold">Total Gasto: {formatNumber(totalCost)}</h2>
       </div>
     </div>
   );
