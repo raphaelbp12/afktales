@@ -1,7 +1,7 @@
 // components/GachaGame.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { options, Option, Prize } from "./prizes";
 import Inventory from "./Inventory";
 import Image from "next/image";
@@ -25,6 +25,15 @@ export default function GachaGame() {
   const [showConfetti, setShowConfetti] = useState(false);
   const [alerts, setAlerts] = useState<AlertMessage[]>([]);
 
+  useEffect(() => {
+    if (alerts.length > 0) {
+      const timer = setTimeout(() => {
+        setAlerts((prevAlerts) => prevAlerts.slice(1));
+      }, 5000); // hide alert after 5 seconds
+      return () => clearTimeout(timer);
+    }
+  }, [alerts]);
+
   const handleDraw = (option: Option, times: number = 1) => {
     let newInventory: Prize[] = [];
     let gotRarePrize = false;
@@ -46,6 +55,35 @@ export default function GachaGame() {
     }
     setInventory([...inventory, ...newInventory]);
     setTotalCost(totalCost + option.price * times);
+    if (gotRarePrize) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000); // show confetti for 5 seconds
+    }
+  };
+
+  const handleDrawUntilRare = (option: Option) => {
+    let newInventory: Prize[] = [];
+    let gotRarePrize = false;
+    let draws = 0;
+    while (!gotRarePrize) {
+      const drawnPrize = drawPrize(option);
+      newInventory.push(drawnPrize);
+      draws++;
+      if (drawnPrize.chance <= 0.1) {
+        gotRarePrize = true;
+        const newAlert: AlertMessage = {
+          id: Date.now(), // unique id
+          message: `${drawnPrize.name}`,
+          src: drawnPrize.src,
+        };
+        setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
+        setTimeout(() => {
+          setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== newAlert.id));
+        }, 5000); // hide alert after 5 seconds
+      }
+    }
+    setInventory([...inventory, ...newInventory]);
+    setTotalCost(totalCost + option.price * draws);
     if (gotRarePrize) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 5000); // show confetti for 5 seconds
@@ -111,6 +149,9 @@ export default function GachaGame() {
                 </button>
                 <button onClick={() => handleDraw(option, 100)} className="px-4 py-2 bg-red-500 text-white rounded-md">
                   Comprar x100
+                </button>
+                <button onClick={() => handleDrawUntilRare(option)} className="px-4 py-2 bg-yellow-500 text-white rounded-md">
+                  Comprar até raro
                 </button>
               </td>
             </tr>
