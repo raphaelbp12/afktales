@@ -108,6 +108,9 @@ export default function GachaGame() {
           ))}
         </div>
       )}
+      <div className="mt-6 z-20">
+        <h2 className="text-2xl font-semibold">Total Gasto: {formatNumber(totalCost)}</h2>
+      </div>
       <div className="mt-6 mb-6 z-20">
         <h2 className="text-2xl font-semibold">Inventário:</h2>
         <Inventory inventory={inventory} />
@@ -158,9 +161,6 @@ export default function GachaGame() {
           ))}
         </tbody>
       </table>
-      <div className="mt-6 z-20">
-        <h2 className="text-2xl font-semibold">Total Gasto: {formatNumber(totalCost)}</h2>
-      </div>
     </div>
   );
 }
