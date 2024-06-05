@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { options, Option, Prize } from "./prizes";
 import Inventory from "./Inventory";
 import Image from "next/image";
+import Confetti from 'react-confetti';
 
 function drawPrize(option: Option): Prize {
   const random = Math.random();
@@ -14,15 +15,24 @@ function drawPrize(option: Option): Prize {
 export default function GachaGame() {
   const [totalCost, setTotalCost] = useState(0);
   const [inventory, setInventory] = useState<Prize[]>([]);
-  const [selectedOption, setSelectedOption] = useState<Option | null>(null);
+  const [showConfetti, setShowConfetti] = useState(false);
 
   const handleDraw = (option: Option, times: number = 1) => {
     let newInventory: Prize[] = [];
+    let gotRarePrize = false;
     for (let i = 0; i < times; i++) {
-      newInventory.push(drawPrize(option));
+      const drawnPrize = drawPrize(option);
+      newInventory.push(drawnPrize);
+      if (drawnPrize.chance <= 0.1) {
+        gotRarePrize = true;
+      }
     }
     setInventory([...inventory, ...newInventory]);
     setTotalCost(totalCost + option.price * times);
+    if (gotRarePrize) {
+      setShowConfetti(true);
+      setTimeout(() => setShowConfetti(false), 5000); // show confetti for 5 seconds
+    }
   };
 
   const formatNumber = (number: number) => {
@@ -30,7 +40,16 @@ export default function GachaGame() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-24">
+    <div className="flex flex-col items-center justify-center min-h-screen overflow-hidden">
+      {showConfetti && (
+        <div className="fixed inset-0">
+          <Confetti width={window.innerWidth} height={window.innerHeight} />
+        </div>
+      )}
+      <div className="mt-6 mb-6">
+        <h2 className="text-2xl font-semibold">Inventory:</h2>
+        <Inventory inventory={inventory} />
+      </div>
       <h1 className="text-3xl font-bold mb-6">Rafa da Rifa</h1>
       <table className="min-w-full">
         <thead>
@@ -50,12 +69,12 @@ export default function GachaGame() {
               <td className="py-2">{option.id}</td>
               <td className="py-2">{formatNumber(option.price)}</td>
               <td className="py-2 flex items-center">
-                <Image src={option.mainPrize.src} alt={option.mainPrize.name} width={50} height={50} />
+                <Image src={option.mainPrize.src} alt={option.mainPrize.name} width={24} height={24} />
                 <span className="ml-2">{option.mainPrize.name}</span>
               </td>
               <td className="py-2">{(option.mainPrize.chance * 100).toFixed(2)}%</td>
               <td className="py-2 flex items-center">
-                <Image src={option.consolationPrize.src} alt={option.consolationPrize.name} width={50} height={50} />
+                <Image src={option.consolationPrize.src} alt={option.consolationPrize.name} width={24} height={24} />
                 <span className="ml-2">{option.consolationPrize.name}</span>
               </td>
               <td className="py-2">{(option.consolationPrize.chance * 100).toFixed(2)}%</td>
@@ -76,10 +95,6 @@ export default function GachaGame() {
       </table>
       <div className="mt-6">
         <h2 className="text-2xl font-semibold">Total Cost: {formatNumber(totalCost)}</h2>
-      </div>
-      <div className="mt-6">
-        <h2 className="text-2xl font-semibold">Inventory:</h2>
-        <Inventory inventory={inventory} />
       </div>
     </div>
   );

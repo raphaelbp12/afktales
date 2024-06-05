@@ -37,11 +37,9 @@ const Inventory: React.FC<InventoryProps> = ({ inventory }) => {
         <Tooltip key={index} title={`${item.prize.name} - Quantity: ${item.quantity}`}>
           <div className="relative flex flex-col items-center">
             <Image src={item.prize.src} alt={item.prize.name} width={50} height={50} />
-            {item.quantity > 1 && (
               <span className="absolute top-0 right-0 px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full">
                 {item.quantity}
               </span>
-            )}
           </div>
         </Tooltip>
       ))}
