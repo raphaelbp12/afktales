@@ -1,11 +1,18 @@
 // components/GachaGame.tsx
-"use client"
+"use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { options, Option, Prize } from "./prizes";
 import Inventory from "./Inventory";
 import Image from "next/image";
-import Confetti from 'react-confetti';
+import Confetti from "react-confetti";
+import Alert from "./Alert";
+
+interface AlertMessage {
+  id: number;
+  message: string;
+  src: string;
+}
 
 function drawPrize(option: Option): Prize {
   const random = Math.random();
@@ -16,28 +23,25 @@ export default function GachaGame() {
   const [totalCost, setTotalCost] = useState(0);
   const [inventory, setInventory] = useState<Prize[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [alerts, setAlerts] = useState<{ message: string; src: string; }[]>([]);
-
-  useEffect(() => {
-    if (alerts.length > 0) {
-      const timer = setTimeout(() => {
-        setAlerts((prevAlerts) => prevAlerts.slice(1));
-      }, 5000); // hide alert after 5 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [alerts]);
+  const [alerts, setAlerts] = useState<AlertMessage[]>([]);
 
   const handleDraw = (option: Option, times: number = 1) => {
     let newInventory: Prize[] = [];
     let gotRarePrize = false;
-    let rarePrizeMessage = '';
     for (let i = 0; i < times; i++) {
       const drawnPrize = drawPrize(option);
       newInventory.push(drawnPrize);
       if (drawnPrize.chance <= 0.1) {
         gotRarePrize = true;
-        rarePrizeMessage = `${drawnPrize.name}`;
-        setAlerts((prevAlerts) => [...prevAlerts, { message: rarePrizeMessage, src: drawnPrize.src }]);
+        const newAlert: AlertMessage = {
+          id: Date.now() + i, // unique id
+          message: `${drawnPrize.name}`,
+          src: drawnPrize.src,
+        };
+        setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
+        setTimeout(() => {
+          setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== newAlert.id));
+        }, 5000); // hide alert after 5 seconds
       }
     }
     setInventory([...inventory, ...newInventory]);
@@ -49,7 +53,7 @@ export default function GachaGame() {
   };
 
   const formatNumber = (number: number) => {
-    return new Intl.NumberFormat('en-US').format(number);
+    return new Intl.NumberFormat("en-US").format(number);
   };
 
   return (
@@ -61,11 +65,8 @@ export default function GachaGame() {
       )}
       {alerts.length > 0 && (
         <div className="fixed top-0 left-0 right-0 flex flex-col items-center space-y-2 p-4 z-30">
-          {alerts.map((alert, index) => (
-            <div key={index} className="bg-green-500 text-white text-center p-2 rounded-md flex items-center space-x-2">
-              <Image src={alert.src} alt="Item" width={24} height={24} />
-              <span>{alert.message}</span>
-            </div>
+          {alerts.map((alert) => (
+            <Alert key={alert.id} message={alert.message} src={alert.src} />
           ))}
         </div>
       )}
@@ -87,7 +88,7 @@ export default function GachaGame() {
           </tr>
         </thead>
         <tbody>
-          {options.map(option => (
+          {options.map((option) => (
             <tr key={option.id}>
               <td className="py-2">{option.id}</td>
               <td className="py-2">{formatNumber(option.price)}</td>
