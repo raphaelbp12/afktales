@@ -3,17 +3,17 @@ import { Item } from "./item";
 
 export const drops: Item[] = [
   {
-    name: "Cartas MvP",
+    name: "Carta",
     src: "/images/cardIcon.png",
     chance: 0.0001,
   },
   {
-    name: "Cartas MvP Selada",
+    name: "Carta Selada",
     src: "/images/cardIcon.png",
     chance: 0.0002,
   },
   {
-    name: "Ovos de Mascotes",
+    name: "Ovo",
     src: "/images/petEggIcon.png",
     chance: 0.001,
   },

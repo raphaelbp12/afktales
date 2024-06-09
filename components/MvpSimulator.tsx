@@ -72,7 +72,9 @@ const MvpSimulator: React.FC = () => {
     });
 
     const drops = getRandomDrop();
-    drops.forEach((drop) => addToInventory(drop));
+    drops.forEach((drop) =>
+      addToInventory({ ...drop, name: drop.name + " de " + enemy.name })
+    );
     return drops;
   };
 
