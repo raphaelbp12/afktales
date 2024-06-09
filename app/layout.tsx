@@ -6,6 +6,7 @@ import { AlertProvider } from "../contexts/alertContext";
 import { InventoryProvider } from "../contexts/inventoryContext";
 import NavBar from "../components/NavBar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,6 +23,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <SpeedInsights />
+      <Analytics />
       <body className={inter.className}>
         <AlertProvider>
           <InventoryProvider>
