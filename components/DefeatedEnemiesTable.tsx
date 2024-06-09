@@ -15,6 +15,12 @@ const DefeatedEnemiesTable: React.FC<DefeatedEnemiesTableProps> = ({
       .filter(({ enemy }) => enemy.tier === tier)
       .reduce((total, { count }) => total + count, 0);
   };
+  const getAllCount = () => {
+    return Object.values(defeatedEnemies).reduce(
+      (total, { count }) => total + count,
+      0
+    );
+  };
 
   const formatDefeatedEnemies = (tier: string) => {
     return Object.values(defeatedEnemies)
@@ -37,21 +43,21 @@ const DefeatedEnemiesTable: React.FC<DefeatedEnemiesTableProps> = ({
 
   return (
     <div className="mt-6">
-      <h3 className="text-xl font-bold mb-2">Defeated Enemies:</h3>
+      <h3 className="text-xl font-bold mb-2">MVPs mortos: {getAllCount()}</h3>
       <table className="min-w-full table-auto border-collapse border border-gray-300">
         <thead>
           <tr>
             <th className="px-4 py-2 border border-gray-300">
-              Tier C ({getTierCount("C")})
+              Rank C ({getTierCount("C")})
             </th>
             <th className="px-4 py-2 border border-gray-300">
-              Tier B ({getTierCount("B")})
+              Rank B ({getTierCount("B")})
             </th>
             <th className="px-4 py-2 border border-gray-300">
-              Tier A ({getTierCount("A")})
+              Rank A ({getTierCount("A")})
             </th>
             <th className="px-4 py-2 border border-gray-300">
-              Tier S ({getTierCount("S")})
+              Rank S ({getTierCount("S")})
             </th>
           </tr>
         </thead>

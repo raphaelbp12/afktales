@@ -29,7 +29,7 @@ const Inventory: React.FC = () => {
   const aggregatedInventory = aggregateInventory(inventory);
 
   return (
-    <div className="grid grid-cols-3 gap-4 mt-4">
+    <div className="grid grid-cols-12 gap-4 my-4">
       {aggregatedInventory.map((item, index) => (
         <Tooltip
           key={index}

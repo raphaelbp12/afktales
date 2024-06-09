@@ -13,6 +13,7 @@ import { useInventory } from "../contexts/inventoryContext";
 import { Item } from "./item";
 import { drops } from "./drops";
 import DefeatedEnemiesTable from "./DefeatedEnemiesTable";
+import Inventory from "./Inventory";
 
 function getRandomEnemy(enemies: Enemy[]): Enemy {
   const weightedEnemies: Enemy[] = [];
@@ -87,23 +88,25 @@ const MvpSimulator: React.FC = () => {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen p-6">
-      <h1 className="text-3xl font-bold mb-6">MVP Simulator</h1>
+      <h1 className="text-3xl font-bold mb-6">Simulador de Cheffênia</h1>
+      <h2 className="text-2xl font-semibold">Inventário:</h2>
+      <Inventory />
       <button
         onClick={handleSimulate}
         className="px-4 py-2 bg-blue-500 text-white rounded-md mb-4"
       >
-        Simulate MVP
+        Matar 1 MVP
       </button>
       <button
         onClick={handleSimulateUntilDrop}
         className="px-4 py-2 bg-green-500 text-white rounded-md mb-4"
       >
-        Simulate Until Drop
+        Matar até dropar
       </button>
       {selectedEnemy && (
         <div className="text-center">
           <h2 className="text-2xl font-semibold mb-2">{selectedEnemy.name}</h2>
-          <p className="text-xl">Tier: {selectedEnemy.tier}</p>
+          <p className="text-xl">Rank: {selectedEnemy.tier}</p>
           <img
             src={`https://static.divine-pride.net/images/mobs/png/${selectedEnemy.mobId}.png`}
             alt={selectedEnemy.name}
@@ -114,7 +117,7 @@ const MvpSimulator: React.FC = () => {
             rel="noopener noreferrer"
             className="text-blue-500 underline"
           >
-            View Details
+            Ver detalhes
           </a>
         </div>
       )}
