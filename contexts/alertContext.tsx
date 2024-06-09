@@ -10,7 +10,7 @@ import React, {
 import Alert from "../components/Alert";
 
 interface AlertMessage {
-  id: number;
+  id: string;
   message: string;
   src: string;
   createdAt: number;
@@ -48,7 +48,7 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({
 
   const addAlert = (message: string, src: string, duration: number = 5000) => {
     const newAlert: AlertMessage = {
-      id: Date.now(),
+      id: `${Date.now()}-${Math.random()}`,
       message,
       src,
       createdAt: Date.now(),

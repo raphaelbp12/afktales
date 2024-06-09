@@ -127,9 +127,7 @@ const MvpSimulator: React.FC = () => {
           </a>
         </div>
       )}
-      {Object.keys(defeatedEnemies).length > 0 && (
-        <DefeatedEnemiesTable defeatedEnemies={defeatedEnemies} />
-      )}
+      <DefeatedEnemiesTable defeatedEnemies={defeatedEnemies} />
     </div>
   );
 };
