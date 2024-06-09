@@ -2,13 +2,14 @@
 "use client";
 
 import React, { useState } from "react";
-import { options, Option, Prize } from "./prizes";
+import { options, Option } from "./prizes";
 import Inventory from "./Inventory";
 import Image from "next/image";
 import Confetti from "react-confetti";
-import { useAlert } from "../contexts/alertContext";
+import { useInventory } from "../contexts/inventoryContext";
+import { Item } from "./item";
 
-function drawPrize(option: Option): Prize {
+function drawPrize(option: Option): Item {
   const random = Math.random();
   return random < option.mainPrize.chance
     ? option.mainPrize
@@ -17,22 +18,18 @@ function drawPrize(option: Option): Prize {
 
 export default function RafaDaRifa() {
   const [totalCost, setTotalCost] = useState(0);
-  const [inventory, setInventory] = useState<Prize[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
-  const { addAlert } = useAlert();
+  const { addToInventory, clearInventory } = useInventory();
 
   const handleDraw = (option: Option, times: number = 1) => {
-    let newInventory: Prize[] = [];
     let gotRarePrize = false;
     for (let i = 0; i < times; i++) {
       const drawnPrize = drawPrize(option);
-      newInventory.push(drawnPrize);
+      addToInventory(drawnPrize);
       if (drawnPrize.chance <= 0.1) {
         gotRarePrize = true;
-        addAlert(`${drawnPrize.name}`, drawnPrize.src);
       }
     }
-    setInventory([...inventory, ...newInventory]);
     setTotalCost(totalCost + option.price * times);
     if (gotRarePrize) {
       setShowConfetti(true);
@@ -41,19 +38,16 @@ export default function RafaDaRifa() {
   };
 
   const handleDrawUntilRare = (option: Option) => {
-    let newInventory: Prize[] = [];
     let gotRarePrize = false;
     let draws = 0;
     while (!gotRarePrize) {
       const drawnPrize = drawPrize(option);
-      newInventory.push(drawnPrize);
+      addToInventory(drawnPrize);
       draws++;
       if (drawnPrize.chance <= 0.1) {
         gotRarePrize = true;
-        addAlert(`${drawnPrize.name}`, drawnPrize.src);
       }
     }
-    setInventory([...inventory, ...newInventory]);
     setTotalCost(totalCost + option.price * draws);
     if (gotRarePrize) {
       setShowConfetti(true);
@@ -79,7 +73,13 @@ export default function RafaDaRifa() {
       </div>
       <div className="mt-6 mb-6 z-20">
         <h2 className="text-2xl font-semibold">Inventário:</h2>
-        <Inventory inventory={inventory} />
+        <Inventory />
+        <button
+          onClick={clearInventory}
+          className="px-4 py-2 bg-red-500 text-white rounded-md mt-4"
+        >
+          Resetar Inventário
+        </button>
       </div>
       <h1 className="text-3xl font-bold mb-6 z-20">Rafa da Rifa</h1>
       <table className="min-w-full z-20">

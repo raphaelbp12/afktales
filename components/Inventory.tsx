@@ -1,45 +1,50 @@
 // components/Inventory.tsx
-
 import React from "react";
 import Image from "next/image";
-import { Prize } from "./prizes";
+import { useInventory } from "../contexts/inventoryContext";
+import { Item } from "./item";
 import Tooltip from "@mui/material/Tooltip"; // Use Tooltip from @mui/material
 
-interface InventoryProps {
-  inventory: Prize[];
-}
-
 interface InventoryItem {
-  prize: Prize;
+  item: Item;
   quantity: number;
 }
 
-const aggregateInventory = (inventory: Prize[]): InventoryItem[] => {
+const aggregateInventory = (inventory: Item[]): InventoryItem[] => {
   const itemMap: { [key: string]: InventoryItem } = {};
 
-  inventory.forEach(prize => {
-    if (itemMap[prize.name]) {
-      itemMap[prize.name].quantity += 1;
+  inventory.forEach((item) => {
+    if (itemMap[item.name]) {
+      itemMap[item.name].quantity += 1;
     } else {
-      itemMap[prize.name] = { prize, quantity: 1 };
+      itemMap[item.name] = { item, quantity: 1 };
     }
   });
 
   return Object.values(itemMap);
 };
 
-const Inventory: React.FC<InventoryProps> = ({ inventory }) => {
+const Inventory: React.FC = () => {
+  const { inventory } = useInventory();
   const aggregatedInventory = aggregateInventory(inventory);
 
   return (
-    <div className="grid grid-cols-8 gap-2 mt-4">
+    <div className="grid grid-cols-3 gap-4 mt-4">
       {aggregatedInventory.map((item, index) => (
-        <Tooltip key={index} title={`${item.prize.name} - Quantity: ${item.quantity}`} arrow>
+        <Tooltip
+          key={index}
+          title={`${item.item.name} - Quantity: ${item.quantity}`}
+        >
           <div className="relative flex flex-col items-center">
-            <Image src={item.prize.src} alt={item.prize.name} width={50} height={50} />
-              <span className="absolute top-0 right-0 px-1 text-xs font-bold text-white bg-red-600 rounded-full">
-                {item.quantity}
-              </span>
+            <Image
+              src={item.item.src}
+              alt={item.item.name}
+              width={50}
+              height={50}
+            />
+            <span className="absolute top-0 right-0 px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full">
+              {item.quantity}
+            </span>
           </div>
         </Tooltip>
       ))}

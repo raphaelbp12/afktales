@@ -1,16 +1,11 @@
 // components/prizes.ts
-
-export interface Prize {
-  name: string;
-  chance: number;
-  src: string; // Local path to the image
-}
+import { Item } from "./item";
 
 export interface Option {
   id: number;
   price: number;
-  mainPrize: Prize;
-  consolationPrize: Prize;
+  mainPrize: Item;
+  consolationPrize: Item;
 }
 
 export const options: Option[] = [
