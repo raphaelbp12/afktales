@@ -5,6 +5,7 @@ import "./globals.css";
 import { AlertProvider } from "../contexts/alertContext";
 import { InventoryProvider } from "../contexts/inventoryContext";
 import NavBar from "../components/NavBar";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,6 +21,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <SpeedInsights />
       <body className={inter.className}>
         <AlertProvider>
           <InventoryProvider>
