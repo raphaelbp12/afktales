@@ -9,8 +9,8 @@ import NavBar from "../components/NavBar";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Rafa da Rifa Simulator",
-  description: "Simulador da Rafa da Rifa do Ragnatales.com.br",
+  title: "AFKTales",
+  description: "Simulador do Ragnatales.com.br",
 };
 
 export default function RootLayout({
