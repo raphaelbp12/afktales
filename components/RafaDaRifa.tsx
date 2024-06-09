@@ -1,18 +1,12 @@
 // components/GachaGame.tsx
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { options, Option, Prize } from "./prizes";
 import Inventory from "./Inventory";
 import Image from "next/image";
 import Confetti from "react-confetti";
-import Alert from "./Alert";
-
-interface AlertMessage {
-  id: number;
-  message: string;
-  src: string;
-}
+import { useAlert } from "../contexts/alertContext";
 
 function drawPrize(option: Option): Prize {
   const random = Math.random();
@@ -25,16 +19,7 @@ export default function RafaDaRifa() {
   const [totalCost, setTotalCost] = useState(0);
   const [inventory, setInventory] = useState<Prize[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
-  const [alerts, setAlerts] = useState<AlertMessage[]>([]);
-
-  useEffect(() => {
-    if (alerts.length > 0) {
-      const timer = setTimeout(() => {
-        setAlerts((prevAlerts) => prevAlerts.slice(1));
-      }, 5000); // hide alert after 5 seconds
-      return () => clearTimeout(timer);
-    }
-  }, [alerts]);
+  const { addAlert } = useAlert();
 
   const handleDraw = (option: Option, times: number = 1) => {
     let newInventory: Prize[] = [];
@@ -44,17 +29,7 @@ export default function RafaDaRifa() {
       newInventory.push(drawnPrize);
       if (drawnPrize.chance <= 0.1) {
         gotRarePrize = true;
-        const newAlert: AlertMessage = {
-          id: Date.now() + i, // unique id
-          message: `${drawnPrize.name}`,
-          src: drawnPrize.src,
-        };
-        setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
-        setTimeout(() => {
-          setAlerts((prevAlerts) =>
-            prevAlerts.filter((alert) => alert.id !== newAlert.id)
-          );
-        }, 5000); // hide alert after 5 seconds
+        addAlert(`${drawnPrize.name}`, drawnPrize.src);
       }
     }
     setInventory([...inventory, ...newInventory]);
@@ -75,17 +50,7 @@ export default function RafaDaRifa() {
       draws++;
       if (drawnPrize.chance <= 0.1) {
         gotRarePrize = true;
-        const newAlert: AlertMessage = {
-          id: Date.now(), // unique id
-          message: `${drawnPrize.name}`,
-          src: drawnPrize.src,
-        };
-        setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
-        setTimeout(() => {
-          setAlerts((prevAlerts) =>
-            prevAlerts.filter((alert) => alert.id !== newAlert.id)
-          );
-        }, 5000); // hide alert after 5 seconds
+        addAlert(`${drawnPrize.name}`, drawnPrize.src);
       }
     }
     setInventory([...inventory, ...newInventory]);
@@ -105,13 +70,6 @@ export default function RafaDaRifa() {
       {showConfetti && (
         <div className="fixed inset-0 z-10 pointer-events-none">
           <Confetti width={window.innerWidth} height={window.innerHeight} />
-        </div>
-      )}
-      {alerts.length > 0 && (
-        <div className="fixed top-0 left-0 right-0 flex flex-col items-center space-y-2 p-4 z-30">
-          {alerts.map((alert) => (
-            <Alert key={alert.id} message={alert.message} src={alert.src} />
-          ))}
         </div>
       )}
       <div className="mt-6 z-20">
