@@ -16,10 +16,12 @@ interface AlertMessage {
 
 function drawPrize(option: Option): Prize {
   const random = Math.random();
-  return random < option.mainPrize.chance ? option.mainPrize : option.consolationPrize;
+  return random < option.mainPrize.chance
+    ? option.mainPrize
+    : option.consolationPrize;
 }
 
-export default function GachaGame() {
+export default function RafaDaRifa() {
   const [totalCost, setTotalCost] = useState(0);
   const [inventory, setInventory] = useState<Prize[]>([]);
   const [showConfetti, setShowConfetti] = useState(false);
@@ -49,7 +51,9 @@ export default function GachaGame() {
         };
         setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
         setTimeout(() => {
-          setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== newAlert.id));
+          setAlerts((prevAlerts) =>
+            prevAlerts.filter((alert) => alert.id !== newAlert.id)
+          );
         }, 5000); // hide alert after 5 seconds
       }
     }
@@ -78,7 +82,9 @@ export default function GachaGame() {
         };
         setAlerts((prevAlerts) => [...prevAlerts, newAlert]);
         setTimeout(() => {
-          setAlerts((prevAlerts) => prevAlerts.filter((alert) => alert.id !== newAlert.id));
+          setAlerts((prevAlerts) =>
+            prevAlerts.filter((alert) => alert.id !== newAlert.id)
+          );
         }, 5000); // hide alert after 5 seconds
       }
     }
@@ -109,7 +115,9 @@ export default function GachaGame() {
         </div>
       )}
       <div className="mt-6 z-20">
-        <h2 className="text-2xl font-semibold">Total Gasto: {formatNumber(totalCost)}</h2>
+        <h2 className="text-2xl font-semibold">
+          Total Gasto: {formatNumber(totalCost)}
+        </h2>
       </div>
       <div className="mt-6 mb-6 z-20">
         <h2 className="text-2xl font-semibold">Inventário:</h2>
@@ -134,26 +142,52 @@ export default function GachaGame() {
               <td className="py-2">{option.id}</td>
               <td className="py-2">{formatNumber(option.price)}</td>
               <td className="py-2 flex items-center">
-                <Image src={option.mainPrize.src} alt={option.mainPrize.name} width={24} height={24} />
+                <Image
+                  src={option.mainPrize.src}
+                  alt={option.mainPrize.name}
+                  width={24}
+                  height={24}
+                />
                 <span className="ml-2">{option.mainPrize.name}</span>
               </td>
-              <td className="py-2">{(option.mainPrize.chance * 100).toFixed(2)}%</td>
+              <td className="py-2">
+                {(option.mainPrize.chance * 100).toFixed(2)}%
+              </td>
               <td className="py-2 flex items-center">
-                <Image src={option.consolationPrize.src} alt={option.consolationPrize.name} width={24} height={24} />
+                <Image
+                  src={option.consolationPrize.src}
+                  alt={option.consolationPrize.name}
+                  width={24}
+                  height={24}
+                />
                 <span className="ml-2">{option.consolationPrize.name}</span>
               </td>
-              <td className="py-2">{(option.consolationPrize.chance * 100).toFixed(2)}%</td>
+              <td className="py-2">
+                {(option.consolationPrize.chance * 100).toFixed(2)}%
+              </td>
               <td className="py-2 space-y-2">
-                <button onClick={() => handleDraw(option)} className="px-4 py-2 bg-blue-500 text-white rounded-md">
+                <button
+                  onClick={() => handleDraw(option)}
+                  className="px-4 py-2 bg-blue-500 text-white rounded-md"
+                >
                   Comprar
                 </button>
-                <button onClick={() => handleDraw(option, 10)} className="px-4 py-2 bg-green-500 text-white rounded-md">
+                <button
+                  onClick={() => handleDraw(option, 10)}
+                  className="px-4 py-2 bg-green-500 text-white rounded-md"
+                >
                   Comprar x10
                 </button>
-                <button onClick={() => handleDraw(option, 100)} className="px-4 py-2 bg-red-500 text-white rounded-md">
+                <button
+                  onClick={() => handleDraw(option, 100)}
+                  className="px-4 py-2 bg-red-500 text-white rounded-md"
+                >
                   Comprar x100
                 </button>
-                <button onClick={() => handleDrawUntilRare(option)} className="px-4 py-2 bg-yellow-500 text-white rounded-md">
+                <button
+                  onClick={() => handleDrawUntilRare(option)}
+                  className="px-4 py-2 bg-yellow-500 text-white rounded-md"
+                >
                   Comprar até raro
                 </button>
               </td>
