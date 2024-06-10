@@ -71,7 +71,7 @@ const NavBar: React.FC = () => {
           <span className="hidden lg:inline">Contribua no GitHub</span>
         </a>
         <a
-          href="https://www.youtube.com/"
+          href="https://www.youtube.com/watch?v=F9eQcw_ANgQ"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-500"
