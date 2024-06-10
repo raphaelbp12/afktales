@@ -1,7 +1,7 @@
 // components/NavBar.tsx
 
 import Link from "next/link";
-import { FaDiscord, FaGithub, FaHome } from "react-icons/fa";
+import { FaDiscord, FaGithub, FaHome, FaYoutube } from "react-icons/fa";
 import Image from "next/image";
 
 const NavBar: React.FC = () => {
@@ -11,7 +11,7 @@ const NavBar: React.FC = () => {
         <Link href="/" passHref legacyBehavior>
           <a className="text-white flex items-center">
             <FaHome size={18} className="mr-2" />
-            Home
+            <span className="inline">Home</span>
           </a>
         </Link>
         <Link href="/rafa-da-rifa" passHref legacyBehavior>
@@ -23,7 +23,7 @@ const NavBar: React.FC = () => {
               height={24}
               className="mr-2"
             />
-            Rafa da Rifa
+            <span className="hidden md:inline">Rafa da Rifa</span>
           </a>
         </Link>
         <Link href="/mvpsimulator" passHref legacyBehavior>
@@ -35,11 +35,11 @@ const NavBar: React.FC = () => {
               height={24}
               className="mr-2"
             />
-            Cheffênia
+            <span className="hidden md:inline">Cheffênia</span>
           </a>
         </Link>
         <Link href="https://discord.gg/4QWrwNw3ry" passHref legacyBehavior>
-          <a className="text-white flex items-center">
+          <a className="text-white hidden lg:flex items-center">
             <Image
               src="/images/bio5Icon.png"
               alt="Bio5 Icon"
@@ -47,7 +47,7 @@ const NavBar: React.FC = () => {
               height={24}
               className="mr-2"
             />
-            Vote no Discord
+            <span>Vote no Discord</span>
           </a>
         </Link>
       </div>
@@ -58,8 +58,8 @@ const NavBar: React.FC = () => {
           rel="noopener noreferrer"
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
         >
-          <FaDiscord size={24} className="mr-2" />
-          Entre no Discord
+          <FaDiscord size={24} className="lg:mr-2" />
+          <span className="hidden lg:inline">Entre no Discord</span>
         </a>
         <a
           href="https://github.com/raphaelbp12/afktales"
@@ -67,8 +67,17 @@ const NavBar: React.FC = () => {
           rel="noopener noreferrer"
           className="flex items-center px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
         >
-          <FaGithub size={24} className="mr-2" />
-          Contribua no GitHub
+          <FaGithub size={24} className="lg:mr-2" />
+          <span className="hidden lg:inline">Contribua no GitHub</span>
+        </a>
+        <a
+          href="https://www.youtube.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-500"
+        >
+          <FaYoutube size={24} className="lg:mr-2" />
+          <span className="hidden lg:inline">Assista no YouTube</span>
         </a>
       </div>
     </nav>
