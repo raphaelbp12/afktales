@@ -1,4 +1,6 @@
 // components/InfoPanel.tsx
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { FaInfoCircle } from "react-icons/fa";
 import { IoIosArrowUp, IoIosArrowDown } from "react-icons/io";

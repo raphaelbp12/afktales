@@ -88,13 +88,8 @@ const MvpSimulator: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen p-6">
+    <div className="flex flex-col items-center min-h-screen p-6">
       <h1 className="text-3xl font-bold mb-6">Simulador de Cheffênia</h1>
-      <InfoPanel
-        title="Aviso importante"
-        description="O simulador ainda está em construção. Por enquanto, apenas os drops de cartas e ovos foram implementados. Entre no discord para ficar por dentro das novidades!"
-        storageKey="infoPanelDisclaimer"
-      />
       <h2 className="text-2xl font-semibold">Inventário:</h2>
       <Inventory />
       <button

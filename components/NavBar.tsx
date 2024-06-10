@@ -38,6 +38,18 @@ const NavBar: React.FC = () => {
             Cheffênia
           </a>
         </Link>
+        <Link href="https://discord.gg/4QWrwNw3ry" passHref legacyBehavior>
+          <a className="text-white flex items-center">
+            <Image
+              src="/images/bio5Icon.png"
+              alt="Bio5 Icon"
+              width={24}
+              height={24}
+              className="mr-2"
+            />
+            Vote no Discord
+          </a>
+        </Link>
       </div>
       <div className="flex space-x-4">
         <a
