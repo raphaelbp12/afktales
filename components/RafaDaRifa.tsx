@@ -21,6 +21,11 @@ export default function RafaDaRifa() {
   const [showConfetti, setShowConfetti] = useState(false);
   const { addToInventory, clearInventory } = useInventory();
 
+  const reset = () => {
+    setTotalCost(0);
+    clearInventory();
+  };
+
   const handleDraw = (option: Option, times: number = 1) => {
     let gotRarePrize = false;
     for (let i = 0; i < times; i++) {
@@ -75,10 +80,10 @@ export default function RafaDaRifa() {
         <h2 className="text-2xl font-semibold">Inventário:</h2>
         <Inventory />
         <button
-          onClick={clearInventory}
+          onClick={reset}
           className="px-4 py-2 bg-red-500 text-white rounded-md mt-4"
         >
-          Resetar Inventário
+          Resetar
         </button>
       </div>
       <h1 className="text-3xl font-bold mb-6 z-20">Rafa da Rifa</h1>

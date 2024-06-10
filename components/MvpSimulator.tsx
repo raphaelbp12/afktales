@@ -44,7 +44,13 @@ const MvpSimulator: React.FC = () => {
   const [defeatedEnemies, setDefeatedEnemies] = useState<
     Record<string, { enemy: Enemy; count: number }>
   >({});
-  const { addToInventory } = useInventory();
+  const { addToInventory, clearInventory } = useInventory();
+
+  const reset = () => {
+    clearInventory();
+    setDefeatedEnemies({});
+    setSelectedEnemy(null);
+  };
 
   const handleSimulate = (): Item[] => {
     let enemyPool = allEnemies;
@@ -92,6 +98,12 @@ const MvpSimulator: React.FC = () => {
       <h1 className="text-3xl font-bold mb-6">Simulador de Cheffênia</h1>
       <h2 className="text-2xl font-semibold">Inventário:</h2>
       <Inventory />
+      <button
+        onClick={reset}
+        className="px-4 py-2 bg-red-500 text-white rounded-md mb-4"
+      >
+        Resetar
+      </button>
       <button
         onClick={handleSimulate}
         className="px-4 py-2 bg-blue-500 text-white rounded-md mb-4"
