@@ -8,7 +8,7 @@ export default function Home() {
     <PageWrapper overflowAuto={true}>
       <div className="flex flex-col items-center p-6">
         <h1 className="text-3xl font-bold mb-6">Simuladores do Ragnatales</h1>
-        <div className="flex flex-wrap items-center gap-2">
+        <div className=" grid grid-cols-1 sm:grid-cols-2 items-center gap-2">
           <Card
             imageSrc="/images/Rifa1.png"
             title="Rafa da Rifa"
