@@ -7,6 +7,7 @@ import { InventoryProvider } from "../contexts/inventoryContext";
 import NavBar from "../components/NavBar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import PageWrapper from "../components/PageWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,7 +30,7 @@ export default function RootLayout({
           <InventoryProvider>
             <NavBar />
             <main className="flex-grow flex flex-col items-center p-2 relative overflow-hidden">
-              <div className="w-full flex-grow overflow-auto">{children}</div>
+              {children}
             </main>
           </InventoryProvider>
         </AlertProvider>
