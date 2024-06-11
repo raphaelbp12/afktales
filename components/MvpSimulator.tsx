@@ -96,30 +96,34 @@ const MvpSimulator: React.FC = () => {
 
   return (
     <PageWrapper overflowAuto={true}>
-      <div className="flex flex-col items-center min-h-screen p-6">
-        <h1 className="text-3xl font-bold mb-6">Simulador de Cheffênia</h1>
-        <h2 className="text-2xl font-semibold">Inventário:</h2>
-        <Inventory />
-        <button
-          onClick={reset}
-          className="px-4 py-2 bg-red-500 text-white rounded-md mb-4"
-        >
-          Resetar
-        </button>
-        <button
-          onClick={handleSimulate}
-          className="px-4 py-2 bg-blue-500 text-white rounded-md mb-4"
-        >
-          Matar 1 MVP
-        </button>
-        <button
-          onClick={handleSimulateUntilDrop}
-          className="px-4 py-2 bg-green-500 text-white rounded-md mb-4"
-        >
-          Matar até dropar
-        </button>
+      <div className="flex flex-col items-center p-6">
+        <h1 className="text-3xl font-bold mb-6 text-center">Simulador de Cheffênia</h1>
+        <h2 className="text-2xl font-semibold text-center">Inventário:</h2>
+        <div className="w-full flex flex-col items-center mb-4">
+          <Inventory />
+          <button
+            onClick={reset}
+            className="px-4 py-2 bg-gray-500 text-white rounded-md mt-4"
+          >
+            Resetar
+          </button>
+        </div>
+        <div className="flex flex-col sm:flex-row gap-4 mb-4 w-full justify-center">
+          <button
+            onClick={handleSimulate}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md"
+          >
+            Matar 1 MVP
+          </button>
+          <button
+            onClick={handleSimulateUntilDrop}
+            className="px-4 py-2 bg-green-500 text-white rounded-md"
+          >
+            Matar até dropar
+          </button>
+        </div>
         {selectedEnemy && (
-          <div className="text-center">
+          <div className="text-center mb-4">
             <h2 className="text-2xl font-semibold mb-2">
               {selectedEnemy.name}
             </h2>
@@ -127,6 +131,7 @@ const MvpSimulator: React.FC = () => {
             <img
               src={`https://static.divine-pride.net/images/mobs/png/${selectedEnemy.mobId}.png`}
               alt={selectedEnemy.name}
+              className="mx-auto"
             />
             <a
               href={selectedEnemy.url}

@@ -6,7 +6,7 @@ import PageWrapper from "@/components/PageWrapper";
 export default function Home() {
   return (
     <PageWrapper overflowAuto={true}>
-      <div className="flex flex-col items-center min-h-screen p-6">
+      <div className="flex flex-col items-center p-6">
         <h1 className="text-3xl font-bold mb-6">Simuladores do Ragnatales</h1>
         <div className="flex flex-wrap items-center gap-2">
           <Card
