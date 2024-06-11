@@ -58,17 +58,9 @@ const NavBar: React.FC = () => {
           rel="noopener noreferrer"
           className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-500"
         >
-          <FaDiscord size={24} className="lg:mr-2" />
+          <FaDiscord size={24} className="md:mr-2" />
           <span className="hidden lg:inline">Entre no Discord</span>
-        </a>
-        <a
-          href="https://github.com/raphaelbp12/afktales"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
-        >
-          <FaGithub size={24} className="lg:mr-2" />
-          <span className="hidden lg:inline">Contribua no GitHub</span>
+          <span className="hidden lg:hidden md:inline">Discord</span>
         </a>
         <a
           href="https://www.youtube.com/watch?v=F9eQcw_ANgQ"
@@ -76,8 +68,17 @@ const NavBar: React.FC = () => {
           rel="noopener noreferrer"
           className="flex items-center px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-500"
         >
-          <FaYoutube size={24} className="lg:mr-2" />
+          <FaYoutube size={24} className="md:mr-2" />
           <span className="hidden lg:inline">Assista no YouTube</span>
+          <span className="hidden lg:hidden md:inline">Youtube</span>
+        </a>
+        <a
+          href="https://github.com/raphaelbp12/afktales"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
+        >
+          <FaGithub size={24} />
         </a>
       </div>
     </nav>
