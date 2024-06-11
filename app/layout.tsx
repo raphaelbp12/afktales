@@ -7,7 +7,7 @@ import { InventoryProvider } from "../contexts/inventoryContext";
 import NavBar from "../components/NavBar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
-import InfoPanel from "@/components/InfoPanel";
+import PageWrapper from "../components/PageWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,16 +25,11 @@ export default function RootLayout({
     <html lang="en">
       <SpeedInsights />
       <Analytics />
-      <body className={inter.className}>
+      <body className={`${inter.className} h-full`}>
         <AlertProvider>
           <InventoryProvider>
             <NavBar />
-            <main className="flex min-h-screen flex-col items-center justify-between p-2">
-              <InfoPanel
-                title="Escolha as próximas funcionalidades!"
-                description="Temos uma enquete no Discord para decidir quais funcionalidades implementar a seguir. Participe!"
-                storageKey="infoPanelDisclaimer"
-              />
+            <main className="flex-grow flex flex-col items-center p-2 relative overflow-hidden">
               {children}
             </main>
           </InventoryProvider>
