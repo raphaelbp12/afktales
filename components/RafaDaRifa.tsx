@@ -65,7 +65,7 @@ export default function RafaDaRifa() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-screen overflow-hidden relative">
+    <div className="flex flex-col items-center justify-center overflow-hidden relative">
       {showConfetti && (
         <div className="fixed inset-0 z-10 pointer-events-none">
           <Confetti width={window.innerWidth} height={window.innerHeight} />
