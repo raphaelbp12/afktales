@@ -71,93 +71,97 @@ export default function RafaDaRifa() {
           <Confetti width={window.innerWidth} height={window.innerHeight} />
         </div>
       )}
-      <div className="mt-6 z-20">
-        <h2 className="text-2xl font-semibold">
+      <h1 className="text-2xl md:text-3xl font-bold mb-2">Rafa da Rifa</h1>
+      <div className={`w-full p-4 flex flex-col items-center mb-2`}>
+        <h2 className="text-xl md:text-2xl font-semibold">
           Total Gasto: {formatNumber(totalCost)}
         </h2>
-      </div>
-      <div className="mt-6 mb-6 z-20">
-        <h2 className="text-2xl font-semibold">Inventário:</h2>
+        <h2 className="text-xl md:text-2xl font-semibold mt-4">Inventário:</h2>
         <Inventory />
         <button
           onClick={reset}
-          className="px-4 py-2 bg-red-500 text-white rounded-md mt-4"
+          className="px-4 py-2 bg-gray-500 text-white rounded-md mt-4"
         >
           Resetar
         </button>
       </div>
-      <h1 className="text-3xl font-bold mb-6 z-20">Rafa da Rifa</h1>
-      <table className="min-w-full z-20">
-        <thead>
-          <tr>
-            <th className="py-2"></th>
-            <th className="py-2">Preço</th>
-            <th className="py-2">Prêmio Principal</th>
-            <th className="py-2">Chance</th>
-            <th className="py-2">Prêmio de Consolação</th>
-            <th className="py-2">Chance</th>
-            <th className="py-2">Comprar</th>
-          </tr>
-        </thead>
-        <tbody>
+      <div className="flex-grow w-full overflow-hidden">
+        <div className="h-full overflow-y-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
           {options.map((option) => (
-            <tr key={option.id}>
-              <td className="py-2">{option.id}</td>
-              <td className="py-2">{formatNumber(option.price)}</td>
-              <td className="py-2 flex items-center">
-                <Image
-                  src={option.mainPrize.src}
-                  alt={option.mainPrize.name}
-                  width={24}
-                  height={24}
-                />
-                <span className="ml-2">{option.mainPrize.name}</span>
-              </td>
-              <td className="py-2">
-                {(option.mainPrize.chance * 100).toFixed(2)}%
-              </td>
-              <td className="py-2 flex items-center">
-                <Image
-                  src={option.consolationPrize.src}
-                  alt={option.consolationPrize.name}
-                  width={24}
-                  height={24}
-                />
-                <span className="ml-2">{option.consolationPrize.name}</span>
-              </td>
-              <td className="py-2">
-                {(option.consolationPrize.chance * 100).toFixed(2)}%
-              </td>
-              <td className="py-2 space-y-2">
+            <div
+              key={option.id}
+              className="bg-gray-800 text-white rounded-lg p-4 flex flex-col items-center"
+            >
+              <div className="flex flex-col items-center mb-4">
+                <div className="flex items-center mb-2">
+                  <Image
+                    src={option.mainPrize.src}
+                    alt={option.mainPrize.name}
+                    width={24}
+                    height={24}
+                    className="mr-2"
+                  />
+                  <span className="font-bold">{option.mainPrize.name}</span>
+                </div>
+                <div className="flex items-center mb-2">
+                  <span className="font-semibold">
+                    ({(option.mainPrize.chance * 100).toFixed(2)}%)
+                  </span>
+                </div>
+                <div className="flex items-center mb-2">
+                  <Image
+                    src={option.consolationPrize.src}
+                    alt={option.consolationPrize.name}
+                    width={24}
+                    height={24}
+                    className="mr-2"
+                  />
+                  <span className="font-bold">
+                    {option.consolationPrize.name}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <span className="font-semibold">
+                    ({(option.consolationPrize.chance * 100).toFixed(2)}%)
+                  </span>
+                </div>
+                <div className="flex items-center mt-2">
+                  <span className="mr-2">Preço:</span>
+                  <span className="font-semibold">
+                    {formatNumber(option.price)}
+                  </span>
+                </div>
+              </div>
+              <div className="flex justify-center space-x-2 mt-4">
                 <button
                   onClick={() => handleDraw(option)}
                   className="px-4 py-2 bg-blue-500 text-white rounded-md"
                 >
-                  Comprar
+                  x1
                 </button>
                 <button
                   onClick={() => handleDraw(option, 10)}
                   className="px-4 py-2 bg-green-500 text-white rounded-md"
                 >
-                  Comprar x10
+                  x10
                 </button>
                 <button
                   onClick={() => handleDraw(option, 100)}
                   className="px-4 py-2 bg-red-500 text-white rounded-md"
                 >
-                  Comprar x100
+                  x100
                 </button>
                 <button
                   onClick={() => handleDrawUntilRare(option)}
                   className="px-4 py-2 bg-yellow-500 text-white rounded-md"
                 >
-                  Comprar até raro
+                  até raro
                 </button>
-              </td>
-            </tr>
+              </div>
+            </div>
           ))}
-        </tbody>
-      </table>
+        </div>
+      </div>
     </div>
   );
 }
