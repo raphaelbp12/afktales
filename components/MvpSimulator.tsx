@@ -13,7 +13,7 @@ import { Item } from "./item";
 import { drops } from "./drops";
 import DefeatedEnemiesTable from "./DefeatedEnemiesTable";
 import Inventory from "./Inventory";
-import PageWrapper from "./PageWrapper";
+import PageWrapper from "./commonComponents/PageWrapper";
 
 function getRandomEnemy(enemies: Enemy[]): Enemy {
   const weightedEnemies: Enemy[] = [];
@@ -38,23 +38,13 @@ function getRandomDrop(): Item[] {
   return droppedItems;
 }
 
-const tiers = ["S", "A", "B", "C"];
-
 const MvpSimulator: React.FC = () => {
   const [selectedEnemy, setSelectedEnemy] = useState<Enemy | null>(null);
   const [defeatedEnemies, setDefeatedEnemies] = useState<
     Record<string, { enemy: Enemy; count: number }>
   >({});
-  const [activeTiers, setActiveTiers] = useState<string[]>(tiers);
   const { addToInventory, clearInventory } = useInventory();
 
-  const toggleTier = (tier: string) => {
-    setActiveTiers((prevTiers) =>
-      prevTiers.includes(tier)
-        ? prevTiers.filter((t) => t !== tier)
-        : [...prevTiers, tier]
-    );
-  };
 
   const reset = () => {
     clearInventory();
@@ -154,24 +144,8 @@ const MvpSimulator: React.FC = () => {
             </a>
           </div>
         )}
-        {/* <div className="flex flex-wrap gap-2 mt-4 align-middle">
-          {tiers.map((tier) => (
-            <button
-              key={tier}
-              onClick={() => toggleTier(tier)}
-              className={`px-4 py-2 rounded-md ${
-                activeTiers.includes(tier)
-                  ? "bg-blue-500 text-white"
-                  : "bg-gray-300 text-gray-700"
-              }`}
-            >
-              {tier}
-            </button>
-          ))}
-        </div> */}
         <DefeatedEnemiesTable
           defeatedEnemies={defeatedEnemies}
-          activeTiers={activeTiers}
         />
       </div>
     </PageWrapper>

@@ -4,10 +4,9 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AlertProvider } from "../contexts/alertContext";
 import { InventoryProvider } from "../contexts/inventoryContext";
-import NavBar from "../components/NavBar";
+import NavBar from "../components/commonComponents/NavBar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
-import PageWrapper from "../components/PageWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 

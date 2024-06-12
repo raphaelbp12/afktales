@@ -1,7 +1,5 @@
-import Link from "next/link";
-import Image from "next/image";
-import Card from "@/components/Card";
-import PageWrapper from "@/components/PageWrapper";
+import Card from "@/components/commonComponents/Card";
+import PageWrapper from "@/components/commonComponents/PageWrapper";
 
 export default function Home() {
   return (

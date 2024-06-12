@@ -4,12 +4,10 @@ import Image from "next/image";
 
 interface DefeatedEnemiesTableProps {
   defeatedEnemies: Record<string, { enemy: Enemy; count: number }>;
-  activeTiers: string[];
 }
 
 const DefeatedEnemiesTable: React.FC<DefeatedEnemiesTableProps> = ({
   defeatedEnemies,
-  activeTiers,
 }) => {
   const getTierCount = (tier: string) => {
     return Object.values(defeatedEnemies)
@@ -47,7 +45,7 @@ const DefeatedEnemiesTable: React.FC<DefeatedEnemiesTableProps> = ({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {["S", "A", "B", "C"].map(
           (tier) =>
-            activeTiers.includes(tier) && (
+            (
               <div key={tier} className="bg-gray-800 text-white rounded-lg p-4">
                 <h4 className="text-lg font-semibold mb-2">{`Rank ${tier} (${getTierCount(
                   tier

@@ -7,7 +7,7 @@ import React, {
   useEffect,
   ReactNode,
 } from "react";
-import Alert from "../components/Alert";
+import Alert from "../components/commonComponents/Alert";
 
 interface AlertMessage {
   id: string;

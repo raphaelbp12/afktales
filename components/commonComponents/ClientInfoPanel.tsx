@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import InfoPanel from "@/components/InfoPanel";
+import InfoPanel from "@/components/commonComponents/InfoPanel";
 
 const ClientInfoPanel = () => {
   useEffect(() => {
