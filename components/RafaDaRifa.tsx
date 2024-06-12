@@ -1,7 +1,6 @@
-// components/GachaGame.tsx
 "use client";
 
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { options, Option } from "./prizes";
 import Inventory from "./Inventory";
 import Image from "next/image";
@@ -20,40 +19,49 @@ export default function RafaDaRifa() {
   const [totalCost, setTotalCost] = useState(0);
   const [showConfetti, setShowConfetti] = useState(false);
   const { addToInventory, clearInventory } = useInventory();
+  const rareChance = 0.1;
 
   const reset = () => {
     setTotalCost(0);
     clearInventory();
   };
 
-  const handleDraw = (option: Option, times: number = 1) => {
+  const handleDraw = useCallback((option: Option, times: number = 1) => {
+    const items: Item[] = [];
     let gotRarePrize = false;
+
     for (let i = 0; i < times; i++) {
       const drawnPrize = drawPrize(option);
-      addToInventory([drawnPrize]);
-      if (drawnPrize.chance <= 0.1) {
+      items.push(drawnPrize);
+      if (drawnPrize.chance <= rareChance) {
         gotRarePrize = true;
       }
     }
-    setTotalCost(totalCost + option.price * times);
+
+    addToInventory(items);
+    setTotalCost((prevCost) => prevCost + option.price * times);
     if (gotRarePrize) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 5000); // show confetti for 5 seconds
     }
-  };
+  }, [addToInventory]);
 
   const handleDrawUntilRare = (option: Option) => {
     let gotRarePrize = false;
+    const items: Item[] = [];
     let draws = 0;
+
     while (!gotRarePrize) {
       const drawnPrize = drawPrize(option);
-      addToInventory([drawnPrize]);
+      items.push(drawnPrize);
       draws++;
-      if (drawnPrize.chance <= 0.1) {
+      if (drawnPrize.chance <= rareChance) {
         gotRarePrize = true;
       }
     }
-    setTotalCost(totalCost + option.price * draws);
+
+    addToInventory(items);
+    setTotalCost((prevCost) => prevCost + option.price * draws);
     if (gotRarePrize) {
       setShowConfetti(true);
       setTimeout(() => setShowConfetti(false), 5000); // show confetti for 5 seconds
@@ -134,7 +142,7 @@ export default function RafaDaRifa() {
               </div>
               <div className="flex justify-center space-x-2 mt-4">
                 <button
-                  onClick={() => handleDraw(option)}
+                  onClick={() => handleDraw(option, 1)}
                   className="px-4 py-2 bg-blue-500 text-white rounded-md"
                 >
                   x1

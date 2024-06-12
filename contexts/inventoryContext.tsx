@@ -5,7 +5,7 @@ import { Item } from "../components/item";
 import { useAlert } from "./alertContext";
 
 interface InventoryContextProps {
-  inventory: { [key: string]: { item: Item, count: number } };
+  inventory: { [key: string]: { item: Item; count: number } };
   addToInventory: (items: Item[], chanceToShowAlert?: number) => void;
   clearInventory: () => void;
 }
@@ -17,23 +17,26 @@ const InventoryContext = createContext<InventoryContextProps | undefined>(
 export const InventoryProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [inventory, setInventory] = useState<{ [key: string]: { item: Item, count: number } }>({});
+  const [inventory, setInventory] = useState<{
+    [key: string]: { item: Item; count: number };
+  }>({});
   const { addAlert, addAlertsFromItems } = useAlert();
 
   const addToInventory = (items: Item[], chanceToShowAlert: number = 0.1) => {
-    setInventory((prevInventory) => {
-      const newInventory = { ...prevInventory };
-      items.forEach((item) => {
-        if (newInventory[item.name]) {
-          newInventory[item.name].count++;
-        } else {
-          newInventory[item.name] = { item, count: 1 };
-        }
-      });
-      return newInventory;
+    const newInventory = { ...inventory };
+    items.forEach((item) => {
+      if (newInventory[item.name]) {
+        newInventory[item.name].count++;
+      } else {
+        newInventory[item.name] = { item, count: 1 };
+      }
     });
 
-    const filteredItems = items.filter((item) => item.chance < chanceToShowAlert);
+    setInventory(newInventory);
+
+    const filteredItems = items.filter(
+      (item) => item.chance < chanceToShowAlert
+    );
     addAlertsFromItems(filteredItems);
   };
 
