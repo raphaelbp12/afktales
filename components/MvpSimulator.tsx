@@ -28,11 +28,11 @@ function getRandomEnemy(enemies: Enemy[]): Enemy {
   return weightedEnemies[randomIndex];
 }
 
-function getRandomDrop(): Item[] {
+function getRandomDrop(enemyName: string): Item[] {
   const droppedItems: Item[] = [];
   drops.forEach((drop: Item) => {
     if (Math.random() < drop.chance) {
-      droppedItems.push(drop);
+      droppedItems.push({ ...drop, name: drop.name + " de " + enemyName });
     }
   });
   return droppedItems;
@@ -45,51 +45,55 @@ const MvpSimulator: React.FC = () => {
   >({});
   const { addToInventory, clearInventory } = useInventory();
 
-
   const reset = () => {
     clearInventory();
     setDefeatedEnemies({});
     setSelectedEnemy(null);
   };
 
-  const handleSimulate = (): Item[] => {
-    let enemyPool = allEnemies;
-    let enemy = getRandomEnemy(enemyPool);
+  const handleSimulate = (times: number = 1): Item[] => {
+    const allDrops: Item[] = [];
+    let lastEnemy: Enemy | null = null;
 
-    // Implement special logic for respawn rules
-    if (enemy.mobId === -1) {
-      enemyPool = lab3Enemies;
-      enemy = getRandomEnemy(enemyPool);
-    } else if (enemy.mobId === -2) {
-      enemyPool = lab4Enemies;
-      enemy = getRandomEnemy(enemyPool);
-    } else if (enemy.mobId === -3) {
-      enemyPool = castleDungeonEnemies;
-      enemy = getRandomEnemy(enemyPool);
-    }
+    for (let i = 0; i < times; i++) {
+      let enemyPool = allEnemies;
+      let enemy = getRandomEnemy(enemyPool);
 
-    setSelectedEnemy(enemy);
-    setDefeatedEnemies((prevDefeatedEnemies) => {
-      const newDefeatedEnemies = { ...prevDefeatedEnemies };
+      // Implement special logic for respawn rules
+      if (enemy.mobId === -1) {
+        enemyPool = lab3Enemies;
+        enemy = getRandomEnemy(enemyPool);
+      } else if (enemy.mobId === -2) {
+        enemyPool = lab4Enemies;
+        enemy = getRandomEnemy(enemyPool);
+      } else if (enemy.mobId === -3) {
+        enemyPool = castleDungeonEnemies;
+        enemy = getRandomEnemy(enemyPool);
+      }
+
+      const newDefeatedEnemies = { ...defeatedEnemies };
       if (newDefeatedEnemies[enemy.name]) {
         newDefeatedEnemies[enemy.name].count += 1;
       } else {
         newDefeatedEnemies[enemy.name] = { enemy, count: 1 };
       }
-      return newDefeatedEnemies;
-    });
 
-    const drops = getRandomDrop();
-    drops.forEach((drop) =>
-      addToInventory([{ ...drop, name: drop.name + " de " + enemy.name }])
-    );
-    return drops;
+      setDefeatedEnemies(newDefeatedEnemies);
+
+      const drops = getRandomDrop(enemy.name);
+      allDrops.push(...drops);
+      lastEnemy = enemy;
+    }
+
+    if (lastEnemy) setSelectedEnemy(lastEnemy);
+    addToInventory(allDrops);
+    return allDrops;
   };
 
   const handleSimulateUntilDrop = () => {
     let drops: Item[] = [];
     while (drops.length === 0) {
-      drops = handleSimulate();
+      drops = handleSimulate(1);
     }
   };
 
@@ -111,7 +115,7 @@ const MvpSimulator: React.FC = () => {
         </div>
         <div className="flex flex-col sm:flex-row gap-4 mb-4 w-full justify-center">
           <button
-            onClick={handleSimulate}
+            onClick={() => handleSimulate(1)}
             className="px-4 py-2 bg-blue-500 text-white rounded-md"
           >
             Matar 1 MVP
@@ -144,9 +148,7 @@ const MvpSimulator: React.FC = () => {
             </a>
           </div>
         )}
-        <DefeatedEnemiesTable
-          defeatedEnemies={defeatedEnemies}
-        />
+        <DefeatedEnemiesTable defeatedEnemies={defeatedEnemies} />
       </div>
     </PageWrapper>
   );
