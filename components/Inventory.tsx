@@ -10,18 +10,11 @@ interface InventoryItem {
   quantity: number;
 }
 
-const aggregateInventory = (inventory: Item[]): InventoryItem[] => {
-  const itemMap: { [key: string]: InventoryItem } = {};
-
-  inventory.forEach((item) => {
-    if (itemMap[item.name]) {
-      itemMap[item.name].quantity += 1;
-    } else {
-      itemMap[item.name] = { item, quantity: 1 };
-    }
-  });
-
-  return Object.values(itemMap);
+const aggregateInventory = (inventory: { [key: string]: { item: Item, count: number } }): InventoryItem[] => {
+  return Object.keys(inventory).map((itemName) => ({
+    item: inventory[itemName].item,
+    quantity: inventory[itemName].count,
+  }));
 };
 
 const Inventory: React.FC = () => {
@@ -30,15 +23,15 @@ const Inventory: React.FC = () => {
 
   return (
     <div className="grid grid-cols-6 md:grid-cols-8 lg:grid-cols-12 gap-4 my-4">
-      {aggregatedInventory.map((item, index) => (
+      {aggregatedInventory.map((inventoryItem, index) => (
         <Tooltip
           key={index}
-          title={`${item.item.name} - Quantity: ${item.quantity}`}
+          title={`${inventoryItem.item.name} - Quantity: ${inventoryItem.quantity}`}
         >
           <div className="relative flex flex-col items-center w-12">
             <Image
-              src={item.item.src}
-              alt={item.item.name}
+              src={inventoryItem.item.src}
+              alt={inventoryItem.item.name}
               width={48}
               height={48}
               style={{
@@ -47,7 +40,7 @@ const Inventory: React.FC = () => {
               }}
             />
             <span className="absolute top-0 right-0 px-2 py-1 text-xs font-bold text-white bg-red-600 rounded-full">
-              {item.quantity}
+              {inventoryItem.quantity}
             </span>
           </div>
         </Tooltip>

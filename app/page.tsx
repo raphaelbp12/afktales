@@ -34,12 +34,11 @@ export default function Home() {
           />
           <Card
             imageSrc="/images/oca.jpg"
-            title="OCA de Cheffênia - Em breve!"
-            description="Vote na enquete por essa funcionalidade!"
+            title="OCA de Cheffênia"
+            description="Teste sua sorte com a OCA de Cheffênia! O tigrinho paga?"
             iconSrc="/images/ocaCheffIcon.png"
-            href="https://discord.gg/4QWrwNw3ry"
-            backgroundColor="bg-gray-500"
-            newTab
+            href="/card-randomizer"
+            backgroundColor="bg-purple-500"
           />
         </div>
       </div>

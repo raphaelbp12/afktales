@@ -30,7 +30,7 @@ export default function RafaDaRifa() {
     let gotRarePrize = false;
     for (let i = 0; i < times; i++) {
       const drawnPrize = drawPrize(option);
-      addToInventory(drawnPrize);
+      addToInventory([drawnPrize]);
       if (drawnPrize.chance <= 0.1) {
         gotRarePrize = true;
       }
@@ -47,7 +47,7 @@ export default function RafaDaRifa() {
     let draws = 0;
     while (!gotRarePrize) {
       const drawnPrize = drawPrize(option);
-      addToInventory(drawnPrize);
+      addToInventory([drawnPrize]);
       draws++;
       if (drawnPrize.chance <= 0.1) {
         gotRarePrize = true;
