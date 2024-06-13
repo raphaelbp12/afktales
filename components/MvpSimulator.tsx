@@ -51,10 +51,9 @@ const MvpSimulator: React.FC = () => {
     setSelectedEnemy(null);
   };
 
-  const handleSimulate = (times: number = 1): Item[] => {
+  const handleGetEnemies = (times: number): {enemies: Enemy[], drops: Item[]} => {
     const allDrops: Item[] = [];
-    let lastEnemy: Enemy | null = null;
-
+    const enemies: Enemy[] = [];
     for (let i = 0; i < times; i++) {
       let enemyPool = allEnemies;
       let enemy = getRandomEnemy(enemyPool);
@@ -70,31 +69,49 @@ const MvpSimulator: React.FC = () => {
         enemyPool = castleDungeonEnemies;
         enemy = getRandomEnemy(enemyPool);
       }
+      enemies.push(enemy);
 
-      const newDefeatedEnemies = { ...defeatedEnemies };
+      const drops = getRandomDrop(enemy.name);
+      allDrops.push(...drops);
+    }
+    return {enemies, drops: allDrops};
+  }
+
+  const handleEnemiesAndDropsData = (enemies: Enemy[], drops: Item[]) => {
+    let lastEnemy: Enemy | null = null;
+    const newDefeatedEnemies = { ...defeatedEnemies };
+    enemies.forEach((enemy) =>{
       if (newDefeatedEnemies[enemy.name]) {
         newDefeatedEnemies[enemy.name].count += 1;
       } else {
         newDefeatedEnemies[enemy.name] = { enemy, count: 1 };
       }
-
-      setDefeatedEnemies(newDefeatedEnemies);
-
-      const drops = getRandomDrop(enemy.name);
-      allDrops.push(...drops);
       lastEnemy = enemy;
-    }
+    });
 
     if (lastEnemy) setSelectedEnemy(lastEnemy);
-    addToInventory(allDrops);
-    return allDrops;
+
+    setDefeatedEnemies(newDefeatedEnemies);
+    addToInventory(drops);
+  }
+
+  const handleSimulate = (times: number = 1) => {
+
+    const {enemies, drops} = handleGetEnemies(times);
+
+    handleEnemiesAndDropsData(enemies, drops);
   };
 
   const handleSimulateUntilDrop = () => {
     let drops: Item[] = [];
+    let enemies: Enemy[] = [];
     while (drops.length === 0) {
-      drops = handleSimulate(1);
+      const simulation = handleGetEnemies(1);
+      drops = [...drops, ...simulation.drops];
+      enemies = [...enemies, ...simulation.enemies];
     }
+
+    handleEnemiesAndDropsData(enemies, drops);
   };
 
   return (
