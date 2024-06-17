@@ -10,7 +10,7 @@ export const handleGetEnemies = (
   lab3Enemies: Enemy[],
   lab4Enemies: Enemy[],
   castleDungeonEnemies: Enemy[],
-  getDropMultiplier: () => number
+  dropMultiplier: number
 ): { enemies: Enemy[]; drops: Item[] } => {
   const allDrops: Item[] = [];
   const enemies: Enemy[] = [];
@@ -31,7 +31,7 @@ export const handleGetEnemies = (
     }
     enemies.push(enemy);
 
-    const drops = getRandomDrop(enemy.name, getDropMultiplier());
+    const drops = getRandomDrop(enemy.name, dropMultiplier);
     allDrops.push(...drops);
   }
   return { enemies, drops: allDrops };

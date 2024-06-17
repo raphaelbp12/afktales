@@ -16,12 +16,32 @@ import PageWrapper from "./commonComponents/PageWrapper";
 import { handleGetEnemies, handleEnemiesAndDropsData } from "../utils/handleSimulations";
 import { useDropMultiplier } from "../hooks/useDropMultiplier";
 import { Item } from "./item";
+import Image from "next/image";
+
+interface DropItemProps {
+  drop: Item;
+}
+
+const DropItem: React.FC<DropItemProps> = ({ drop }) => {
+  const message = `${drop.name} (${(drop.chance * 100).toFixed(2).replace(/\.?0+$/, '')}%)`;
+  return (
+      <div className=" flex items-center space-x-2">
+        <Image src={drop.src} alt="Item" width={24} height={24} />
+        <span>{message}</span>
+      </div>
+  );
+};
 
 const MvpSimulator: React.FC = () => {
   const [selectedEnemy, setSelectedEnemy] = useState<Enemy | null>(null);
   const [defeatedEnemies, setDefeatedEnemies] = useState<
     Record<string, { enemy: Enemy; count: number }>
   >({});
+  const [dropSimulationResults, setDropSimulationResults] = useState<{
+    default: Item[];
+    withoutGoma: Item[];
+    max: Item[];
+  } | null>(null);
   const { addToInventory, clearInventory } = useInventory();
   const {
     usingGoma,
@@ -37,31 +57,47 @@ const MvpSimulator: React.FC = () => {
     clearInventory();
     setDefeatedEnemies({});
     setSelectedEnemy(null);
+    setDropSimulationResults(null);
   };
 
   const handleSimulate = (times: number = 1) => {
+    setDropSimulationResults(null);
     const { enemies, drops } = handleGetEnemies(
       times,
       allEnemies,
       lab3Enemies,
       lab4Enemies,
       castleDungeonEnemies,
-      getDropMultiplier
+      getDropMultiplier()
     );
 
     handleEnemiesAndDropsData(enemies, drops, defeatedEnemies, setDefeatedEnemies, setSelectedEnemy, addToInventory);
   };
 
   const handleSimulateUntilDrop = () => {
+    setDropSimulationResults(null);
     let drops: Item[] = [];
     let enemies: Enemy[] = [];
     while (drops.length === 0) {
-      const simulation = handleGetEnemies(1, allEnemies, lab3Enemies, lab4Enemies, castleDungeonEnemies, getDropMultiplier);
+      const simulation = handleGetEnemies(1, allEnemies, lab3Enemies, lab4Enemies, castleDungeonEnemies, getDropMultiplier());
       drops = [...drops, ...simulation.drops];
       enemies = [...enemies, ...simulation.enemies];
     }
 
     handleEnemiesAndDropsData(enemies, drops, defeatedEnemies, setDefeatedEnemies, setSelectedEnemy, addToInventory);
+  };
+
+  const handleSimulateDropScenarios = (numOfEnemies: number) => {
+    reset();
+    const defaultSimulation = handleGetEnemies(numOfEnemies, allEnemies, lab3Enemies, lab4Enemies, castleDungeonEnemies, 1.0);
+    const withoutGoma = handleGetEnemies(numOfEnemies, allEnemies, lab3Enemies, lab4Enemies, castleDungeonEnemies, 1.55);
+    const maxSimulation = handleGetEnemies(numOfEnemies, allEnemies, lab3Enemies, lab4Enemies, castleDungeonEnemies, 2.33);
+
+    setDropSimulationResults({
+      default: defaultSimulation.drops,
+      withoutGoma: withoutGoma.drops,
+      max: maxSimulation.drops,
+    });
   };
 
   return (
@@ -114,12 +150,18 @@ const MvpSimulator: React.FC = () => {
           >
             Matar até dropar
           </button>
-          {/* <button
-            onClick={handleSimulateUntilDrop}
+          <button
+            onClick={() => handleSimulateDropScenarios(10000)}
             className="px-4 py-2 bg-yellow-500 text-white rounded-md"
           >
-            Testar Goma (x10.000)
-          </button> */}
+            Comparar Goma (x10.000)
+          </button>
+          <button
+            onClick={() => handleSimulateDropScenarios(30000)}
+            className="px-4 py-2 bg-orange-500 text-white rounded-md"
+          >
+            Comparar Goma (x30.000)
+          </button>
         </div>
         {selectedEnemy && (
           <div className="text-center mb-4">
@@ -142,7 +184,38 @@ const MvpSimulator: React.FC = () => {
             </a>
           </div>
         )}
-        <DefeatedEnemiesTable defeatedEnemies={defeatedEnemies} />
+        {dropSimulationResults && (
+          <div className="w-full">
+            <h2 className="text-xl font-semibold text-center mb-2">Comparação de Goma</h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold mb-1">Drop sem bônus (x1.0)</h3>
+                <div className="flex flex-col">
+                  {dropSimulationResults.default.map((drop, index) => (
+                    <DropItem key={index} drop={drop} />
+                  ))}
+                </div>
+              </div>
+              <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold mb-1">Drop VIP + Temporada (x1.55)</h3>
+                <div className="flex flex-col">
+                  {dropSimulationResults.withoutGoma.map((drop, index) => (
+                    <DropItem key={index} drop={drop} />
+                  ))}
+                </div>
+              </div>
+              <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
+                <h3 className="text-lg font-semibold mb-1">Drop bônus máximo (x2.33)</h3>
+                <div className="flex flex-col">
+                  {dropSimulationResults.max.map((drop, index) => (
+                    <DropItem key={index} drop={drop} />
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
+        {!dropSimulationResults && <DefeatedEnemiesTable defeatedEnemies={defeatedEnemies} />}
       </div>
     </PageWrapper>
   );
