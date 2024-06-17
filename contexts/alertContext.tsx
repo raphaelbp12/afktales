@@ -64,7 +64,7 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({
     items.forEach((item, index) => {
       const newAlert: AlertMessage = {
         id: `${Date.now()}-${Math.random()}-${index}`,
-        message: `${item.name} (${(item.chance * 100).toFixed(2)}%)`,
+        message: `${item.name} (${(item.chance * 100).toFixed(3).replace(/\.?0+$/, '')}%)`,
         src: item.src,
         createdAt: Date.now(),
         duration,
@@ -77,7 +77,7 @@ export const AlertProvider: React.FC<{ children: ReactNode }> = ({
   return (
     <AlertContext.Provider value={{ addAlert, addAlertsFromItems }}>
       {children}
-      <div className="fixed top-0 left-0 right-0 flex flex-col items-center space-y-2 p-4 z-30">
+      <div className="fixed top-0 left-0 right-0 flex flex-col gap-2 items-center space-y-2 p-4 z-30">
         {alerts.map((alert) => (
           <Alert
             key={alert.id}
