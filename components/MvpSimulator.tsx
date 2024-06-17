@@ -197,7 +197,7 @@ const MvpSimulator: React.FC = () => {
                 </div>
               </div>
               <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold mb-1">Drop VIP + Temporada (x1.55)</h3>
+                <h3 className="text-lg font-semibold mb-1">VIP + Temporada (x1.55)</h3>
                 <div className="flex flex-col">
                   {dropSimulationResults.withoutGoma.map((drop, index) => (
                     <DropItem key={index} drop={drop} />
@@ -205,7 +205,7 @@ const MvpSimulator: React.FC = () => {
                 </div>
               </div>
               <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
-                <h3 className="text-lg font-semibold mb-1">Drop bônus máximo (x2.33)</h3>
+                <h3 className="text-lg font-semibold mb-1">Goma + VIP + Temporada (x2.33)</h3>
                 <div className="flex flex-col">
                   {dropSimulationResults.max.map((drop, index) => (
                     <DropItem key={index} drop={drop} />
