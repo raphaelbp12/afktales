@@ -90,7 +90,7 @@ export const options: Option[] = [
   {
     id: 14,
     price: 250000,
-    mainPrize: { name: "Pedra de Selamento Dourada", chance: 0.0003, src: "/images/icon_12857.png" },
+    mainPrize: { name: "Pedra de Selamento Dourada", chance: 0.0003, src: "/images/pedraDeSelamentoDourada.png" },
     consolationPrize: { name: "Caixa de Consumíveis da Rifa G", chance: 0.9997, src: "/images/icon_23932.png" },
   },
 ];
