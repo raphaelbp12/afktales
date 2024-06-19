@@ -113,7 +113,7 @@ const MvpSimulator: React.FC = () => {
     <PageWrapper overflowAuto={true}>
       <div className="flex flex-col items-center p-6">
         <h1 className="md:text-3xl font-bold mb-6 text-center">
-          Simulador de Cheffênia (drops x{getDropMultiplier().toFixed(2)})
+          Simulador de Cheffênia <span className="text-green-700">[Litha]</span> (drops x{getDropMultiplier().toFixed(2)})
         </h1>
         <h2 className="md:text-2xl font-semibold text-center">Inventário:</h2>
         <div className="w-full flex flex-col items-center mb-4">
