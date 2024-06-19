@@ -31,7 +31,7 @@ export const handleGetEnemies = (
     }
     enemies.push(enemy);
 
-    const drops = getRandomDrop(enemy.name, dropMultiplier);
+    const drops = getRandomDrop(enemy.name, dropMultiplier, enemy.tier);
     allDrops.push(...drops);
   }
   return { enemies, drops: allDrops };

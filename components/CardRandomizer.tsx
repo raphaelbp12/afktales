@@ -163,7 +163,7 @@ const CardRandomizer: React.FC = () => {
                     <li key={card.name}>
                       {card.name}
                       {inventory[card.name] && inventory[card.name].count > 0 ? (
-                        <span className="text-green-500"> ({inventory[card.name].count})</span>
+                        <span className="text-green-500"> x{inventory[card.name].count}</span>
                       ) : null}
                     </li>
                   ))}

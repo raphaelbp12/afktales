@@ -9,25 +9,34 @@ import {
   castleDungeonEnemies,
   Enemy,
 } from "./enemies";
-import { useInventory } from "../contexts/inventoryContext";
+import { parseItemsToInventory, useInventory } from "../contexts/inventoryContext";
 import DefeatedEnemiesTable from "./DefeatedEnemiesTable";
-import Inventory from "./Inventory";
+import Inventory, { InventoryItem, aggregateInventory } from "./Inventory";
 import PageWrapper from "./commonComponents/PageWrapper";
 import { handleGetEnemies, handleEnemiesAndDropsData } from "../utils/handleSimulations";
 import { useDropMultiplier } from "../hooks/useDropMultiplier";
 import { Item } from "./item";
 import Image from "next/image";
 
+const sortDropsByChanceAndName = (a: InventoryItem, b: InventoryItem) => {
+  if (a.item.chance !== b.item.chance) {
+    return a.item.chance - b.item.chance;
+  } else {
+    return a.item.name.localeCompare(b.item.name);
+  }
+};
+
 interface DropItemProps {
-  drop: Item;
+  drop: InventoryItem;
 }
 
 const DropItem: React.FC<DropItemProps> = ({ drop }) => {
-  const message = `${drop.name} (${(drop.chance * 100).toFixed(2).replace(/\.?0+$/, '')}%)`;
+  const message = `${drop.item.name} (${(drop.item.chance * 100).toFixed(2).replace(/\.?0+$/, '')}%)`;
   return (
       <div className=" flex items-center space-x-2">
-        <Image src={drop.src} alt="Item" width={24} height={24} />
+        <Image src={drop.item.src} alt="Item" width={24} height={24} />
         <span>{message}</span>
+        {drop.quantity > 1 ? <span className="text-green-500">x{drop.quantity}</span> : null}
       </div>
   );
 };
@@ -191,7 +200,7 @@ const MvpSimulator: React.FC = () => {
               <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
                 <h3 className="text-lg font-semibold mb-1">Drop sem bônus (x1.0)</h3>
                 <div className="flex flex-col">
-                  {dropSimulationResults.default.map((drop, index) => (
+                  {aggregateInventory(parseItemsToInventory(dropSimulationResults.default)).sort(sortDropsByChanceAndName).map((drop, index) => (
                     <DropItem key={index} drop={drop} />
                   ))}
                 </div>
@@ -199,7 +208,7 @@ const MvpSimulator: React.FC = () => {
               <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
                 <h3 className="text-lg font-semibold mb-1">VIP + Temporada (x1.55)</h3>
                 <div className="flex flex-col">
-                  {dropSimulationResults.withoutGoma.map((drop, index) => (
+                  {aggregateInventory(parseItemsToInventory(dropSimulationResults.withoutGoma)).sort(sortDropsByChanceAndName).map((drop, index) => (
                     <DropItem key={index} drop={drop} />
                   ))}
                 </div>
@@ -207,7 +216,7 @@ const MvpSimulator: React.FC = () => {
               <div className="flex-1 bg-gray-800 p-4 rounded-lg shadow-md">
                 <h3 className="text-lg font-semibold mb-1">Goma + VIP + Temporada (x2.33)</h3>
                 <div className="flex flex-col">
-                  {dropSimulationResults.max.map((drop, index) => (
+                  {aggregateInventory(parseItemsToInventory(dropSimulationResults.max)).sort(sortDropsByChanceAndName).map((drop, index) => (
                     <DropItem key={index} drop={drop} />
                   ))}
                 </div>

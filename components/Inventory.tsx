@@ -5,12 +5,12 @@ import { useInventory } from "../contexts/inventoryContext";
 import { Item } from "./item";
 import Tooltip from "@mui/material/Tooltip"; // Use Tooltip from @mui/material
 
-interface InventoryItem {
+export interface InventoryItem {
   item: Item;
   quantity: number;
 }
 
-const aggregateInventory = (inventory: { [key: string]: { item: Item, count: number } }): InventoryItem[] => {
+export const aggregateInventory = (inventory: { [key: string]: { item: Item, count: number } }): InventoryItem[] => {
   return Object.keys(inventory).map((itemName) => ({
     item: inventory[itemName].item,
     quantity: inventory[itemName].count,
