@@ -40,6 +40,14 @@ export default function Home() {
             href="/card-randomizer"
             backgroundColor="bg-purple-500"
           />
+          <Card
+            imageSrc="/images/oca.jpg"
+            title="Calculadora"
+            description="Teste sua build dos sonhos aqui!"
+            iconSrc="/images/ocaCheffIcon.png"
+            href="/calc"
+            backgroundColor="bg-orange-500"
+          />
         </div>
       </div>
     </PageWrapper>
