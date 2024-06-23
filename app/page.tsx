@@ -40,6 +40,14 @@ export default function Home() {
             href="/card-randomizer"
             backgroundColor="bg-purple-500"
           />
+          <Card
+            imageSrc="/images/tormenta.png"
+            title="Godly"
+            description="Aprimore suas habilidades com o simulador! Vai ficar fácil!"
+            iconSrc="/images/tormentaIcon.png"
+            href="/godlys"
+            backgroundColor="bg-orange-500"
+          />
         </div>
       </div>
     </PageWrapper>
