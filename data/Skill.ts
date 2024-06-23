@@ -1,12 +1,16 @@
-interface SkillParams {
+import { ElementEnum } from "./Elements/ElementsEnum";
+
+export interface SkillParams {
   level: number;
   matk: number;
 }
 
-abstract class Skill {
+export abstract class Skill {
   name: string;
-  constructor(name: string) {
+  element: ElementEnum;
+  constructor(name: string, element: ElementEnum) {
     this.name = name;
+    this.element = element;
   }
 
   abstract calculateDamage(params: SkillParams): number;

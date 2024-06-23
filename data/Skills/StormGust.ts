@@ -1,6 +1,9 @@
-class StormGust extends Skill {
+import { ElementEnum } from "../Elements/ElementsEnum";
+import { Skill, SkillParams } from "../Skill";
+
+export class StormGust extends Skill {
   constructor() {
-    super("Storm Gust");
+    super("Storm Gust", ElementEnum.Agua);
   }
 
   calculateDamage(params: SkillParams): number {
