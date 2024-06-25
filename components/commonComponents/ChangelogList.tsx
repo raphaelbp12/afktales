@@ -8,6 +8,7 @@ import changelog170624 from "@/changelogs/17-06-24";
 import changelog190624 from "@/changelogs/19-06-24";
 import changelog230624 from "@/changelogs/23-06-24";
 import changelog240624 from "@/changelogs/24-06-24";
+import changelog250624 from "@/changelogs/25-06-24";
 
 // Import all changelogs
 // Import other changelogs as needed
@@ -21,6 +22,7 @@ const changelogData = [
   changelog190624,
   changelog230624,
   changelog240624,
+  changelog250624,
 ];
 
 const ChangelogList: React.FC = () => {
