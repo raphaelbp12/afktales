@@ -9,13 +9,14 @@ import DropdownSelector from "../commonComponents/DropdownSelector";
 import { calculateMagicDamage } from "./calculateMagicDamage";
 
 const CalcPage: React.FC = () => {
-  const [minMatk, setMinMatk] = useState<number | string>("");
-  const [maxMatk, setMaxMatk] = useState<number | string>("");
+  const [minMatk, setMinMatk] = useState<number | "">("");
+  const [maxMatk, setMaxMatk] = useState<number | "">("");
   const [defendingElement, setDefendingElement] = useState<ElementEnum>(
     ElementEnum.Neutro
   );
   const [defendingElementLevel, setDefendingElementLevel] = useState<number>(1);
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+  const [targetMdef, setTargetMdef] = useState<number | "">("");
 
   const handleMinMatkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -25,6 +26,23 @@ const CalcPage: React.FC = () => {
   const handleMaxMatkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     setMaxMatk(value === "" ? "" : Number(value));
+  };
+
+  const handleTargetMdefChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let value = event.target.value;
+    if (value === "") {
+      setTargetMdef("");
+      return;
+    }
+
+    const numValue = Number(event.target.value);
+    // if (value > 127) setTargetMdef(127);
+    // if (value < 1) setTargetMdef(1);
+    if (numValue >= 1 && numValue <= 127) {
+      setTargetMdef(numValue);
+    }
   };
 
   const elements = Object.keys(ElementEnum)
@@ -53,7 +71,7 @@ const CalcPage: React.FC = () => {
           matk: Number(minMatk),
           defendingElement,
           defendingElementLevel,
-          targetMdef: 1,
+          targetMdef: targetMdef || 1,
           ignoreMdefPercent: 0,
         })
       : 0;
@@ -65,7 +83,7 @@ const CalcPage: React.FC = () => {
           matk: Number(maxMatk),
           defendingElement,
           defendingElementLevel,
-          targetMdef: 1,
+          targetMdef: targetMdef || 1,
           ignoreMdefPercent: 0,
         })
       : 0;
@@ -119,6 +137,15 @@ const CalcPage: React.FC = () => {
             value={defendingElementLevel}
             options={defendingElementLevels}
             onChange={(e) => setDefendingElementLevel(Number(e.target.value))}
+          />
+        </div>
+        <div className="w-full flex flex-col items-center mt-4">
+          <h2 className="text-xl font-bold mb-4">Target Properties</h2>
+          <InputField
+            label="Target MDEF"
+            value={targetMdef}
+            onChange={handleTargetMdefChange}
+            type="number"
           />
         </div>
         {selectedSkill && (
