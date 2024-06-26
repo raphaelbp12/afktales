@@ -50,6 +50,14 @@ export default function Home() {
               href="/godlys"
               backgroundColor="bg-orange-500"
             />
+            <Card
+              imageSrc="/images/oca.jpg"
+              title="Calculadora"
+              description="Teste sua build dos sonhos aqui!"
+              iconSrc="/images/ocaCheffIcon.png"
+              href="/calc"
+              backgroundColor="bg-orange-500"
+            />
           </div>
         </div>
         <div className="flex items-center flex-col mt-8">

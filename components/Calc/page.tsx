@@ -1,4 +1,3 @@
-// CalcPage.tsx
 "use client";
 
 import React, { useState } from "react";
@@ -7,7 +6,7 @@ import { Skill } from "@/data/Skill";
 import { SkillFactory } from "@/data/SkillFactory";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import DropdownSelector from "../commonComponents/DropdownSelector";
-import { calculateDamage } from "./calculateDamage";
+import { calculateMagicDamage } from "./calculateMagicDamage";
 
 const CalcPage: React.FC = () => {
   const [minMatk, setMinMatk] = useState<number | string>("");
@@ -15,6 +14,7 @@ const CalcPage: React.FC = () => {
   const [defendingElement, setDefendingElement] = useState<ElementEnum>(
     ElementEnum.Neutro
   );
+  const [defendingElementLevel, setDefendingElementLevel] = useState<number>(1);
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
 
   const handleMinMatkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -48,21 +48,34 @@ const CalcPage: React.FC = () => {
 
   const minDamage =
     selectedSkill && minMatk
-      ? calculateDamage({
+      ? calculateMagicDamage({
           skill: selectedSkill,
           matk: Number(minMatk),
           defendingElement,
+          defendingElementLevel,
+          targetMdef: 1,
+          ignoreMdefPercent: 0,
         })
       : 0;
 
   const maxDamage =
     selectedSkill && maxMatk
-      ? calculateDamage({
+      ? calculateMagicDamage({
           skill: selectedSkill,
           matk: Number(maxMatk),
           defendingElement,
+          defendingElementLevel,
+          targetMdef: 1,
+          ignoreMdefPercent: 0,
         })
       : 0;
+
+  const defendingElementLevels = [
+    { value: 1, label: "1" },
+    { value: 2, label: "2" },
+    { value: 3, label: "3" },
+    { value: 4, label: "4" },
+  ];
 
   return (
     <div className="w-full flex flex-col items-center justify-center overflow-hidden relative">
@@ -99,6 +112,13 @@ const CalcPage: React.FC = () => {
               label: skill.name,
             }))}
             onChange={handleSkillChange}
+          />
+          <DropdownSelector
+            id="defendingElementLevel"
+            label="Defending Element Level"
+            value={defendingElementLevel}
+            options={defendingElementLevels}
+            onChange={(e) => setDefendingElementLevel(Number(e.target.value))}
           />
         </div>
         {selectedSkill && (
