@@ -5,6 +5,7 @@ import { getElementalResistanceValue } from "@/data/Elements/getResistanceValue"
 
 interface MagicDamageCalculationParams {
   skill: Skill;
+  skillLevel: number;
   matk: number;
   defendingElement: ElementEnum;
   defendingElementLevel: number;
@@ -21,6 +22,7 @@ export const calculateMDEFReduction = (
 
 export const calculateMagicDamage = ({
   skill,
+  skillLevel,
   matk,
   defendingElement,
   defendingElementLevel,
@@ -30,15 +32,17 @@ export const calculateMagicDamage = ({
   const mdefReduction = calculateMDEFReduction(targetMdef, ignoreMdefPercent);
   const matkAfterMdef = matk * (1 - mdefReduction);
   const baseDamage = skill.calculateDamage({
-    level: 10,
-    matk: Math.round(matkAfterMdef),
+    level: skillLevel,
+    matk: matk,
   });
+  const matk2 = 1;
+  const damage = (baseDamage * (100 - targetMdef)) / 100 - matk2;
   const elementalResistanceValue = getElementalResistanceValue(
     defendingElementLevel,
     skill.element,
     defendingElement
   );
-  const adjustedDamage = baseDamage * elementalResistanceValue;
+  const adjustedDamage = Math.round(damage) * elementalResistanceValue;
 
   return adjustedDamage;
 };

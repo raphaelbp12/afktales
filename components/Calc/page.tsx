@@ -68,6 +68,7 @@ const CalcPage: React.FC = () => {
     selectedSkill && minMatk
       ? calculateMagicDamage({
           skill: selectedSkill,
+          skillLevel: 10,
           matk: Number(minMatk),
           defendingElement,
           defendingElementLevel,
@@ -80,6 +81,7 @@ const CalcPage: React.FC = () => {
     selectedSkill && maxMatk
       ? calculateMagicDamage({
           skill: selectedSkill,
+          skillLevel: 10,
           matk: Number(maxMatk),
           defendingElement,
           defendingElementLevel,

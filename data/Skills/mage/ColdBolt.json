@@ -1,0 +1,11 @@
+[
+  {
+    "skillName": "Cold Bolt",
+    "skillLevel": 10,
+    "matk": 645,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 6380
+  }
+]

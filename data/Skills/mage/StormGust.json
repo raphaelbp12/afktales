@@ -1,0 +1,56 @@
+[
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 645,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 3196
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 1,
+    "matk": 645,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 893
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 4,
+    "matk": 645,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 1661
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 645,
+    "defendingElement": "Agua",
+    "defendingElementLevel": 2,
+    "targetMdef": 1,
+    "expectedDamage": 0
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 645,
+    "defendingElement": "Fogo",
+    "defendingElementLevel": 2,
+    "targetMdef": 1,
+    "expectedDamage": 5593
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 6,
+    "matk": 645,
+    "defendingElement": "Fogo",
+    "defendingElementLevel": 4,
+    "targetMdef": 1,
+    "expectedDamage": 4346
+  }
+]

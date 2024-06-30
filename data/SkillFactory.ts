@@ -1,6 +1,6 @@
 import { Skill } from "./Skill";
-import { ColdBolt } from "./Skills/ColdBolt";
-import { StormGust } from "./Skills/StormGust";
+import { ColdBolt } from "./Skills/mage/ColdBolt";
+import { StormGust } from "./Skills/mage/StormGust";
 
 export class SkillFactory {
   static createSkill(name: string): Skill {
