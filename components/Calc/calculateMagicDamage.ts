@@ -17,7 +17,7 @@ export const calculateMDEFReduction = (
   targetMdef: number,
   ignoreMdefPercent: number
 ): number => {
-  return (targetMdef * (1 - ignoreMdefPercent)) / 100;
+  return targetMdef * (1 - ignoreMdefPercent);
 };
 
 export const calculateMagicDamage = ({
@@ -29,14 +29,14 @@ export const calculateMagicDamage = ({
   targetMdef,
   ignoreMdefPercent,
 }: MagicDamageCalculationParams): number => {
-  const mdefReduction = calculateMDEFReduction(targetMdef, ignoreMdefPercent);
-  const matkAfterMdef = matk * (1 - mdefReduction);
+  const ignoreMdef = ignoreMdefPercent / 100;
+  const targetMdefReduced = calculateMDEFReduction(targetMdef, ignoreMdef);
   const baseDamage = skill.calculateDamage({
     level: skillLevel,
     matk: matk,
   });
   const matk2 = 1;
-  const damage = (baseDamage * (100 - targetMdef)) / 100 - matk2;
+  const damage = (baseDamage * (100 - targetMdefReduced)) / 100 - matk2;
   const elementalResistanceValue = getElementalResistanceValue(
     defendingElementLevel,
     skill.element,

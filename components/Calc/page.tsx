@@ -17,6 +17,7 @@ const CalcPage: React.FC = () => {
   const [defendingElementLevel, setDefendingElementLevel] = useState<number>(1);
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [targetMdef, setTargetMdef] = useState<number | "">("");
+  const [ignoreMdefPercent, setIgnoreMdefPercent] = useState<number | "">("");
 
   const handleMinMatkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -38,10 +39,23 @@ const CalcPage: React.FC = () => {
     }
 
     const numValue = Number(event.target.value);
-    // if (value > 127) setTargetMdef(127);
-    // if (value < 1) setTargetMdef(1);
     if (numValue >= 1 && numValue <= 127) {
       setTargetMdef(numValue);
+    }
+  };
+
+  const handleIgnoreMdefPercentChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    let value = event.target.value;
+    if (value === "") {
+      setIgnoreMdefPercent("");
+      return;
+    }
+
+    const numValue = Number(event.target.value);
+    if (numValue >= 0 && numValue <= 100) {
+      setIgnoreMdefPercent(numValue);
     }
   };
 
@@ -73,7 +87,7 @@ const CalcPage: React.FC = () => {
           defendingElement,
           defendingElementLevel,
           targetMdef: targetMdef || 1,
-          ignoreMdefPercent: 0,
+          ignoreMdefPercent: ignoreMdefPercent || 0,
         })
       : 0;
 
@@ -86,7 +100,7 @@ const CalcPage: React.FC = () => {
           defendingElement,
           defendingElementLevel,
           targetMdef: targetMdef || 1,
-          ignoreMdefPercent: 0,
+          ignoreMdefPercent: ignoreMdefPercent || 0,
         })
       : 0;
 
@@ -112,6 +126,12 @@ const CalcPage: React.FC = () => {
         onChange={handleMaxMatkChange}
         type="number"
       />
+      <InputField
+        label="Ignore MDEF Percent"
+        value={ignoreMdefPercent}
+        onChange={handleIgnoreMdefPercentChange}
+        type="number"
+      />
       <div className="w-full flex flex-col items-center mt-4">
         <div className="flex flex-col md:flex-row gap-4 mb-4">
           <DropdownSelector
@@ -124,6 +144,13 @@ const CalcPage: React.FC = () => {
             }
           />
           <DropdownSelector
+            id="defendingElementLevel"
+            label="Defending Element Level"
+            value={defendingElementLevel}
+            options={defendingElementLevels}
+            onChange={(e) => setDefendingElementLevel(Number(e.target.value))}
+          />
+          <DropdownSelector
             id="skillSelect"
             label="Select Skill"
             value={selectedSkill ? selectedSkill.name : ""}
@@ -132,13 +159,6 @@ const CalcPage: React.FC = () => {
               label: skill.name,
             }))}
             onChange={handleSkillChange}
-          />
-          <DropdownSelector
-            id="defendingElementLevel"
-            label="Defending Element Level"
-            value={defendingElementLevel}
-            options={defendingElementLevels}
-            onChange={(e) => setDefendingElementLevel(Number(e.target.value))}
           />
         </div>
         <div className="w-full flex flex-col items-center mt-4">

@@ -52,5 +52,26 @@
     "defendingElementLevel": 4,
     "targetMdef": 1,
     "expectedDamage": 4346
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 744,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 50,
+    "expectedDamage": 2047,
+    "ignoreMdefPercent": 11,
+    "expectedMargin": 0.009
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 744,
+    "defendingElement": "Fogo",
+    "defendingElementLevel": 3,
+    "targetMdef": 73,
+    "expectedDamage": 2604,
+    "ignoreMdefPercent": 11
   }
 ]
