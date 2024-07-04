@@ -22,5 +22,20 @@
     "magicAddRace": 20,
     "magicAddEle": 20,
     "expectedMargin": 0.003
+  },
+  {
+    "skillName": "Cold Bolt",
+    "skillLevel": 10,
+    "matk": 6132,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 147500,
+    "ignoreMdefPercent": 85,
+    "magicAddSize": 20,
+    "magicAddRace": 35,
+    "magicAtkEle": 50,
+    "isTargetBoss": false,
+    "expectedMargin": 0.009
   }
 ]

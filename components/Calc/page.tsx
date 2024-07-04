@@ -41,6 +41,22 @@ const predefinedSetups = [
     magicDmgBoss: 5,
     isTargetBoss: true,
   },
+  {
+    label: "BJ - proff - sem anel de cor e sem bota",
+    minMatk: 6132,
+    maxMatk: 6132,
+    defendingElement: 0,
+    defendingElementLevel: 1,
+    selectedSkillName: "Cold Bolt",
+    targetMdef: 1,
+    ignoreMdefPercent: 85,
+    magicAddSize: 20,
+    magicAddRace: 35,
+    magicAddEle: "",
+    magicAtkEle: 50,
+    magicDmgBoss: "",
+    isTargetBoss: false,
+  },
   // Add more setups here
 ];
 
