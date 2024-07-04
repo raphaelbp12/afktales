@@ -23,6 +23,8 @@ const predefinedSetups = [
     magicAddEle: 0,
     magicAtkEle: 0,
     magicDmgBoss: 0,
+    magicDmgNonBoss: "",
+    addedSkillDamage: "",
     isTargetBoss: false,
   },
   {
@@ -39,6 +41,8 @@ const predefinedSetups = [
     magicAddEle: 20,
     magicAtkEle: "",
     magicDmgBoss: 5,
+    magicDmgNonBoss: "",
+    addedSkillDamage: "",
     isTargetBoss: true,
   },
   {
@@ -55,6 +59,26 @@ const predefinedSetups = [
     magicAddEle: "",
     magicAtkEle: 50,
     magicDmgBoss: "",
+    magicDmgNonBoss: "",
+    addedSkillDamage: "",
+    isTargetBoss: false,
+  },
+  {
+    label: "BJ - proff full",
+    minMatk: 6609,
+    maxMatk: 6609,
+    defendingElement: 0,
+    defendingElementLevel: 1,
+    selectedSkillName: "Cold Bolt",
+    targetMdef: 1,
+    ignoreMdefPercent: 100,
+    magicAddSize: 20,
+    magicAddRace: "",
+    magicAddEle: "",
+    magicAtkEle: 60,
+    magicDmgBoss: "",
+    magicDmgNonBoss: 70,
+    addedSkillDamage: 45,
     isTargetBoss: false,
   },
   // Add more setups here
@@ -80,6 +104,8 @@ const CalcPage: React.FC = () => {
   const [magicAddEle, setMagicAddEle] = useState<number | "">("");
   const [magicAtkEle, setMagicAtkEle] = useState<number | "">("");
   const [magicDmgBoss, setMagicDmgBoss] = useState<number | "">("");
+  const [magicDmgNonBoss, setMagicDmgNonBoss] = useState<number | "">("");
+  const [addedSkillDamage, setAddedSkillDamage] = useState<number | "">("");
   const [isTargetBoss, setIsTargetBoss] = useState<boolean>(false);
   const [selectedSetup, setSelectedSetup] = useState<string>("");
 
@@ -158,6 +184,20 @@ const CalcPage: React.FC = () => {
     setMagicDmgBoss(convertStringToNumber(value));
   };
 
+  const handleMagicDmgNonBossChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setMagicDmgNonBoss(convertStringToNumber(value));
+  };
+
+  const handleAddedSkillDamageChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setAddedSkillDamage(convertStringToNumber(value));
+  };
+
   const handleIsTargetBossChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
@@ -181,6 +221,8 @@ const CalcPage: React.FC = () => {
       setMagicAddEle(convertStringToNumber(setup.magicAddEle));
       setMagicAtkEle(convertStringToNumber(setup.magicAtkEle));
       setMagicDmgBoss(convertStringToNumber(setup.magicDmgBoss));
+      setMagicDmgNonBoss(convertStringToNumber(setup.magicDmgNonBoss));
+      setAddedSkillDamage(convertStringToNumber(setup.addedSkillDamage));
       setIsTargetBoss(setup.isTargetBoss);
       setSelectedSetup(setup.label);
     }
@@ -201,6 +243,8 @@ const CalcPage: React.FC = () => {
       magicAddEle,
       magicAtkEle,
       magicDmgBoss,
+      magicDmgNonBoss,
+      addedSkillDamage,
       isTargetBoss,
     };
     navigator.clipboard.writeText(JSON.stringify(setup)).then(() => {
@@ -242,6 +286,8 @@ const CalcPage: React.FC = () => {
           magicAddEle: magicAddEle || 0,
           magicAtkEle: magicAtkEle || 0,
           magicDmgBoss: magicDmgBoss || 0,
+          magicDmgNonBoss: magicDmgNonBoss || 0,
+          addedSkillDamage: addedSkillDamage || 0,
           isTargetBoss: isTargetBoss,
         })
       : 0;
@@ -261,6 +307,8 @@ const CalcPage: React.FC = () => {
           magicAddEle: magicAddEle || 0,
           magicAtkEle: magicAtkEle || 0,
           magicDmgBoss: magicDmgBoss || 0,
+          magicDmgNonBoss: magicDmgNonBoss || 0,
+          addedSkillDamage: addedSkillDamage || 0,
           isTargetBoss: isTargetBoss,
         })
       : 0;
@@ -304,7 +352,6 @@ const CalcPage: React.FC = () => {
         type="number"
       />
       <h2 className="text-lg md:text-md font-bold my-2">Cartas</h2>
-
       <InputField
         label="Magic Add Size"
         value={magicAddSize}
@@ -333,6 +380,18 @@ const CalcPage: React.FC = () => {
         label="Magic Damage to Boss"
         value={magicDmgBoss}
         onChange={handleMagicDmgBossChange}
+        type="number"
+      />
+      <InputField
+        label="Magic Damage to Non-Boss"
+        value={magicDmgNonBoss}
+        onChange={handleMagicDmgNonBossChange}
+        type="number"
+      />
+      <InputField
+        label="Added Skill Damage"
+        value={addedSkillDamage}
+        onChange={handleAddedSkillDamageChange}
         type="number"
       />
       <div className="w-full flex flex-col items-center mt-4">

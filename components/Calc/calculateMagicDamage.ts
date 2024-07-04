@@ -17,6 +17,8 @@ interface MagicDamageCalculationParams {
   magicAddEle: number;
   magicAtkEle: number;
   magicDmgBoss: number;
+  magicDmgNonBoss: number;
+  addedSkillDamage: number;
 }
 
 export const calculateMDEFReduction = (
@@ -34,6 +36,7 @@ const calcMagicCards = (
   magicAddEle: number,
   magicAtkEle: number,
   magicDmgBoss: number,
+  magicDmgNonBoss: number,
   isTargetBoss: boolean
 ): number => {
   let cardModifier = 1000;
@@ -45,6 +48,8 @@ const calcMagicCards = (
 
   if (isTargetBoss) {
     cardModifier = (cardModifier * (100 + magicDmgBoss)) / 100;
+  } else {
+    cardModifier = (cardModifier * (100 + magicDmgNonBoss)) / 100;
   }
 
   let newDamage = damage;
@@ -69,6 +74,8 @@ export const calculateMagicDamage = ({
   magicAddEle,
   magicAtkEle,
   magicDmgBoss,
+  magicDmgNonBoss,
+  addedSkillDamage,
 }: MagicDamageCalculationParams): number => {
   const ignoreMdef = ignoreMdefPercent / 100;
   const targetMdefReduced = calculateMDEFReduction(targetMdef, ignoreMdef);
@@ -84,14 +91,17 @@ export const calculateMagicDamage = ({
     defendingElement
   );
   const adjustedDamage = Math.round(damage) * elementalResistanceValue;
+  const damageAfterSkillAtkBonus =
+    adjustedDamage * ((100 + addedSkillDamage) / 100);
 
   const damageAfterCards = calcMagicCards(
-    adjustedDamage,
+    damageAfterSkillAtkBonus,
     magicAddSize,
     magicAddRace,
     magicAddEle,
     magicAtkEle,
     magicDmgBoss,
+    magicDmgNonBoss,
     isTargetBoss
   );
 

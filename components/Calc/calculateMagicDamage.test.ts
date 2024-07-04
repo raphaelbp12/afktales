@@ -21,6 +21,8 @@ interface TestCase {
   magicAddEle?: number;
   magicAtkEle?: number;
   magicDmgBoss?: number;
+  magicDmgNonBoss?: number;
+  addedSkillDamage?: number;
 }
 
 const defaultExpectedMargin = 0.002;
@@ -45,6 +47,8 @@ describe("calculateMagicDamage", () => {
       magicAddEle,
       magicAtkEle,
       magicDmgBoss,
+      magicDmgNonBoss,
+      addedSkillDamage,
     }) => {
       it(`${skillName} - lvl ${skillLevel} - against ${defendingElement} - ${targetMdef}mdef ${
         ignoreMdefPercent ? " - ignoreMdef: " + ignoreMdefPercent + "%" : ""
@@ -69,6 +73,8 @@ describe("calculateMagicDamage", () => {
           magicAddEle: magicAddEle || 0,
           magicAtkEle: magicAtkEle || 0,
           magicDmgBoss: magicDmgBoss || 0,
+          magicDmgNonBoss: magicDmgNonBoss || 0,
+          addedSkillDamage: addedSkillDamage || 0,
         });
 
         expect(damage).toBeGreaterThanOrEqual(
