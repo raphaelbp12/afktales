@@ -7,5 +7,20 @@
     "defendingElementLevel": 1,
     "targetMdef": 1,
     "expectedDamage": 6380
+  },
+  {
+    "skillName": "Cold Bolt",
+    "skillLevel": 10,
+    "matk": 744,
+    "defendingElement": "Sombrio",
+    "defendingElementLevel": 4,
+    "targetMdef": 1,
+    "expectedDamage": 2780,
+    "ignoreMdefPercent": 11,
+    "isTargetBoss": true,
+    "magicDmgBoss": 5,
+    "magicAddRace": 20,
+    "magicAddEle": 20,
+    "expectedMargin": 0.003
   }
 ]

@@ -18,6 +18,12 @@ const CalcPage: React.FC = () => {
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [targetMdef, setTargetMdef] = useState<number | "">("");
   const [ignoreMdefPercent, setIgnoreMdefPercent] = useState<number | "">("");
+  const [magicAddSize, setMagicAddSize] = useState<number | "">("");
+  const [magicAddRace, setMagicAddRace] = useState<number | "">("");
+  const [magicAddEle, setMagicAddEle] = useState<number | "">("");
+  const [magicAtkEle, setMagicAtkEle] = useState<number | "">("");
+  const [magicDmgBoss, setMagicDmgBoss] = useState<number | "">("");
+  const [isTargetBoss, setIsTargetBoss] = useState<boolean>(false);
 
   const handleMinMatkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -59,6 +65,47 @@ const CalcPage: React.FC = () => {
     }
   };
 
+  const handleMagicAddSizeChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setMagicAddSize(value === "" ? "" : Number(value));
+  };
+
+  const handleMagicAddRaceChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setMagicAddRace(value === "" ? "" : Number(value));
+  };
+
+  const handleMagicAddEleChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setMagicAddEle(value === "" ? "" : Number(value));
+  };
+
+  const handleMagicAtkEleChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setMagicAtkEle(value === "" ? "" : Number(value));
+  };
+
+  const handleMagicDmgBossChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const value = event.target.value;
+    setMagicDmgBoss(value === "" ? "" : Number(value));
+  };
+
+  const handleIsTargetBossChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setIsTargetBoss(event.target.checked);
+  };
+
   const elements = Object.keys(ElementEnum)
     .filter((key) => isNaN(Number(key)))
     .map((key) => ({
@@ -88,6 +135,12 @@ const CalcPage: React.FC = () => {
           defendingElementLevel,
           targetMdef: targetMdef || 1,
           ignoreMdefPercent: ignoreMdefPercent || 0,
+          magicAddSize: magicAddSize || 0,
+          magicAddRace: magicAddRace || 0,
+          magicAddEle: magicAddEle || 0,
+          magicAtkEle: magicAtkEle || 0,
+          magicDmgBoss: magicDmgBoss || 0,
+          isTargetBoss: isTargetBoss,
         })
       : 0;
 
@@ -101,6 +154,12 @@ const CalcPage: React.FC = () => {
           defendingElementLevel,
           targetMdef: targetMdef || 1,
           ignoreMdefPercent: ignoreMdefPercent || 0,
+          magicAddSize: magicAddSize || 0,
+          magicAddRace: magicAddRace || 0,
+          magicAddEle: magicAddEle || 0,
+          magicAtkEle: magicAtkEle || 0,
+          magicDmgBoss: magicDmgBoss || 0,
+          isTargetBoss: isTargetBoss,
         })
       : 0;
 
@@ -130,6 +189,38 @@ const CalcPage: React.FC = () => {
         label="Ignore MDEF Percent"
         value={ignoreMdefPercent}
         onChange={handleIgnoreMdefPercentChange}
+        type="number"
+      />
+      <h2 className="text-lg md:text-md font-bold my-2">Cartas</h2>
+
+      <InputField
+        label="Magic Add Size"
+        value={magicAddSize}
+        onChange={handleMagicAddSizeChange}
+        type="number"
+      />
+      <InputField
+        label="Magic Add Race"
+        value={magicAddRace}
+        onChange={handleMagicAddRaceChange}
+        type="number"
+      />
+      <InputField
+        label="Magic Add Ele"
+        value={magicAddEle}
+        onChange={handleMagicAddEleChange}
+        type="number"
+      />
+      <InputField
+        label="Magic Atk Ele"
+        value={magicAtkEle}
+        onChange={handleMagicAtkEleChange}
+        type="number"
+      />
+      <InputField
+        label="Magic Damage to Boss"
+        value={magicDmgBoss}
+        onChange={handleMagicDmgBossChange}
         type="number"
       />
       <div className="w-full flex flex-col items-center mt-4">
@@ -169,6 +260,17 @@ const CalcPage: React.FC = () => {
             onChange={handleTargetMdefChange}
             type="number"
           />
+          <div className="flex items-center my-2">
+            <label htmlFor="isTargetBoss" className="mr-2">
+              Is Target Boss
+            </label>
+            <input
+              type="checkbox"
+              id="isTargetBoss"
+              checked={isTargetBoss}
+              onChange={handleIsTargetBossChange}
+            />
+          </div>
         </div>
         {selectedSkill && (
           <div className="w-full flex flex-col items-center mt-4">

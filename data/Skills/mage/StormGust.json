@@ -73,5 +73,19 @@
     "targetMdef": 73,
     "expectedDamage": 2604,
     "ignoreMdefPercent": 11
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 744,
+    "defendingElement": "Sombrio",
+    "defendingElementLevel": 4,
+    "targetMdef": 1,
+    "expectedDamage": 1394,
+    "ignoreMdefPercent": 11,
+    "isTargetBoss": true,
+    "magicDmgBoss": 5,
+    "magicAddRace": 20,
+    "magicAddEle": 20
   }
 ]

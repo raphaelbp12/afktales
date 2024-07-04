@@ -12,9 +12,15 @@ interface TestCase {
   defendingElement: string;
   defendingElementLevel: number;
   targetMdef: number;
+  isTargetBoss?: boolean;
   expectedDamage: number;
   ignoreMdefPercent?: number;
   expectedMargin?: number;
+  magicAddSize?: number;
+  magicAddRace?: number;
+  magicAddEle?: number;
+  magicAtkEle?: number;
+  magicDmgBoss?: number;
 }
 
 const defaultExpectedMargin = 0.002;
@@ -30,9 +36,15 @@ describe("calculateMagicDamage", () => {
       defendingElement,
       defendingElementLevel,
       targetMdef,
+      isTargetBoss,
       expectedDamage,
       ignoreMdefPercent,
       expectedMargin,
+      magicAddSize,
+      magicAddRace,
+      magicAddEle,
+      magicAtkEle,
+      magicDmgBoss,
     }) => {
       it(`${skillName} - lvl ${skillLevel} - against ${defendingElement} - ${targetMdef}mdef ${
         ignoreMdefPercent ? " - ignoreMdef: " + ignoreMdefPercent + "%" : ""
@@ -49,8 +61,14 @@ describe("calculateMagicDamage", () => {
           defendingElement:
             ElementEnum[defendingElement as keyof typeof ElementEnum],
           defendingElementLevel,
+          isTargetBoss: isTargetBoss || false,
           targetMdef: targetMdef || 1,
           ignoreMdefPercent: ignoreMdefPercent || 0,
+          magicAddSize: magicAddSize || 0,
+          magicAddRace: magicAddRace || 0,
+          magicAddEle: magicAddEle || 0,
+          magicAtkEle: magicAtkEle || 0,
+          magicDmgBoss: magicDmgBoss || 0,
         });
 
         expect(damage).toBeGreaterThanOrEqual(
