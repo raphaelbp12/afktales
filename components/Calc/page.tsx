@@ -8,6 +8,47 @@ import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import DropdownSelector from "../commonComponents/DropdownSelector";
 import { calculateMagicDamage } from "./calculateMagicDamage";
 
+const predefinedSetups = [
+  {
+    label: "Default Setup",
+    minMatk: 100,
+    maxMatk: 200,
+    defendingElement: ElementEnum.Neutro,
+    defendingElementLevel: 1,
+    selectedSkillName: "Storm Gust",
+    targetMdef: 10,
+    ignoreMdefPercent: 0,
+    magicAddSize: 0,
+    magicAddRace: 0,
+    magicAddEle: 0,
+    magicAtkEle: 0,
+    magicDmgBoss: 0,
+    isTargetBoss: false,
+  },
+  {
+    label: "HW - cajado val + abissal + esc abism",
+    minMatk: 744,
+    maxMatk: 744,
+    defendingElement: ElementEnum.Sombrio,
+    defendingElementLevel: 4,
+    selectedSkillName: "Storm Gust",
+    targetMdef: "",
+    ignoreMdefPercent: 11,
+    magicAddSize: "",
+    magicAddRace: 20,
+    magicAddEle: 20,
+    magicAtkEle: "",
+    magicDmgBoss: 5,
+    isTargetBoss: true,
+  },
+  // Add more setups here
+];
+
+const convertStringToNumber = (value: string | number): number | "" => {
+  if (typeof value === "number") return value;
+  return value === "" ? "" : Number(value);
+};
+
 const CalcPage: React.FC = () => {
   const [minMatk, setMinMatk] = useState<number | "">("");
   const [maxMatk, setMaxMatk] = useState<number | "">("");
@@ -24,6 +65,7 @@ const CalcPage: React.FC = () => {
   const [magicAtkEle, setMagicAtkEle] = useState<number | "">("");
   const [magicDmgBoss, setMagicDmgBoss] = useState<number | "">("");
   const [isTargetBoss, setIsTargetBoss] = useState<boolean>(false);
+  const [selectedSetup, setSelectedSetup] = useState<string>("");
 
   const handleMinMatkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
@@ -69,41 +111,85 @@ const CalcPage: React.FC = () => {
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
-    setMagicAddSize(value === "" ? "" : Number(value));
+    setMagicAddSize(convertStringToNumber(value));
   };
 
   const handleMagicAddRaceChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
-    setMagicAddRace(value === "" ? "" : Number(value));
+    setMagicAddRace(convertStringToNumber(value));
   };
 
   const handleMagicAddEleChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
-    setMagicAddEle(value === "" ? "" : Number(value));
+    setMagicAddEle(convertStringToNumber(value));
   };
 
   const handleMagicAtkEleChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
-    setMagicAtkEle(value === "" ? "" : Number(value));
+    setMagicAtkEle(convertStringToNumber(value));
   };
 
   const handleMagicDmgBossChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     const value = event.target.value;
-    setMagicDmgBoss(value === "" ? "" : Number(value));
+    setMagicDmgBoss(convertStringToNumber(value));
   };
 
   const handleIsTargetBossChange = (
     event: React.ChangeEvent<HTMLInputElement>
   ) => {
     setIsTargetBoss(event.target.checked);
+  };
+
+  const handleSetupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    const setupLabel = event.target.value;
+    const setup = predefinedSetups.find((setup) => setup.label === setupLabel);
+    if (setup) {
+      setMinMatk(convertStringToNumber(setup.minMatk));
+      setMaxMatk(convertStringToNumber(setup.maxMatk));
+      setDefendingElement(setup.defendingElement);
+      setDefendingElementLevel(setup.defendingElementLevel);
+      const skill = SkillFactory.createSkill(setup.selectedSkillName);
+      setSelectedSkill(skill);
+      setTargetMdef(convertStringToNumber(setup.targetMdef));
+      setIgnoreMdefPercent(convertStringToNumber(setup.ignoreMdefPercent));
+      setMagicAddSize(convertStringToNumber(setup.magicAddSize));
+      setMagicAddRace(convertStringToNumber(setup.magicAddRace));
+      setMagicAddEle(convertStringToNumber(setup.magicAddEle));
+      setMagicAtkEle(convertStringToNumber(setup.magicAtkEle));
+      setMagicDmgBoss(convertStringToNumber(setup.magicDmgBoss));
+      setIsTargetBoss(setup.isTargetBoss);
+      setSelectedSetup(setup.label);
+    }
+  };
+
+  const handleSaveSetup = () => {
+    const setup = {
+      label: "New Setup",
+      minMatk,
+      maxMatk,
+      defendingElement,
+      defendingElementLevel,
+      selectedSkillName: selectedSkill ? selectedSkill.name : "",
+      targetMdef,
+      ignoreMdefPercent,
+      magicAddSize,
+      magicAddRace,
+      magicAddEle,
+      magicAtkEle,
+      magicDmgBoss,
+      isTargetBoss,
+    };
+    navigator.clipboard.writeText(JSON.stringify(setup)).then(() => {
+      alert("Setup copied to clipboard");
+    });
   };
 
   const elements = Object.keys(ElementEnum)
@@ -173,6 +259,16 @@ const CalcPage: React.FC = () => {
   return (
     <div className="w-full flex flex-col items-center justify-center overflow-hidden relative">
       <h1 className="text-2xl md:text-3xl font-bold mb-2">Calculadora</h1>
+      <DropdownSelector
+        id="setupSelect"
+        label="Select Setup"
+        value={selectedSetup}
+        options={predefinedSetups.map((setup) => ({
+          value: setup.label,
+          label: setup.label,
+        }))}
+        onChange={handleSetupChange}
+      />
       <InputField
         label="Min MATK"
         value={minMatk}
@@ -283,6 +379,12 @@ const CalcPage: React.FC = () => {
           </div>
         )}
       </div>
+      <button
+        onClick={handleSaveSetup}
+        className="mt-4 p-2 bg-blue-500 text-white rounded"
+      >
+        Copy Setup
+      </button>
     </div>
   );
 };
