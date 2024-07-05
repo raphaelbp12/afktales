@@ -56,16 +56,26 @@ const UnityPlayer: React.FC = () => {
                 <li>Linha horizontal - 2 segundos pra dar dano</li>
                 <li className="text-red-500">Espera 0.5 segundos</li>
                 <li>Linha vertical - 2 segundos pra dar dano</li>
-                <li className="text-red-500">Espera 4 segundos</li>
+                <li className="text-red-500">Espera 1 segundo</li>
+                <li>Meteoro no pé do Boss 5x5 - 2 segundos pra dar dano</li>
                 <li>Meteoro no pé do Boss 9x9 - 3 segundos pra dar dano</li>
                 <li className="text-red-500">Espera 1 segundo</li>
                 <li>
                   Mecânica do Relógio - rotaciona uma linha a cada 0.75 segundos
                   - 8 ângulos diferentes
                 </li>
-                <li className="text-green-500">
-                  25 segundos sem mecânica - Pode dar dano
-                </li>
+                <div className="flex-1 bg-gray-900 p-4 rounded-lg shadow-md">
+                  <p className="text-md mb-2">16 segundos para dar dano</p>
+                  <ul className="list-none">
+                    <li className="text-green-500">Cast de 1 segundo</li>
+                    <li>
+                      13 segundos sem mecânica - Pode dar dano (se não coincidir
+                      com o relógio)
+                    </li>
+                    <li className="text-green-500">Cast de 2 segundo</li>
+                  </ul>
+                </div>
+                <li>Meteoro no pé do Boss 5x5 - 2 segundos pra dar dano</li>
                 <li className="text-blue-500">Recomeça a mecânica do início</li>
               </ul>
             </div>
@@ -81,17 +91,29 @@ const UnityPlayer: React.FC = () => {
                 <li>Cruz - 2 segundos pra dar dano</li>
                 <li className="text-red-500">Espera 0.5 segundos</li>
                 <li>Xis - 2 segundos pra dar dano</li>
-                <li className="text-red-500">Espera 10 segundos</li>
+                <li className="text-red-500">Espera 6.5 segundos</li>
                 <li className="text-green-500">Hora de dar dano</li>
+                <li>Meteoro no pé do Boss 5x5 - 2 segundos pra dar dano</li>
                 <li>Meteoro no pé do Boss 9x9 - 3 segundos pra dar dano</li>
                 <li className="text-red-500">Espera 1 segundo</li>
                 <li>
                   Mecânica do Relógio - rotaciona uma linha a cada 0.75 segundos
                   - 8 ângulos diferentes
                 </li>
-                <li className="text-green-500">
-                  20 segundos sem mecânica - Pode dar dano
-                </li>
+
+                <div className="flex-1 bg-gray-900 p-4 rounded-lg shadow-md">
+                  <p className="text-md mb-2">20 segundos para dar dano</p>
+                  <ul className="list-none">
+                    <li className="text-green-500">Cast de 1 segundo</li>
+                    <li>
+                      18 segundos sem mecânica - Pode dar dano (se não coincidir
+                      com o relógio)
+                    </li>
+                    <li className="text-green-500">Cast de 1 segundo</li>
+                    <li className="text-orange-500">Espera de 1 segundo</li>
+                  </ul>
+                </div>
+                <li>Meteoro no pé do Boss 5x5 - 1 segundo pra dar dano</li>
                 <li className="text-blue-500">Recomeça a mecânica do início</li>
               </ul>
             </div>
