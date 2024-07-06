@@ -12,6 +12,13 @@ const changelog240706: ChangelogProps = {
         "os quadrados do meteoro foram mudados para serem vermelhos",
       ],
     },
+    {
+      subtitle: "Calculadora",
+      items: [
+        "a primeira versão da calculadora foi adicionada",
+        "é possível apenas calcular o dano das habilidades Lanças de Gelo e Nevasca",
+      ],
+    },
   ],
 };
 

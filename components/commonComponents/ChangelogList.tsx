@@ -16,23 +16,23 @@ import changelog240706 from "@/changelogs/240706";
 // Import other changelogs as needed
 
 const changelogData = [
-  changelog050624,
-  changelog090624,
-  changelog110624,
-  changelog120624,
-  changelog170624,
-  changelog190624,
-  changelog230624,
-  changelog240624,
-  changelog250624,
-  changelog240705,
   changelog240706,
+  changelog240705,
+  changelog250624,
+  changelog240624,
+  changelog230624,
+  changelog190624,
+  changelog170624,
+  changelog120624,
+  changelog110624,
+  changelog090624,
+  changelog050624,
 ];
 
 const ChangelogList: React.FC = () => {
   return (
     <div className="w-full flex flex-col items-center">
-      {changelogData.reverse().map((changelog, index) => (
+      {changelogData.map((changelog, index) => (
         <Changelog
           key={index}
           date={changelog.date}
