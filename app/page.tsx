@@ -51,12 +51,12 @@ export default function Home() {
               backgroundColor="bg-orange-500"
             />
             <Card
-              imageSrc="/images/oca.jpg"
-              title="Calculadora"
-              description="Teste sua build dos sonhos aqui!"
-              iconSrc="/images/ocaCheffIcon.png"
+              imageSrc="/images/calculator.png"
+              title="Calculadora 🚧"
+              description="Em construção - A calculadora está longe de estar completa"
+              iconSrc="/images/calculatorIcon.png"
               href="/calc"
-              backgroundColor="bg-orange-500"
+              backgroundColor="bg-red-500"
             />
           </div>
         </div>
