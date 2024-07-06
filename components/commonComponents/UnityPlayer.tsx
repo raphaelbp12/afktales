@@ -125,22 +125,37 @@ const UnityPlayer: React.FC = () => {
                   Espera 10 segundos antes de começar
                 </li>
                 <li>Meteoro no pé do Boss 9x9 - 3 segundos pra dar dano</li>
-                <li className="text-red-500">Espera 1 segundo</li>
+                <li className="text-red-500">Espera 0.3 segundos</li>
                 <li>Xis - 2 segundos pra dar dano</li>
-                <li className="text-red-500">Sem espera</li>
+                <li className="text-red-500">Espera 0.3 segundso</li>
                 <li>Cruz - 2 segundos pra dar dano</li>
-                <li className="text-red-500">Sem espera</li>
+                <li className="text-red-500">Espera 0.3 segundos</li>
                 <li>
                   Mecânica do Relógio - rotaciona uma linha a cada 0.75 segundos
                   - 8 ângulos diferentes
                 </li>
-                <li className="text-red-500">Sem espera</li>
+                <li className="text-red-500">Espera 0.5 segundos</li>
                 <li>Xis - 2 segundos pra dar dano</li>
-                <li className="text-red-500">Sem espera</li>
+                <li className="text-red-500">Espera 0.3 segundos</li>
                 <li>Cruz - 2 segundos pra dar dano</li>
+
+                <div className="flex-1 bg-gray-900 p-4 rounded-lg shadow-md">
+                  <p className="text-md mb-2">20 segundos para dar dano</p>
+                  <ul className="list-none">
+                    <li className="text-green-500">Cast de 1 segundo</li>
+                    <li className="text-green-500">Cast de 2 segundos</li>
+                    <li>
+                      16 segundos sem mecânica - Pode dar dano (se não coincidir
+                      com o relógio)
+                    </li>
+                    <li className="text-green-500">Cast de 1 segundo</li>
+                  </ul>
+                </div>
+                <li className="text-orange-500">Espera de 0.2 segundos</li>
                 <li className="text-green-500">
-                  23 segundos sem mecânica - Pode dar dano
+                  Cast de 2 segundos enquanto tem meteoro
                 </li>
+                <li>Meteoro no pé do Boss 5x5 - 2 segundos pra dar dano</li>
                 <li className="text-blue-500">Recomeça a mecânica do início</li>
               </ul>
             </div>
