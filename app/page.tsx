@@ -50,6 +50,14 @@ export default function Home() {
               href="/godlys"
               backgroundColor="bg-orange-500"
             />
+            <Card
+              imageSrc="/images/calculator.png"
+              title="Calculadora 🚧"
+              description="Em construção - A calculadora está longe de estar completa"
+              iconSrc="/images/calculatorIcon.png"
+              href="/calc"
+              backgroundColor="bg-red-500"
+            />
           </div>
         </div>
         <div className="flex items-center flex-col mt-8">

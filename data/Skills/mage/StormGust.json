@@ -1,0 +1,91 @@
+[
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 645,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 3196
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 1,
+    "matk": 645,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 893
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 4,
+    "matk": 645,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 1661
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 645,
+    "defendingElement": "Agua",
+    "defendingElementLevel": 2,
+    "targetMdef": 1,
+    "expectedDamage": 0
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 645,
+    "defendingElement": "Fogo",
+    "defendingElementLevel": 2,
+    "targetMdef": 1,
+    "expectedDamage": 5593
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 6,
+    "matk": 645,
+    "defendingElement": "Fogo",
+    "defendingElementLevel": 4,
+    "targetMdef": 1,
+    "expectedDamage": 4346
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 744,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 50,
+    "expectedDamage": 2047,
+    "ignoreMdefPercent": 11,
+    "expectedMargin": 0.009
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 744,
+    "defendingElement": "Fogo",
+    "defendingElementLevel": 3,
+    "targetMdef": 73,
+    "expectedDamage": 2604,
+    "ignoreMdefPercent": 11
+  },
+  {
+    "skillName": "Storm Gust",
+    "skillLevel": 10,
+    "matk": 744,
+    "defendingElement": "Sombrio",
+    "defendingElementLevel": 4,
+    "targetMdef": 1,
+    "expectedDamage": 1394,
+    "ignoreMdefPercent": 11,
+    "isTargetBoss": true,
+    "magicDmgBoss": 5,
+    "magicAddRace": 20,
+    "magicAddEle": 20
+  }
+]

@@ -1,0 +1,56 @@
+[
+  {
+    "skillName": "Cold Bolt",
+    "skillLevel": 10,
+    "matk": 645,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 6380
+  },
+  {
+    "skillName": "Cold Bolt",
+    "skillLevel": 10,
+    "matk": 744,
+    "defendingElement": "Sombrio",
+    "defendingElementLevel": 4,
+    "targetMdef": 1,
+    "expectedDamage": 2780,
+    "ignoreMdefPercent": 11,
+    "isTargetBoss": true,
+    "magicDmgBoss": 5,
+    "magicAddRace": 20,
+    "magicAddEle": 20,
+    "expectedMargin": 0.003
+  },
+  {
+    "skillName": "Cold Bolt",
+    "skillLevel": 10,
+    "matk": 6132,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 147500,
+    "ignoreMdefPercent": 85,
+    "magicAddSize": 20,
+    "magicAddRace": 35,
+    "magicAtkEle": 50,
+    "isTargetBoss": false,
+    "expectedMargin": 0.009
+  },
+  {
+    "skillName": "Cold Bolt",
+    "skillLevel": 10,
+    "matk": 6609,
+    "defendingElement": "Neutro",
+    "defendingElementLevel": 1,
+    "targetMdef": 1,
+    "expectedDamage": 312780,
+    "ignoreMdefPercent": 100,
+    "magicAddSize": 20,
+    "magicDmgNonBoss": 70,
+    "addedSkillDamage": 45,
+    "magicAtkEle": 60,
+    "isTargetBoss": false
+  }
+]
