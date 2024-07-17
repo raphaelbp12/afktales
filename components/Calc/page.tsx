@@ -1,12 +1,19 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import InputField from "../commonComponents/InputField";
 import { Skill } from "@/data/Skill";
 import { SkillFactory } from "@/data/SkillFactory";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import DropdownSelector from "../commonComponents/DropdownSelector";
 import { calculateMagicDamage } from "./calculateMagicDamage";
+import { parseConfig } from "@/ragnarokData/parserItemConfig";
+import { item_db } from "@/ragnarokData/item_db";
+
+const configString = item_db;
+
+const parsedData = parseConfig(configString);
+const { itemsList, itemsDict } = parsedData;
 
 const predefinedSetups = [
   {
@@ -108,6 +115,16 @@ const CalcPage: React.FC = () => {
   const [addedSkillDamage, setAddedSkillDamage] = useState<number | "">("");
   const [isTargetBoss, setIsTargetBoss] = useState<boolean>(false);
   const [selectedSetup, setSelectedSetup] = useState<string>("");
+
+  const [itemList, setItemList] = useState<any[]>([]);
+  const [itemDict, setItemDict] = useState<{ [key: number]: any }>({});
+
+  useEffect(() => {
+    console.log("Parsed items", itemsList, itemsDict);
+    // Set the parsed items to state
+    setItemList(itemsList);
+    setItemDict(itemsDict);
+  }, []);
 
   const handleMinMatkChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
