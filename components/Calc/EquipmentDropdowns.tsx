@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { item_db } from "@/ragnarokData/item_db";
 import { parseConfig } from "@/ragnarokData/parserItemConfig";
 import DropdownSelector from "../commonComponents/DropdownSelector";
 import { Item } from "@/ragnarokData/types";
+import { useCalc } from "@/contexts/calcContext";
 
 const equipmentPlacements: { [key: string]: string } = {
   EQP_HEAD_LOW: "Lower Headgear",
@@ -65,14 +66,10 @@ const { itemsList } = parsedData;
 const categorizedItems = categorizeItems(itemsList);
 
 const EquipmentDropdowns: React.FC = () => {
-  const [selectedItems, setSelectedItems] = useState<{
-    [key: string]: string | number;
-  }>({});
+  const { selectedItems, setSelectedItems } = useCalc();
 
   const handleChange =
     (category: string) => (event: React.ChangeEvent<HTMLSelectElement>) => {
-      const item = parsedData.itemsDict[parseInt(event.target.value)];
-      console.log(item);
       setSelectedItems({
         ...selectedItems,
         [category]: event.target.value,

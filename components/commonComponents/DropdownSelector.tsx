@@ -1,4 +1,3 @@
-// components/commonComponents/DropdownSelector.tsx
 "use client";
 
 import React from "react";
@@ -29,6 +28,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
         onChange={onChange}
         className="border rounded p-2 bg-gray-700 border-gray-500 text-white"
       >
+        <option value=""></option>
         {options.map((option, index) => (
           <option key={index} value={option.value}>
             {option.label}
