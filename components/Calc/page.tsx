@@ -9,6 +9,7 @@ import DropdownSelector from "../commonComponents/DropdownSelector";
 import { calculateMagicDamage } from "./calculateMagicDamage";
 import { parseConfig } from "@/ragnarokData/parserItemConfig";
 import { item_db } from "@/ragnarokData/item_db";
+import EquipmentDropdowns from "./EquipmentDropdowns";
 
 const configString = item_db;
 
@@ -477,6 +478,10 @@ const CalcPage: React.FC = () => {
       >
         Copy Setup
       </button>
+      <div>
+        <h1>Equipment Dropdowns</h1>
+        <EquipmentDropdowns />
+      </div>
     </div>
   );
 };

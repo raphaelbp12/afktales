@@ -51,6 +51,22 @@ describe("parseConfig", () => {
   it("should parse items with scripts correctly", () => {
     const configString = `
     {
+      Id: 2316
+      AegisName: "Plate_Armor"
+      Name: "Full Plate"
+      Type: "IT_ARMOR"
+      Buy: 80000
+      Weight: 4500
+      Def: 10
+      Job: {
+        Swordsman: true
+        Knight: true
+        Crusader: true
+      }
+      Loc: "EQP_ARMOR"
+      EquipLv: 40
+    },
+    {
       Id: 501
       AegisName: "Red_Potion"
       Name: "Red Potion"
@@ -88,7 +104,8 @@ describe("parseConfig", () => {
     },
     `;
     const { itemsList, itemsDict } = parseConfig(configString);
-    expect(itemsList).toHaveLength(3);
+    expect(itemsList).toHaveLength(4); // Updated to correct length
+    expect(itemsDict[2316].Id).toBe(2316); // Additional expectation
     expect(itemsDict[501].Id).toBe(501);
     expect(itemsDict[501].Script).toBe("itemheal rand(45,65),0;");
     expect(itemsDict[502].Id).toBe(502);
@@ -115,8 +132,8 @@ describe("parseItem", () => {
     expect(result.Name).toBe("Item1");
     expect(result.Type).toBe("Type1");
     expect(result.Buy).toBe(100);
-    expect(result.Job.Novice).toBe(true);
-    expect(result.Job.Swordsman).toBe(false);
+    expect(result.Job?.Novice).toBe(true);
+    expect(result.Job?.Swordsman).toBe(false);
     expect(result.Script).toBe("itemheal rand(45,65),0;");
   });
 });
