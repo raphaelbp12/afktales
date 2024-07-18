@@ -87,6 +87,7 @@ const EquipmentDropdowns: React.FC = () => {
           options={categorizedItems[category].map((item) => ({
             value: item.Id,
             label: `${item.Name} ${item.Slots ? `[${item.Slots}]` : ""}`,
+            itemId: item.Id,
           }))}
           onChange={handleChange(category)}
         />
