@@ -115,7 +115,7 @@ const DropdownSelector: React.FC<DropdownSelectorProps> = ({
           className={`absolute ${
             openAbove ? "bottom-full mb-1" : "top-full mt-1"
           } w-full border rounded bg-gray-700 border-gray-500 text-white z-10`}
-          style={{ maxHeight: "200px", overflowY: "auto" }}
+          style={{ maxHeight: "400px", overflowY: "auto" }}
         >
           <input
             type="text"
