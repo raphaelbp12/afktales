@@ -1,4 +1,3 @@
-// types.ts
 export interface Job {
   All?: boolean;
   Novice?: boolean;
@@ -20,6 +19,7 @@ export interface Job {
   Rogue?: boolean;
   Alchemist?: boolean;
   Bard?: boolean;
+  Dancer?: boolean;
   Taekwon?: boolean;
   Star_Gladiator?: boolean;
   Soul_Linker?: boolean;
@@ -50,6 +50,14 @@ export interface Nouse {
   sitting?: boolean;
 }
 
+export interface Bonuses {
+  bonus?: { [key: string]: any[] };
+  bonus2?: { [key: string]: any[] };
+  bonus3?: { [key: string]: any[] };
+  bonus4?: { [key: string]: any[] };
+  bonus5?: { [key: string]: any[] };
+}
+
 export interface Item {
   Id: number;
   AegisName: string;
@@ -64,10 +72,10 @@ export interface Item {
   Def?: number;
   Range?: number;
   Slots?: number;
-  Job?: Job;
-  Upper?: string | number | string[];
+  Job?: Job | number;
+  Upper?: string | number;
   Gender?: string;
-  Loc?: string | number | string[];
+  Loc?: string | number | (string | number)[];
   WeaponLv?: number;
   EquipLv?: number | [number, number];
   Refine?: boolean;
@@ -94,4 +102,5 @@ export interface Item {
   OnUnequipScript?: string;
   OnRentalStartScript?: string;
   OnRentalEndScript?: string;
+  Bonuses?: Bonuses;
 }

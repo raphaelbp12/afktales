@@ -1,8 +1,17 @@
-import React, { createContext, useState, useContext, ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  useContext,
+  ReactNode,
+  useEffect,
+} from "react";
 import { Skill } from "@/data/Skill";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
+import { Item } from "@/ragnarokData/types";
 import { SkillFactory } from "@/data/SkillFactory";
-import { predefinedSetups, Setup } from "@/components/Calc/predefinedSetups";
+import { predefinedSetups } from "@/components/Calc/predefinedSetups";
+import { parseConfig } from "@/ragnarokData/parserItemConfig";
+import { item_db } from "@/ragnarokData/item_db";
 
 interface CalcContextType {
   minMatk: number | "";
@@ -22,6 +31,7 @@ interface CalcContextType {
   isTargetBoss: boolean;
   selectedSetup: string;
   selectedItems: { [key: string]: string | number };
+  itemScripts: string[];
   setMinMatk: React.Dispatch<React.SetStateAction<number | "">>;
   setMaxMatk: React.Dispatch<React.SetStateAction<number | "">>;
   setDefendingElement: React.Dispatch<React.SetStateAction<ElementEnum>>;
@@ -47,6 +57,9 @@ interface CalcContextType {
 
 const CalcContext = createContext<CalcContextType | undefined>(undefined);
 
+const configString = item_db;
+const parsedData = parseConfig(configString);
+
 export const CalcProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
@@ -71,6 +84,14 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
   const [selectedItems, setSelectedItems] = useState<{
     [key: string]: string | number;
   }>({});
+  const [itemScripts, setItemScripts] = useState<string[]>([]);
+
+  useEffect(() => {
+    const scripts = Object.values(selectedItems)
+      .map((itemId) => parsedData.itemsDict[Number(itemId)]?.Script)
+      .filter((script) => script) as string[];
+    setItemScripts(scripts);
+  }, [selectedItems]);
 
   const handleSetupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
     const setupLabel = event.target.value;
@@ -92,13 +113,13 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
       setMagicDmgNonBoss(setup.magicDmgNonBoss);
       setAddedSkillDamage(setup.addedSkillDamage);
       setIsTargetBoss(setup.isTargetBoss);
-      setSelectedItems(setup.selectedItems);
       setSelectedSetup(setup.label);
+      setSelectedItems({});
     }
   };
 
   const handleSaveSetup = () => {
-    const setup: Setup = {
+    const setup = {
       label: "New Setup",
       minMatk,
       maxMatk,
@@ -142,6 +163,7 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
         isTargetBoss,
         selectedSetup,
         selectedItems,
+        itemScripts,
         setMinMatk,
         setMaxMatk,
         setDefendingElement,

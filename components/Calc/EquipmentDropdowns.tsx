@@ -70,6 +70,8 @@ const EquipmentDropdowns: React.FC = () => {
 
   const handleChange =
     (category: string) => (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const item = parsedData.itemsDict[Number(event.target.value)];
+      console.log(item);
       setSelectedItems({
         ...selectedItems,
         [category]: event.target.value,

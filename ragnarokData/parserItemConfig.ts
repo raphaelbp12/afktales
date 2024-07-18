@@ -1,4 +1,4 @@
-import { Item, Job } from "./types";
+import { Item, Job, Bonuses } from "./types";
 
 // Function to remove comments from the config string
 export function removeComments(configString: string): string {
@@ -40,10 +40,25 @@ export function parseItem(itemString: string): Item {
   let nestedObjectDepth = 0;
   let nestedObjectKey: keyof Item | null = null;
   let nestedObjectValue = "";
+  let inScript = false;
 
   lines.forEach((line) => {
     line = line.trim();
     if (line === "") return;
+
+    if (inScript) {
+      currentValue += "\n" + line;
+      if (line.endsWith('">')) {
+        inScript = false;
+        item[currentKey as keyof Item] = parseValue(
+          currentValue as string,
+          currentKey as keyof Item
+        );
+        currentKey = null;
+        currentValue = null;
+      }
+      return;
+    }
 
     if (nestedObjectKey) {
       nestedObjectValue += line + " ";
@@ -69,6 +84,9 @@ export function parseItem(itemString: string): Item {
       }
       currentKey = fieldMatch[1] as keyof Item;
       currentValue = fieldMatch[2];
+      if (currentValue.startsWith('<"') && !currentValue.endsWith('">')) {
+        inScript = true;
+      }
       nestedObjectDepth =
         (currentValue.match(/{/g) || []).length -
         (currentValue.match(/}/g) || []).length;
@@ -93,6 +111,11 @@ export function parseItem(itemString: string): Item {
       (currentValue as string).trim(),
       currentKey
     );
+  }
+
+  // Parse and aggregate bonuses if the item has a script
+  if (item.Script) {
+    item.Bonuses = parseBonuses(item.Script);
   }
 
   return item as Item;
@@ -127,4 +150,31 @@ export function parseJob(jobString: string): Job {
   }
 
   return job;
+}
+
+export function parseBonuses(
+  script: string
+): Record<string, Record<string, string[][]>> {
+  const bonuses: Record<string, Record<string, string[][]>> = {};
+
+  const bonusRegex = /bonus(\d*)\s+(\w+)\s*,\s*([^;]+);/g;
+  let match;
+
+  while ((match = bonusRegex.exec(script)) !== null) {
+    const [, bonusLevel, bonusType, bonusArgs] = match;
+    const args = bonusArgs.split(/\s*,\s*/);
+    const key = `bonus${bonusLevel}`;
+
+    if (!bonuses[key]) {
+      bonuses[key] = {};
+    }
+
+    if (!bonuses[key][bonusType]) {
+      bonuses[key][bonusType] = [];
+    }
+
+    bonuses[key][bonusType].push(args);
+  }
+
+  return bonuses;
 }

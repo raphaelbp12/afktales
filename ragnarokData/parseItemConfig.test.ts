@@ -3,6 +3,7 @@ import {
   parseConfig,
   parseItem,
   parseJob,
+  parseBonuses,
 } from "./parserItemConfig";
 
 describe("removeComments", () => {
@@ -118,23 +119,40 @@ describe("parseConfig", () => {
 describe("parseItem", () => {
   it("should parse an item string into an object", () => {
     const itemString = `
-      Id: 1
-      Name: "Item1"
-      Type: "Type1"
-      Buy: 100
+      Id: 2115
+      AegisName: "Valkyrjas_Shield"
+      Name: "Valkyrja's Shield"
+      Type: "IT_ARMOR"
+      Buy: 30000
+      Weight: 500
+      Def: 3
+      Slots: 1
       Job: {
-        Novice: true
-        Swordsman: false
+        All: true
+        Novice: false
       }
-      Script: <" itemheal rand(45,65),0; ">`;
+      Loc: "EQP_SHIELD"
+      EquipLv: 65
+      ViewSprite: 4
+      Script: <"
+        bonus2 bSubEle,Ele_Water,20;
+        bonus2 bSubEle,Ele_Fire,20;
+        bonus2 bSubEle,Ele_Dark,20;
+        bonus2 bSubEle,Ele_Undead,20;
+        bonus bMdef,5;
+      ">`;
     const result = parseItem(itemString);
-    expect(result.Id).toBe(1);
-    expect(result.Name).toBe("Item1");
-    expect(result.Type).toBe("Type1");
-    expect(result.Buy).toBe(100);
-    expect(result.Job?.Novice).toBe(true);
-    expect(result.Job?.Swordsman).toBe(false);
-    expect(result.Script).toBe("itemheal rand(45,65),0;");
+    expect(result.Id).toBe(2115);
+    expect(result.Name).toBe("Valkyrja's Shield");
+    expect(result.Type).toBe("IT_ARMOR");
+    expect(result.Buy).toBe(30000);
+    expect(result.Job?.All).toBe(true);
+    expect(result.Job?.Novice).toBe(false);
+    expect(result.Script).toBe(`bonus2 bSubEle,Ele_Water,20;
+bonus2 bSubEle,Ele_Fire,20;
+bonus2 bSubEle,Ele_Dark,20;
+bonus2 bSubEle,Ele_Undead,20;
+bonus bMdef,5;`);
   });
 });
 
@@ -164,5 +182,109 @@ describe("parseJob", () => {
     const result = parseJob(jobString);
     expect(result.Novice).toBe(true);
     expect(result.Swordsman).toBe(false);
+  });
+});
+
+describe("parseBonuses", () => {
+  it("should parse bonuses from Valkyrja's Shield script correctly", () => {
+    const script = `
+      bonus2 bSubEle,Ele_Water,20;
+      bonus2 bSubEle,Ele_Fire,20;
+      bonus2 bSubEle,Ele_Dark,20;
+      bonus2 bSubEle,Ele_Undead,20;
+      bonus bMdef,5;
+    `;
+    const expectedBonuses = {
+      bonus: {
+        bMdef: [["5"]],
+      },
+      bonus2: {
+        bSubEle: [
+          ["Ele_Water", "20"],
+          ["Ele_Fire", "20"],
+          ["Ele_Dark", "20"],
+          ["Ele_Undead", "20"],
+        ],
+      },
+    };
+    const result = parseBonuses(script);
+    expect(result).toEqual(expectedBonuses);
+  });
+
+  it("should parse bonuses from Cracked Buckler script correctly", () => {
+    const script = `
+      bonus bAgi,2;
+      bonus2 bAddEle,Ele_Neutral,-10;
+      bonus3 bAutoSpellWhenHit,PR_KYRIE,1,50;
+      bonus bMdef,1;
+    `;
+    const expectedBonuses = {
+      bonus: {
+        bAgi: [["2"]],
+        bMdef: [["1"]],
+      },
+      bonus2: {
+        bAddEle: [["Ele_Neutral", "-10"]],
+      },
+      bonus3: {
+        bAutoSpellWhenHit: [["PR_KYRIE", "1", "50"]],
+      },
+    };
+    const result = parseBonuses(script);
+    expect(result).toEqual(expectedBonuses);
+  });
+
+  it("should parse bonuses from Ring Of Resonance script correctly", () => {
+    const script = `
+      bonus bAgi,2;
+      bonus bVit,1;
+      bonus bMdef,2;
+      bonus4 bAutoSpellWhenHit,WZ_QUAGMIRE,1,50,0;
+      bonus3 bAutoSpellWhenHit,AS_SPLASHER,10,20;
+      bonus3 bAutoSpellWhenHit,AL_HEAL,10,30;
+      bonus3 bAutoSpellWhenHit,HP_ASSUMPTIO,3,20;
+      bonus3 bAutoSpellWhenHit,CG_TAROTCARD,5,20;
+    `;
+    const expectedBonuses = {
+      bonus: {
+        bAgi: [["2"]],
+        bVit: [["1"]],
+        bMdef: [["2"]],
+      },
+      bonus4: {
+        bAutoSpellWhenHit: [["WZ_QUAGMIRE", "1", "50", "0"]],
+      },
+      bonus3: {
+        bAutoSpellWhenHit: [
+          ["AS_SPLASHER", "10", "20"],
+          ["AL_HEAL", "10", "30"],
+          ["HP_ASSUMPTIO", "3", "20"],
+          ["CG_TAROTCARD", "5", "20"],
+        ],
+      },
+    };
+    const result = parseBonuses(script);
+    expect(result).toEqual(expectedBonuses);
+  });
+
+  it("should parse bonuses from Detardeurus Card script correctly", () => {
+    const script = `
+      bonus bMdef,-20;
+      bonus2 bResEff,Eff_Freeze,10000;
+      bonus5 bAutoSpellWhenHit,SA_LANDPROTECTOR,1,70,BF_MAGIC,0;
+    `;
+    const expectedBonuses = {
+      bonus: {
+        bMdef: [["-20"]],
+      },
+      bonus2: {
+        bResEff: [["Eff_Freeze", "10000"]],
+      },
+      bonus5: {
+        bAutoSpellWhenHit: [["SA_LANDPROTECTOR", "1", "70", "BF_MAGIC", "0"]],
+      },
+    };
+    const result = parseBonuses(script);
+    expect(result).toEqual(expectedBonuses);
   });
 });

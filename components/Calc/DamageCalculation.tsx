@@ -25,6 +25,7 @@ const DamageCalculation: React.FC = () => {
     magicDmgNonBoss,
     addedSkillDamage,
     isTargetBoss,
+    itemScripts,
     setMinMatk,
     setMaxMatk,
     setDefendingElement,
@@ -258,6 +259,11 @@ const DamageCalculation: React.FC = () => {
             <p>Max Damage: {maxDamage}</p>
           </div>
         )}
+        <ul>
+          {itemScripts.map((script, index) => (
+            <li key={index}>{script}</li>
+          ))}
+        </ul>
       </div>
     </div>
   );

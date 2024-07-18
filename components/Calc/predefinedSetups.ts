@@ -95,7 +95,7 @@ export const predefinedSetups: Setup[] = [
     magicDmgNonBoss: 70,
     addedSkillDamage: 45,
     isTargetBoss: false,
-    selectedItems: {}, // Empty initially
+    selectedItems: { Shield: 2115, Weapon: "", Armor: 2344, Garment: 2541 },
   },
   // Add more setups here
 ];
