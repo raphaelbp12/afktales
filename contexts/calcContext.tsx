@@ -114,7 +114,7 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
       setAddedSkillDamage(setup.addedSkillDamage);
       setIsTargetBoss(setup.isTargetBoss);
       setSelectedSetup(setup.label);
-      setSelectedItems({});
+      setSelectedItems(setup.selectedItems);
     }
   };
 
