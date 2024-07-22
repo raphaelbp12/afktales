@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Skill } from "@/data/Skill";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
-import { Item } from "@/ragnarokData/types";
+import { Bonuses } from "@/ragnarokData/types";
 import { SkillFactory } from "@/data/SkillFactory";
 import { predefinedSetups } from "@/components/Calc/predefinedSetups";
 import { parseConfig } from "@/ragnarokData/parserItemConfig";
@@ -32,6 +32,7 @@ interface CalcContextType {
   selectedSetup: string;
   selectedItems: { [key: string]: string | number };
   itemScripts: string[];
+  bonuses: Bonuses;
   setMinMatk: React.Dispatch<React.SetStateAction<number | "">>;
   setMaxMatk: React.Dispatch<React.SetStateAction<number | "">>;
   setDefendingElement: React.Dispatch<React.SetStateAction<ElementEnum>>;
@@ -85,12 +86,39 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
     [key: string]: string | number;
   }>({});
   const [itemScripts, setItemScripts] = useState<string[]>([]);
+  const [bonuses, setBonuses] = useState<Bonuses>({});
 
   useEffect(() => {
-    const scripts = Object.values(selectedItems)
-      .map((itemId) => parsedData.itemsDict[Number(itemId)]?.Script)
-      .filter((script) => script) as string[];
-    setItemScripts(scripts);
+    let newBonuses: Bonuses = {};
+    let newScripts: string[] = [];
+    Object.values(selectedItems).forEach((itemId) => {
+      const item = parsedData.itemsDict[Number(itemId)];
+      if (item) {
+        if (item.Script) newScripts = [...newScripts, item.Script];
+        if (item.Bonuses) {
+          Object.keys(item.Bonuses).forEach((key) => {
+            const typedKey = key as keyof Bonuses;
+            console.log("calc context", item.AegisName, "typedKey", typedKey);
+            if (newBonuses[typedKey]) {
+              newBonuses = {
+                ...newBonuses,
+                [typedKey]: {
+                  ...newBonuses[typedKey],
+                  ...item.Bonuses![typedKey],
+                },
+              };
+            } else {
+              newBonuses = {
+                ...newBonuses,
+                [typedKey]: item.Bonuses![typedKey],
+              };
+            }
+          });
+        }
+      }
+    });
+    setItemScripts(newScripts);
+    setBonuses(newBonuses);
   }, [selectedItems]);
 
   const handleSetupChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
@@ -164,6 +192,7 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
         selectedSetup,
         selectedItems,
         itemScripts,
+        bonuses,
         setMinMatk,
         setMaxMatk,
         setDefendingElement,

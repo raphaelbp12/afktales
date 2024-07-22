@@ -50,12 +50,14 @@ export interface Nouse {
   sitting?: boolean;
 }
 
+export type BonusArgs = (string | number | boolean)[];
+
 export interface Bonuses {
-  bonus?: { [key: string]: any[] };
-  bonus2?: { [key: string]: any[] };
-  bonus3?: { [key: string]: any[] };
-  bonus4?: { [key: string]: any[] };
-  bonus5?: { [key: string]: any[] };
+  bonus?: { [key: string]: BonusArgs[] };
+  bonus2?: { [key: string]: BonusArgs[] };
+  bonus3?: { [key: string]: BonusArgs[] };
+  bonus4?: { [key: string]: BonusArgs[] };
+  bonus5?: { [key: string]: BonusArgs[] };
 }
 
 export interface Item {

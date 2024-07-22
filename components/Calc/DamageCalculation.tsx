@@ -7,6 +7,7 @@ import { calculateMagicDamage } from "./calculateMagicDamage";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import { SkillFactory } from "@/data/SkillFactory";
 import { useCalc } from "@/contexts/calcContext";
+import { Bonuses } from "@/ragnarokData/types";
 
 const DamageCalculation: React.FC = () => {
   const {
@@ -26,6 +27,7 @@ const DamageCalculation: React.FC = () => {
     addedSkillDamage,
     isTargetBoss,
     itemScripts,
+    bonuses,
     setMinMatk,
     setMaxMatk,
     setDefendingElement,
@@ -259,10 +261,31 @@ const DamageCalculation: React.FC = () => {
             <p>Max Damage: {maxDamage}</p>
           </div>
         )}
-        <ul>
+        {/* <ul>
           {itemScripts.map((script, index) => (
             <li key={index}>{script}</li>
           ))}
+        </ul> */}
+        <ul>
+          {Object.keys(bonuses).map((key, index) => {
+            console.log(key);
+            const typedKey = key as keyof Bonuses;
+            const bonusArgs = bonuses[typedKey];
+            if (!bonusArgs) return null;
+            return (
+              <li key={index}>
+                {typedKey}
+                {Object.keys(bonusArgs).map((argKey, index) => {
+                  const typedArgKey = argKey as keyof typeof bonusArgs;
+                  return (
+                    <div key={index}>
+                      {typedArgKey}: {bonusArgs[typedArgKey].join(", ")}
+                    </div>
+                  );
+                })}
+              </li>
+            );
+          })}
         </ul>
       </div>
     </div>

@@ -152,13 +152,8 @@ export function parseJob(jobString: string): Job {
   return job;
 }
 
-export function parseBonuses(
-  script: string
-): Record<string, Record<string, (string | number | boolean)[][]>> {
-  const bonuses: Record<
-    string,
-    Record<string, (string | number | boolean)[][]>
-  > = {};
+export function parseBonuses(script: string): Bonuses {
+  const bonuses: Bonuses = {};
 
   const bonusRegex = /bonus(\d*)\s+(\w+)\s*,\s*([^;]+);/g;
   let match;
@@ -168,9 +163,9 @@ export function parseBonuses(
     const args = bonusArgs
       .split(/\s*,\s*/)
       .map((arg) => parseArgument(bonusType, arg));
-    const key = `bonus${bonusLevel}`;
+    const key = `bonus${bonusLevel}` as keyof Bonuses;
 
-    const statusPointType = bonusTypeToStatusPointType[bonusType];
+    const statusPointType = bonusTypeToStatusPointType[bonusType] || bonusType; // Default to bonusType if not found
 
     if (!bonuses[key]) {
       bonuses[key] = {};
