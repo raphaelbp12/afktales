@@ -196,10 +196,10 @@ describe("parseBonuses", () => {
     `;
     const expectedBonuses = {
       bonus: {
-        bMdef: [["5"]],
+        SP_MDEF1: [["5"]],
       },
       bonus2: {
-        bSubEle: [
+        SP_SUBELE: [
           ["Ele_Water", "20"],
           ["Ele_Fire", "20"],
           ["Ele_Dark", "20"],
@@ -220,14 +220,14 @@ describe("parseBonuses", () => {
     `;
     const expectedBonuses = {
       bonus: {
-        bAgi: [["2"]],
-        bMdef: [["1"]],
+        SP_AGI: [["2"]],
+        SP_MDEF1: [["1"]],
       },
       bonus2: {
-        bAddEle: [["Ele_Neutral", "-10"]],
+        SP_ADDELE: [["Ele_Neutral", "-10"]],
       },
       bonus3: {
-        bAutoSpellWhenHit: [["PR_KYRIE", "1", "50"]],
+        SP_AUTOSPELL_WHENHIT: [["PR_KYRIE", "1", "50"]],
       },
     };
     const result = parseBonuses(script);
@@ -247,15 +247,15 @@ describe("parseBonuses", () => {
     `;
     const expectedBonuses = {
       bonus: {
-        bAgi: [["2"]],
-        bVit: [["1"]],
-        bMdef: [["2"]],
+        SP_AGI: [["2"]],
+        SP_VIT: [["1"]],
+        SP_MDEF1: [["2"]],
       },
       bonus4: {
-        bAutoSpellWhenHit: [["WZ_QUAGMIRE", "1", "50", "0"]],
+        SP_AUTOSPELL_WHENHIT: [["WZ_QUAGMIRE", "1", "50", "0"]],
       },
       bonus3: {
-        bAutoSpellWhenHit: [
+        SP_AUTOSPELL_WHENHIT: [
           ["AS_SPLASHER", "10", "20"],
           ["AL_HEAL", "10", "30"],
           ["HP_ASSUMPTIO", "3", "20"],
@@ -275,13 +275,15 @@ describe("parseBonuses", () => {
     `;
     const expectedBonuses = {
       bonus: {
-        bMdef: [["-20"]],
+        SP_MDEF1: [["-20"]],
       },
       bonus2: {
-        bResEff: [["Eff_Freeze", "10000"]],
+        SP_RESEFF: [["Eff_Freeze", "10000"]],
       },
       bonus5: {
-        bAutoSpellWhenHit: [["SA_LANDPROTECTOR", "1", "70", "BF_MAGIC", "0"]],
+        SP_AUTOSPELL_WHENHIT: [
+          ["SA_LANDPROTECTOR", "1", "70", "BF_MAGIC", "0"],
+        ],
       },
     };
     const result = parseBonuses(script);

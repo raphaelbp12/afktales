@@ -1,4 +1,4 @@
-import { Item, Job, Bonuses } from "./types";
+import { Item, Job, Bonuses, bonusTypeToStatusPointType } from "./types";
 
 // Function to remove comments from the config string
 export function removeComments(configString: string): string {
@@ -154,27 +154,80 @@ export function parseJob(jobString: string): Job {
 
 export function parseBonuses(
   script: string
-): Record<string, Record<string, string[][]>> {
-  const bonuses: Record<string, Record<string, string[][]>> = {};
+): Record<string, Record<string, (string | number | boolean)[][]>> {
+  const bonuses: Record<
+    string,
+    Record<string, (string | number | boolean)[][]>
+  > = {};
 
   const bonusRegex = /bonus(\d*)\s+(\w+)\s*,\s*([^;]+);/g;
   let match;
 
   while ((match = bonusRegex.exec(script)) !== null) {
     const [, bonusLevel, bonusType, bonusArgs] = match;
-    const args = bonusArgs.split(/\s*,\s*/);
+    const args = bonusArgs
+      .split(/\s*,\s*/)
+      .map((arg) => parseArgument(bonusType, arg));
     const key = `bonus${bonusLevel}`;
+
+    const statusPointType = bonusTypeToStatusPointType[bonusType];
 
     if (!bonuses[key]) {
       bonuses[key] = {};
     }
 
-    if (!bonuses[key][bonusType]) {
-      bonuses[key][bonusType] = [];
+    if (!bonuses[key][statusPointType]) {
+      bonuses[key][statusPointType] = [];
     }
 
-    bonuses[key][bonusType].push(args);
+    bonuses[key][statusPointType].push(args);
   }
 
   return bonuses;
+}
+
+function parseArgument(
+  bonusType: string,
+  arg: string
+): string | number | boolean {
+  switch (bonusType) {
+    case "bInt":
+    case "bDex":
+      return parsecfg_int(arg);
+    case "bIsMagic":
+    case "bNoWeapon":
+      return parsecfg_bool(arg);
+    case "bName":
+      return parsecfg_string(arg);
+    case "bHex":
+      return parsecfg_hexint(arg);
+    default:
+      return parsecfg_string(arg); // Default to string if the type is unknown
+  }
+}
+
+function parsecfg_string(value: string): string {
+  const regex = `/^\s*"((?:\\"|.)*)"\s*(?://.*)?$/i`;
+  const match = value.match(regex);
+  return match ? match[1] : value;
+}
+
+function parsecfg_int(value: string): number {
+  const regex = `/^\s*(-?\d+)\s*(?://.*)?$/`;
+  const match = value.match(regex);
+  return match ? parseInt(match[1], 10) : NaN;
+}
+
+function parsecfg_bool(value: string): boolean {
+  const regex = `/^\s*(yes|true|1|on)\s*(?://.*)?$/i`;
+  const match = value.match(regex);
+  if (match) return true;
+  const regex2 = `/^\s*(no|false|0|off)\s*(?://.*)?$/i`;
+  return !!value.match(regex2);
+}
+
+function parsecfg_hexint(value: string): number {
+  const regex = `/^\s*(0x[\da-fA-F]+)\s*(?://.*)?$/`;
+  const match = value.match(regex);
+  return match ? parseInt(match[1], 16) : NaN;
 }
