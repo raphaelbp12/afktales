@@ -12,6 +12,8 @@ import { SkillFactory } from "@/data/SkillFactory";
 import { predefinedSetups } from "@/components/Calc/predefinedSetups";
 import { parseConfig } from "@/ragnarokData/parserItemConfig";
 import { item_db } from "@/ragnarokData/item_db";
+import { BonusHelpers } from "@/ragnarokData/BonusHelpers";
+import { PlayerAttributes } from "@/ragnarokData/PlayerAttributes";
 
 interface CalcContextType {
   minMatk: number | "";
@@ -33,6 +35,7 @@ interface CalcContextType {
   selectedItems: { [key: string]: string | number };
   itemScripts: string[];
   bonuses: Bonuses;
+  playerAttributes: PlayerAttributes;
   setMinMatk: React.Dispatch<React.SetStateAction<number | "">>;
   setMaxMatk: React.Dispatch<React.SetStateAction<number | "">>;
   setDefendingElement: React.Dispatch<React.SetStateAction<ElementEnum>>;
@@ -52,6 +55,8 @@ interface CalcContextType {
   setSelectedItems: React.Dispatch<
     React.SetStateAction<{ [key: string]: string | number }>
   >;
+  setBonuses: React.Dispatch<React.SetStateAction<Bonuses>>;
+  setPlayerAttributes: React.Dispatch<React.SetStateAction<PlayerAttributes>>;
   handleSetupChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
   handleSaveSetup: () => void;
 }
@@ -87,6 +92,9 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
   }>({});
   const [itemScripts, setItemScripts] = useState<string[]>([]);
   const [bonuses, setBonuses] = useState<Bonuses>({});
+  const [playerAttributes, setPlayerAttributes] = useState<PlayerAttributes>(
+    new PlayerAttributes({})
+  );
 
   useEffect(() => {
     let newBonuses: Bonuses = {};
@@ -98,7 +106,6 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
         if (item.Bonuses) {
           Object.keys(item.Bonuses).forEach((key) => {
             const typedKey = key as keyof Bonuses;
-            console.log("calc context", item.AegisName, "typedKey", typedKey);
             if (newBonuses[typedKey]) {
               newBonuses = {
                 ...newBonuses,
@@ -117,6 +124,15 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
         }
       }
     });
+
+    const updatedAttributes = new PlayerAttributes(newBonuses);
+
+    const processedAttributes = BonusHelpers.processBonuses(
+      newBonuses,
+      updatedAttributes
+    );
+    setPlayerAttributes(processedAttributes);
+
     setItemScripts(newScripts);
     setBonuses(newBonuses);
   }, [selectedItems]);
@@ -193,6 +209,7 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
         selectedItems,
         itemScripts,
         bonuses,
+        playerAttributes,
         setMinMatk,
         setMaxMatk,
         setDefendingElement,
@@ -210,6 +227,8 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
         setIsTargetBoss,
         setSelectedSetup,
         setSelectedItems,
+        setBonuses,
+        setPlayerAttributes,
         handleSetupChange,
         handleSaveSetup,
       }}
