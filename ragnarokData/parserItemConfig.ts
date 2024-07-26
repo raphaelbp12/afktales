@@ -171,11 +171,12 @@ export function parseBonuses(script: string): Bonuses {
       bonuses[key] = {};
     }
 
-    if (bonuses[key] && !bonuses[key][statusPointType]) {
-      bonuses[key][statusPointType] = [];
+    const bonusKey = bonuses[key];
+    if (bonusKey && !bonusKey[statusPointType]) {
+      bonusKey[statusPointType] = [];
     }
 
-    bonuses[key][statusPointType].push(args);
+    bonusKey[statusPointType]!.push(args);
   }
 
   return bonuses;
