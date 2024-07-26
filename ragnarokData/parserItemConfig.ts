@@ -176,7 +176,7 @@ export function parseBonuses(script: string): Bonuses {
       bonusKey[statusPointType] = [];
     }
 
-    bonusKey[statusPointType]!.push(args);
+    bonusKey![statusPointType]!.push(args);
   }
 
   return bonuses;
