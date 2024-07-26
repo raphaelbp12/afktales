@@ -200,6 +200,7 @@ export const bonusTypeToStatusPointType: Record<string, string> = {
   bBreakWeaponRate: "SP_BREAK_WEAPON_RATE",
   bBreakArmorRate: "SP_BREAK_ARMOR_RATE",
   bAddStealRate: "SP_ADD_STEAL_RATE",
+  bDelayRate: "SP_DELAYRATE",
   bMagicDamageReturn: "SP_MAGIC_DAMAGE_RETURN",
   bAllStats: "SP_ALL_STATS",
   bAgiVit: "SP_AGI_VIT",

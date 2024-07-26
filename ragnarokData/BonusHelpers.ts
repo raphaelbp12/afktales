@@ -4,6 +4,10 @@ import {
   Bonuses,
   bonusTypeToStatusPointType,
 } from "@/ragnarokData/types";
+import { pc_bonus3 } from "./pc_bonus3";
+import { pc_bonus4 } from "./pc_bonus4";
+import { pc_bonus5 } from "./pc_bonus5";
+import { pc_bonus } from "./pc_bonus";
 
 export class BonusHelpers {
   static processBonuses(
@@ -14,8 +18,14 @@ export class BonusHelpers {
       Object.keys(bonusValues).forEach((statusTypeKey) => {
         const statusArray: BonusArgs[] = bonusValues[statusTypeKey];
         statusArray.forEach((bonusArray) => {
-          if (bonusType.startsWith("bonus3")) {
-            BonusHelpers.pc_bonus3(
+          if (bonusType.startsWith("bonus")) {
+            pc_bonus(
+              playerAttributes,
+              statusTypeKey as string,
+              bonusArray[0] as number
+            );
+          } else if (bonusType.startsWith("bonus3")) {
+            pc_bonus3(
               playerAttributes,
               statusTypeKey as string,
               bonusArray[0] as number,
@@ -23,7 +33,7 @@ export class BonusHelpers {
               bonusArray[2] as number
             );
           } else if (bonusType.startsWith("bonus4")) {
-            BonusHelpers.pc_bonus4(
+            pc_bonus4(
               playerAttributes,
               statusTypeKey as string,
               bonusArray[0] as number,
@@ -32,7 +42,7 @@ export class BonusHelpers {
               bonusArray[3] as number
             );
           } else if (bonusType.startsWith("bonus5")) {
-            BonusHelpers.pc_bonus5(
+            pc_bonus5(
               playerAttributes,
               statusTypeKey as string,
               bonusArray[0] as number,
@@ -48,146 +58,7 @@ export class BonusHelpers {
     return playerAttributes;
   }
 
-  static pc_bonus3(
-    playerAttributes: PlayerAttributes,
-    type: string,
-    type2: number,
-    type3: number,
-    val: number
-  ) {
-    switch (type) {
-      case bonusTypeToStatusPointType.bAddMonsterDropItem:
-        this.handleAddMonsterDropItem(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bAddClassDropItem:
-        this.handleAddClassDropItem(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bAutoSpell:
-        this.handleAutoSpell(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bAutoSpellWhenHit:
-        this.handleAutoSpellWhenHit(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bSPDrainRate:
-        this.handleSPDrainRate(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bHPDrainRateRace:
-        this.handleHPDrainRateRace(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bSPDrainRateRace:
-        this.handleSPDrainRateRace(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bAddEff:
-        this.handleAddEff(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bAddEffWhenHit:
-        this.handleAddEffWhenHit(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bAddEffOnSkill:
-        this.handleAddEffOnSkill(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bAddEle:
-        this.handleAddEle(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bSubEle:
-        this.handleSubEle(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bHPVanishRate:
-        this.handleHPVanishRate(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bSPVanishRate:
-        this.handleSPVanishRate(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bSubDefEle:
-        this.handleSubDefEle(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bMagicSubDefEle:
-        this.handleMagicSubDefEle(playerAttributes, type2, type3, val);
-        break;
-      case bonusTypeToStatusPointType.bStateNoRecoverRace:
-        this.handleStateNoRecoverRace(playerAttributes, type2, type3, val);
-        break;
-      default:
-        console.warn(`Unknown bonus3 type: ${type}`);
-        break;
-    }
-  }
-
-  static pc_bonus4(
-    playerAttributes: PlayerAttributes,
-    type: string,
-    type2: number,
-    type3: number,
-    type4: number,
-    val: number
-  ) {
-    switch (type) {
-      case bonusTypeToStatusPointType.bAutoSpell:
-        this.handleAutoSpell(playerAttributes, type2, type3, type4, val);
-        break;
-      case bonusTypeToStatusPointType.bAutoSpellWhenHit:
-        this.handleAutoSpellWhenHit(playerAttributes, type2, type3, type4, val);
-        break;
-      case bonusTypeToStatusPointType.bAutoSpellOnSkill:
-        // this.handleAutoSpellOnSkill(playerAttributes, type2, type3, type4, val);
-        break;
-      case bonusTypeToStatusPointType.bAddEffOnSkill:
-        this.handleAddEffOnSkill(playerAttributes, type2, type3, type4, val);
-        break;
-      case bonusTypeToStatusPointType.bSetDefRace:
-        this.handleSetDefRace(playerAttributes, type2, type3, type4, val);
-        break;
-      case bonusTypeToStatusPointType.bSetMDefRace:
-        this.handleSetMDefRace(playerAttributes, type2, type3, type4, val);
-        break;
-      case bonusTypeToStatusPointType.bAddEff:
-        // this.handleAddEff(playerAttributes, type2, type3, type4, val);
-        break;
-      default:
-        console.warn(`Unknown bonus4 type: ${type}`);
-        break;
-    }
-  }
-
-  static pc_bonus5(
-    playerAttributes: PlayerAttributes,
-    type: string,
-    type2: number,
-    type3: number,
-    type4: number,
-    type5: number,
-    val: number
-  ) {
-    switch (type) {
-      case bonusTypeToStatusPointType.bAutoSpell:
-        this.handleAutoSpell(playerAttributes, type2, type3, type4, type5, val);
-        break;
-      case bonusTypeToStatusPointType.bAutoSpellWhenHit:
-        this.handleAutoSpellWhenHit(
-          playerAttributes,
-          type2,
-          type3,
-          type4,
-          type5,
-          val
-        );
-        break;
-      case bonusTypeToStatusPointType.bAutoSpellOnSkill:
-        // this.handleAutoSpellOnSkill(
-        //   playerAttributes,
-        //   type2,
-        //   type3,
-        //   type4,
-        //   type5,
-        //   val
-        // );
-        break;
-      default:
-        console.warn(`Unknown bonus5 type: ${type}`);
-        break;
-    }
-  }
-
+  // Move the helper methods (e.g., handleAddMonsterDropItem, handleAutoSpell, etc.) to this class if not already done.
   static handleAddMonsterDropItem(
     playerAttributes: PlayerAttributes,
     type2: number,
