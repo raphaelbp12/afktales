@@ -171,7 +171,7 @@ export function parseBonuses(script: string): Bonuses {
       bonuses[key] = {};
     }
 
-    if (!bonuses[key]![statusPointType]) {
+    if (bonuses[key] && !bonuses[key][statusPointType]) {
       bonuses[key][statusPointType] = [];
     }
 
