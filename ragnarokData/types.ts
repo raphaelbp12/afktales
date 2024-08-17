@@ -60,6 +60,13 @@ export interface Bonuses {
   bonus5?: { [key: string]: BonusArgs[] };
 }
 
+export interface s_add_drop {
+  is_group: boolean;
+  id: number;
+  race: number;
+  rate: number;
+}
+
 export interface Item {
   Id: number;
   AegisName: string;

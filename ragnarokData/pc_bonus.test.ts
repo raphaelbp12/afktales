@@ -1343,8 +1343,8 @@ describe("BonusHelpers", () => {
   test("should process SP_HP_DRAIN_VALUE bonus correctly for right hand", () => {
     playerAttributes.state.lr_flag = 0;
     playerAttributes.right_weapon.hp_drain = [
-      { rate: 0, per: 0, value: 0 },
-      { rate: 0, per: 0, value: 0 },
+      { rate: 0, per: 0, value: 0, type: 0 },
+      { rate: 0, per: 0, value: 0, type: 0 },
     ];
     const bonuses: Bonuses = {
       bonus: {
@@ -1364,8 +1364,8 @@ describe("BonusHelpers", () => {
   test("should process SP_HP_DRAIN_VALUE bonus correctly for left hand", () => {
     playerAttributes.state.lr_flag = 1;
     playerAttributes.left_weapon.hp_drain = [
-      { rate: 0, per: 0, value: 0 },
-      { rate: 0, per: 0, value: 0 },
+      { rate: 0, per: 0, value: 0, type: 0 },
+      { rate: 0, per: 0, value: 0, type: 0 },
     ];
     const bonuses: Bonuses = {
       bonus: {
@@ -1657,7 +1657,3 @@ describe("BonusHelpers", () => {
     consoleWarnSpy.mockRestore();
   });
 });
-
-function capValue(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
-}

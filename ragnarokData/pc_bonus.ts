@@ -1,5 +1,6 @@
 import { PlayerAttributes } from "./PlayerAttributes";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
+import { capValue } from "./utils";
 
 export function pc_bonus(
   playerAttributes: PlayerAttributes,
@@ -620,8 +621,4 @@ export function pc_bonus(
   }
 
   return playerAttributes;
-}
-
-function capValue(value: number, min: number, max: number): number {
-  return Math.max(min, Math.min(max, value));
 }

@@ -8,6 +8,9 @@ import { pc_bonus3 } from "./pc_bonus3";
 import { pc_bonus4 } from "./pc_bonus4";
 import { pc_bonus5 } from "./pc_bonus5";
 import { pc_bonus } from "./pc_bonus";
+import { SC_MAX, ELE_MAX, ELE_ALL, ELE_NEUTRAL } from "./constants";
+import { pc_bonus2 } from "./pc_bonus2";
+import { parseValueWithRagEnums } from "./utils";
 
 export class BonusHelpers {
   static processBonuses(
@@ -18,11 +21,18 @@ export class BonusHelpers {
       Object.keys(bonusValues).forEach((statusTypeKey) => {
         const statusArray: BonusArgs[] = bonusValues[statusTypeKey];
         statusArray.forEach((bonusArray) => {
-          if (bonusType.startsWith("bonus")) {
+          if (bonusType === "bonus") {
             pc_bonus(
               playerAttributes,
               statusTypeKey as string,
               bonusArray[0] as number
+            );
+          } else if (bonusType.startsWith("bonus2")) {
+            pc_bonus2(
+              playerAttributes,
+              statusTypeKey as string,
+              parseValueWithRagEnums(bonusArray[0] as number),
+              bonusArray[1] as number
             );
           } else if (bonusType.startsWith("bonus3")) {
             pc_bonus3(
@@ -182,7 +192,7 @@ export class BonusHelpers {
     type3: number,
     val: number
   ) {
-    if (type2 > this.SC_MAX) {
+    if (type2 > SC_MAX) {
       console.warn(`handleAddEff: ${type2} is not supported.`);
       return;
     }
@@ -195,7 +205,7 @@ export class BonusHelpers {
     type3: number,
     val: number
   ) {
-    if (type2 > this.SC_MAX) {
+    if (type2 > SC_MAX) {
       console.warn(`handleAddEffWhenHit: ${type2} is not supported.`);
       return;
     }
@@ -209,7 +219,7 @@ export class BonusHelpers {
     val: number,
     type4?: number
   ) {
-    if (type3 > this.SC_MAX) {
+    if (type3 > SC_MAX) {
       console.warn(`handleAddEffOnSkill: ${type3} is not supported.`);
       return;
     }
@@ -228,10 +238,7 @@ export class BonusHelpers {
     type3: number,
     val: number
   ) {
-    if (
-      (type2 >= this.ELE_MAX && type2 !== this.ELE_ALL) ||
-      type2 < this.ELE_NEUTRAL
-    ) {
+    if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
       console.error(`handleAddEle: Invalid element ${type2}`);
       return;
     }
@@ -244,10 +251,7 @@ export class BonusHelpers {
     type3: number,
     val: number
   ) {
-    if (
-      (type2 >= this.ELE_MAX && type2 !== this.ELE_ALL) ||
-      type2 < this.ELE_NEUTRAL
-    ) {
+    if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
       console.error(`handleSubEle: Invalid element ${type2}`);
       return;
     }
@@ -472,9 +476,4 @@ export class BonusHelpers {
     // Implement logic to get skill target based on type2
     return false; // Placeholder
   }
-
-  static SC_MAX: number = 1000; // Placeholder, set actual value
-  static ELE_MAX: number = 10; // Placeholder, set actual value
-  static ELE_ALL: number = 999; // Placeholder, set actual value
-  static ELE_NEUTRAL: number = 0; // Placeholder, set actual value
 }

@@ -131,6 +131,7 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
       newBonuses,
       updatedAttributes
     );
+    console.log("processedAttributes", processedAttributes);
     setPlayerAttributes(processedAttributes);
 
     setItemScripts(newScripts);

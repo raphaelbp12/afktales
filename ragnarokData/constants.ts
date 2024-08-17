@@ -1,0 +1,10 @@
+export const ELE_MAX = 10; // Replace with the actual value
+export const ELE_ALL = 0xff; // Replace with the actual value
+export const RC_MAX = 20; // Replace with the actual value
+export const RC2_MAX = 30; // Replace with the actual value
+export const MAX_PC_BONUS = 10; // Replace with the actual value
+export const ELE_NEUTRAL = 0; // Placeholder value
+export const SC_MAX = 10; // Placeholder value
+export const SC_COMMON_MIN = 0; // Placeholder value
+export const SC_COMMON_MAX = 10; // Placeholder value
+export const ATF_SELF = 1; // Placeholder value
