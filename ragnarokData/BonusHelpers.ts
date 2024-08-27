@@ -8,9 +8,10 @@ import { pc_bonus3 } from "./pc_bonus3";
 import { pc_bonus4 } from "./pc_bonus4";
 import { pc_bonus5 } from "./pc_bonus5";
 import { pc_bonus } from "./pc_bonus";
-import { SC_MAX, ELE_MAX, ELE_ALL, ELE_NEUTRAL } from "./constants";
+import { SC_MAX, ELE_MAX, ELE_ALL } from "./constants";
 import { pc_bonus2 } from "./pc_bonus2";
 import { parseValueWithRagEnums } from "./utils";
+import { ElementEnum } from "@/data/Elements/ElementsEnum";
 
 export class BonusHelpers {
   static processBonuses(
@@ -238,7 +239,7 @@ export class BonusHelpers {
     type3: number,
     val: number
   ) {
-    if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
+    if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ElementEnum.Neutro) {
       console.error(`handleAddEle: Invalid element ${type2}`);
       return;
     }
@@ -251,7 +252,7 @@ export class BonusHelpers {
     type3: number,
     val: number
   ) {
-    if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
+    if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ElementEnum.Neutro) {
       console.error(`handleSubEle: Invalid element ${type2}`);
       return;
     }

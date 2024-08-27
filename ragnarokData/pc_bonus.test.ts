@@ -1,6 +1,8 @@
 import { PlayerAttributes } from "./PlayerAttributes";
 import { BonusHelpers } from "./BonusHelpers";
 import { Bonuses, bonusTypeToStatusPointType } from "@/ragnarokData/types";
+import { EQP_HELM, EQP_SHIELD, EQP_WEAPON, equip_pos } from "./constants";
+import { Race } from "./map_race_id2mask";
 
 describe("BonusHelpers", () => {
   let playerAttributes: PlayerAttributes;
@@ -1056,7 +1058,7 @@ describe("BonusHelpers", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableWeapon]: [[1]],
+        [bonusTypeToStatusPointType.bUnbreakableWeapon]: [[EQP_WEAPON]],
       },
     };
 
@@ -1065,14 +1067,14 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(1); // Assuming 1 represents EQP_WEAPON
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(EQP_WEAPON); // Assuming 1 represents EQP_WEAPON
   });
 
   test("should process SP_UNBREAKABLE_ARMOR bonus correctly", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableArmor]: [[1]],
+        [bonusTypeToStatusPointType.bUnbreakableArmor]: [[equip_pos.EQP_ARMOR]],
       },
     };
 
@@ -1081,14 +1083,14 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(2); // Assuming 2 represents EQP_ARMOR
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(equip_pos.EQP_ARMOR); // Assuming 2 represents EQP_ARMOR
   });
 
   test("should process SP_UNBREAKABLE_HELM bonus correctly", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableHelm]: [[1]],
+        [bonusTypeToStatusPointType.bUnbreakableHelm]: [[EQP_HELM]],
       },
     };
 
@@ -1097,14 +1099,14 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(4); // Assuming 4 represents EQP_HELM
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(EQP_HELM); // Assuming 4 represents EQP_HELM
   });
 
   test("should process SP_UNBREAKABLE_SHIELD bonus correctly", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableShield]: [[1]],
+        [bonusTypeToStatusPointType.bUnbreakableShield]: [[EQP_SHIELD]],
       },
     };
 
@@ -1113,14 +1115,16 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(8); // Assuming 8 represents EQP_SHIELD
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(EQP_SHIELD); // Assuming 8 represents EQP_SHIELD
   });
 
   test("should process SP_UNBREAKABLE_GARMENT bonus correctly", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableGarment]: [[1]],
+        [bonusTypeToStatusPointType.bUnbreakableGarment]: [
+          [equip_pos.EQP_GARMENT],
+        ],
       },
     };
 
@@ -1129,14 +1133,16 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(16); // Assuming 16 represents EQP_GARMENT
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(
+      equip_pos.EQP_GARMENT
+    ); // Assuming 16 represents EQP_GARMENT
   });
 
   test("should process SP_UNBREAKABLE_SHOES bonus correctly", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableShoes]: [[1]],
+        [bonusTypeToStatusPointType.bUnbreakableShoes]: [[equip_pos.EQP_SHOES]],
       },
     };
 
@@ -1145,7 +1151,7 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(32); // Assuming 32 represents EQP_SHOES
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(equip_pos.EQP_SHOES); // Assuming 32 represents EQP_SHOES
   });
 
   test("should process SP_CLASSCHANGE bonus correctly", () => {
@@ -1280,7 +1286,7 @@ describe("BonusHelpers", () => {
     playerAttributes.bonus.unstripable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnstripableWeapon]: [[1]],
+        [bonusTypeToStatusPointType.bUnstripableWeapon]: [[EQP_WEAPON]],
       },
     };
 
@@ -1289,14 +1295,14 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unstripable_equip).toBe(1); // Assuming 1 represents EQP_WEAPON
+    expect(updatedAttributes.bonus.unstripable_equip).toBe(EQP_WEAPON); // Assuming 1 represents EQP_WEAPON
   });
 
   test("should process SP_UNSTRIPABLE_ARMOR bonus correctly", () => {
     playerAttributes.bonus.unstripable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnstripableArmor]: [[1]],
+        [bonusTypeToStatusPointType.bUnstripableArmor]: [[equip_pos.EQP_ARMOR]],
       },
     };
 
@@ -1305,14 +1311,14 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unstripable_equip).toBe(2); // Assuming 2 represents EQP_ARMOR
+    expect(updatedAttributes.bonus.unstripable_equip).toBe(equip_pos.EQP_ARMOR); // Assuming 2 represents EQP_ARMOR
   });
 
   test("should process SP_UNSTRIPABLE_HELM bonus correctly", () => {
     playerAttributes.bonus.unstripable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnstripableHelm]: [[1]],
+        [bonusTypeToStatusPointType.bUnstripableHelm]: [[EQP_HELM]],
       },
     };
 
@@ -1321,14 +1327,14 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unstripable_equip).toBe(4); // Assuming 4 represents EQP_HELM
+    expect(updatedAttributes.bonus.unstripable_equip).toBe(EQP_HELM); // Assuming 4 represents EQP_HELM
   });
 
   test("should process SP_UNSTRIPABLE_SHIELD bonus correctly", () => {
     playerAttributes.bonus.unstripable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnstripableShield]: [[1]],
+        [bonusTypeToStatusPointType.bUnstripableShield]: [[EQP_SHIELD]],
       },
     };
 
@@ -1337,15 +1343,11 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unstripable_equip).toBe(8); // Assuming 8 represents EQP_SHIELD
+    expect(updatedAttributes.bonus.unstripable_equip).toBe(EQP_SHIELD); // Assuming 8 represents EQP_SHIELD
   });
 
   test("should process SP_HP_DRAIN_VALUE bonus correctly for right hand", () => {
     playerAttributes.state.lr_flag = 0;
-    playerAttributes.right_weapon.hp_drain = [
-      { rate: 0, per: 0, value: 0, type: 0 },
-      { rate: 0, per: 0, value: 0, type: 0 },
-    ];
     const bonuses: Bonuses = {
       bonus: {
         [bonusTypeToStatusPointType.bHPDrainValue]: [[10]],
@@ -1357,16 +1359,16 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.right_weapon.hp_drain[0].value).toBe(10);
-    expect(updatedAttributes.right_weapon.hp_drain[1].value).toBe(10);
+    expect(updatedAttributes.right_weapon.hp_drain[Race.RC_BOSS].value).toBe(
+      10
+    );
+    expect(updatedAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].value).toBe(
+      10
+    );
   });
 
   test("should process SP_HP_DRAIN_VALUE bonus correctly for left hand", () => {
     playerAttributes.state.lr_flag = 1;
-    playerAttributes.left_weapon.hp_drain = [
-      { rate: 0, per: 0, value: 0, type: 0 },
-      { rate: 0, per: 0, value: 0, type: 0 },
-    ];
     const bonuses: Bonuses = {
       bonus: {
         [bonusTypeToStatusPointType.bHPDrainValue]: [[10]],
@@ -1378,16 +1380,14 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.left_weapon.hp_drain[0].value).toBe(10);
-    expect(updatedAttributes.left_weapon.hp_drain[1].value).toBe(10);
+    expect(updatedAttributes.left_weapon.hp_drain[Race.RC_BOSS].value).toBe(10);
+    expect(updatedAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].value).toBe(
+      10
+    );
   });
 
   test("should process SP_SP_DRAIN_VALUE bonus correctly for right hand", () => {
     playerAttributes.state.lr_flag = 0;
-    playerAttributes.right_weapon.sp_drain = [
-      { rate: 0, per: 0, type: 0, value: 0 },
-      { rate: 0, per: 0, type: 0, value: 0 },
-    ];
     const bonuses: Bonuses = {
       bonus: {
         [bonusTypeToStatusPointType.bSPDrainValue]: [[10]],
@@ -1399,16 +1399,16 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.right_weapon.sp_drain[0].value).toBe(10);
-    expect(updatedAttributes.right_weapon.sp_drain[1].value).toBe(10);
+    expect(updatedAttributes.right_weapon.sp_drain[Race.RC_BOSS].value).toBe(
+      10
+    );
+    expect(updatedAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].value).toBe(
+      10
+    );
   });
 
   test("should process SP_SP_DRAIN_VALUE bonus correctly for left hand", () => {
     playerAttributes.state.lr_flag = 1;
-    playerAttributes.left_weapon.sp_drain = [
-      { rate: 0, per: 0, type: 0, value: 0 },
-      { rate: 0, per: 0, type: 0, value: 0 },
-    ];
     const bonuses: Bonuses = {
       bonus: {
         [bonusTypeToStatusPointType.bSPDrainValue]: [[10]],
@@ -1420,8 +1420,10 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.left_weapon.sp_drain[0].value).toBe(10);
-    expect(updatedAttributes.left_weapon.sp_drain[1].value).toBe(10);
+    expect(updatedAttributes.left_weapon.sp_drain[Race.RC_BOSS].value).toBe(10);
+    expect(updatedAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].value).toBe(
+      10
+    );
   });
 
   test("should process SP_SP_GAIN_VALUE bonus correctly", () => {
