@@ -1,6 +1,5 @@
 // PlayerAttributes.ts
 import { Bonuses, s_add_drop } from "@/ragnarokData/types";
-import { BaseStatus } from "./BaseStatus";
 import { WeaponData, initializeWeaponData } from "./WeaponData"; // Import the WeaponData interface and initialization function
 import {
   ELE_MAX,
@@ -11,8 +10,10 @@ import {
   MAX_PC_BONUS,
 } from "./constants";
 import { weapon_type } from "./mmo_header";
+import { StatusData } from "./StatusData";
 
 export class PlayerAttributes {
+  weapontype: weapon_type;
   autospell: any[];
   autospell2: any[];
   autospell3: any[];
@@ -86,7 +87,7 @@ export class PlayerAttributes {
     ematk: number;
   };
   itemBonuses: Bonuses;
-  base_status: BaseStatus;
+  base_status: StatusData;
   param_bonus: { [key: string]: number };
   param_equip: { [key: string]: number };
   subele: number[];
@@ -224,6 +225,7 @@ export class PlayerAttributes {
   };
 
   constructor(bonuses: Bonuses) {
+    this.weapontype = weapon_type.W_FIST;
     this.castrate = 0;
     this.hprate = 0;
     this.sprate = 0;
@@ -361,9 +363,8 @@ export class PlayerAttributes {
       ele_lv: 0,
       size: 0,
       race: 0,
-      rhw: { atk: 0, atk2: 0 },
-      lhw: { atk: 0, atk2: 0 },
-      equip_atk: 0,
+      rhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
+      lhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
     };
 
     this.param_bonus = {

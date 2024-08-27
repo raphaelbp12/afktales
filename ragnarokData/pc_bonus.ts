@@ -1,6 +1,18 @@
 import { PlayerAttributes } from "./PlayerAttributes";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { capValue } from "./utils";
+import {
+  ELE_ALL,
+  ELE_MAX,
+  EQP_HELM,
+  EQP_SHIELD,
+  EQP_WEAPON,
+  equip_pos,
+} from "./constants";
+import { weapon_type } from "./mmo_header";
+import { StatusData } from "./StatusData";
+import { ElementEnum } from "@/data/Elements/ElementsEnum";
+import { map_race_id2mask, Race, RaceMask } from "./map_race_id2mask";
 
 export function pc_bonus(
   playerAttributes: PlayerAttributes,
@@ -120,7 +132,40 @@ export function pc_bonus(
       }
       break;
     case bonusTypeToStatusPointType.bAtkEle:
-      // Handle element assignment, consider adding necessary utility functions for elements.
+      if (val >= ELE_MAX) {
+        console.error(`pc_bonus2: SP_ATKELE: Invalid element ${val}`);
+        break;
+      }
+
+      switch (playerAttributes.state.lr_flag) {
+        case 2:
+          switch (playerAttributes.weapontype) {
+            case weapon_type.W_BOW:
+            case weapon_type.W_REVOLVER:
+            case weapon_type.W_RIFLE:
+            case weapon_type.W_GATLING:
+            case weapon_type.W_SHOTGUN:
+            case weapon_type.W_GRENADE:
+              // Become weapon element
+              bst.rhw.ele = val;
+              break;
+            default:
+              // Become arrow element
+              playerAttributes.bonus.arrow_ele = val;
+              break;
+          }
+          break;
+
+        case 1:
+          // Assign element to left-hand weapon
+          bst.lhw.ele = val;
+          break;
+
+        default:
+          // Assign element to right-hand weapon
+          bst.rhw.ele = val;
+          break;
+      }
       break;
     case bonusTypeToStatusPointType.bDefEle:
       if (playerAttributes.state.lr_flag !== 2) {
@@ -158,7 +203,31 @@ export function pc_bonus(
       }
       break;
     case bonusTypeToStatusPointType.bAtkRange:
-      // Handle attack range modifications, consider adding utility functions if necessary.
+      switch (playerAttributes.state.lr_flag) {
+        case 2:
+          switch (playerAttributes.weapontype) {
+            case weapon_type.W_BOW:
+            case weapon_type.W_REVOLVER:
+            case weapon_type.W_RIFLE:
+            case weapon_type.W_GATLING:
+            case weapon_type.W_SHOTGUN:
+            case weapon_type.W_GRENADE:
+              // Become weapon element
+              bst.rhw.range += val;
+              break;
+          }
+          break;
+
+        case 1:
+          // Assign element to left-hand weapon
+          bst.lhw.range += val;
+          break;
+
+        default:
+          // Assign element to right-hand weapon
+          bst.rhw.range += val;
+          break;
+      }
       break;
     case bonusTypeToStatusPointType.bSpeedRate:
       if (playerAttributes.state.lr_flag !== 2) {
@@ -227,11 +296,39 @@ export function pc_bonus(
       }
       break;
     case bonusTypeToStatusPointType.bIgnoreDefEle:
-      // Handle element ignoring logic, consider adding utility functions if necessary.
+      if ((val >= ELE_MAX && val !== ELE_ALL) || val < ElementEnum.Neutro) {
+        console.error(`pc_bonus: SP_IGNORE_DEF_ELE: Invalid element ${val}`);
+        break;
+      }
+      if (val === ELE_ALL) {
+        for (let i = ElementEnum.Neutro; i < ELE_MAX; i++) {
+          if (playerAttributes.state.lr_flag === 0) {
+            playerAttributes.right_weapon.ignore_def_ele |= 1 << i;
+          } else if (playerAttributes.state.lr_flag === 1) {
+            playerAttributes.left_weapon.ignore_def_ele |= 1 << i;
+          }
+        }
+      } else {
+        if (playerAttributes.state.lr_flag === 0) {
+          playerAttributes.right_weapon.ignore_def_ele |= 1 << val;
+        } else if (playerAttributes.state.lr_flag === 1) {
+          playerAttributes.left_weapon.ignore_def_ele |= 1 << val;
+        }
+      }
       break;
-    case bonusTypeToStatusPointType.bIgnoreDefRace:
-      // Handle race ignoring logic, consider adding utility functions if necessary.
+    case bonusTypeToStatusPointType.bIgnoreDefRace: {
+      const raceMask = map_race_id2mask(val);
+      if (raceMask === RaceMask.RCMASK_NONE) {
+        console.warn(`pc_bonus: SP_IGNORE_DEF_RACE: Invalid Race (${val})`);
+        break;
+      }
+      if (playerAttributes.state.lr_flag === 0) {
+        playerAttributes.right_weapon.ignore_def_race |= raceMask;
+      } else if (playerAttributes.state.lr_flag === 1) {
+        playerAttributes.left_weapon.ignore_def_race |= raceMask;
+      }
       break;
+    }
     case bonusTypeToStatusPointType.bAtkRate:
       if (playerAttributes.state.lr_flag !== 2) {
         playerAttributes.bonus.atk_rate += val;
@@ -254,10 +351,37 @@ export function pc_bonus(
       }
       break;
     case bonusTypeToStatusPointType.bIgnoreMdefEle:
-      // Handle MDEF element ignoring logic, consider adding utility functions if necessary.
+      if ((val >= ELE_MAX && val !== ELE_ALL) || val < ElementEnum.Neutro) {
+        console.error(`pc_bonus: SP_IGNORE_MDEF_ELE: Invalid element ${val}`);
+        break;
+      }
+      if (val === ELE_ALL) {
+        for (let i = ElementEnum.Neutro; i < ELE_MAX; i++) {
+          if (playerAttributes.state.lr_flag === 0) {
+            playerAttributes.right_weapon.ignore_mdef_ele |= 1 << i;
+          } else if (playerAttributes.state.lr_flag === 1) {
+            playerAttributes.left_weapon.ignore_mdef_ele |= 1 << i;
+          }
+        }
+      } else {
+        if (playerAttributes.state.lr_flag === 0) {
+          playerAttributes.right_weapon.ignore_mdef_ele |= 1 << val;
+        } else if (playerAttributes.state.lr_flag === 1) {
+          playerAttributes.left_weapon.ignore_mdef_ele |= 1 << val;
+        }
+      }
       break;
     case bonusTypeToStatusPointType.bIgnoreMdefRace:
-      // Handle MDEF race ignoring logic, consider adding utility functions if necessary.
+      const raceMask = map_race_id2mask(val);
+      if (raceMask === RaceMask.RCMASK_NONE) {
+        console.warn(`pc_bonus: SP_IGNORE_MDEF_RACE: Invalid Race (${val})`);
+        break;
+      }
+      if (playerAttributes.state.lr_flag === 0) {
+        playerAttributes.right_weapon.ignore_mdef_race |= raceMask;
+      } else if (playerAttributes.state.lr_flag === 1) {
+        playerAttributes.left_weapon.ignore_mdef_race |= raceMask;
+      }
       break;
     case bonusTypeToStatusPointType.bPerfectHitRate:
       if (
@@ -278,11 +402,39 @@ export function pc_bonus(
       }
       break;
     case bonusTypeToStatusPointType.bDefRatioAtkEle:
-      // Handle DEF ratio by element logic, consider adding utility functions if necessary.
+      if ((val >= ELE_MAX && val !== ELE_ALL) || val < ElementEnum.Neutro) {
+        console.error(`pc_bonus: SP_DEF_RATIO_ATK_ELE: Invalid element ${val}`);
+        break;
+      }
+      if (val === ELE_ALL) {
+        for (let i = ElementEnum.Neutro; i < ELE_MAX; i++) {
+          if (playerAttributes.state.lr_flag === 0) {
+            playerAttributes.right_weapon.def_ratio_atk_ele |= 1 << i;
+          } else if (playerAttributes.state.lr_flag === 1) {
+            playerAttributes.left_weapon.def_ratio_atk_ele |= 1 << i;
+          }
+        }
+      } else {
+        if (playerAttributes.state.lr_flag === 0) {
+          playerAttributes.right_weapon.def_ratio_atk_ele |= 1 << val;
+        } else if (playerAttributes.state.lr_flag === 1) {
+          playerAttributes.left_weapon.def_ratio_atk_ele |= 1 << val;
+        }
+      }
       break;
-    case bonusTypeToStatusPointType.bDefRatioAtkRace:
-      // Handle DEF ratio by race logic, consider adding utility functions if necessary.
+    case bonusTypeToStatusPointType.bDefRatioAtkRace: {
+      const raceMask = map_race_id2mask(val);
+      if (raceMask === RaceMask.RCMASK_NONE) {
+        console.warn(`pc_bonus: SP_DEF_RATIO_ATK_RACE: Invalid Race (${val})`);
+        break;
+      }
+      if (playerAttributes.state.lr_flag === 0) {
+        playerAttributes.right_weapon.def_ratio_atk_race |= raceMask;
+      } else if (playerAttributes.state.lr_flag === 1) {
+        playerAttributes.left_weapon.def_ratio_atk_race |= raceMask;
+      }
       break;
+    }
     case bonusTypeToStatusPointType.bHitRate:
       if (playerAttributes.state.lr_flag !== 2) {
         playerAttributes.hit_rate += val;
@@ -439,32 +591,32 @@ export function pc_bonus(
       break;
     case bonusTypeToStatusPointType.bUnbreakableWeapon:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= 1; // Assuming 1 represents EQP_WEAPON
+        playerAttributes.bonus.unbreakable_equip |= EQP_WEAPON; // Assuming 1 represents EQP_WEAPON
       }
       break;
     case bonusTypeToStatusPointType.bUnbreakableArmor:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= 2; // Assuming 2 represents EQP_ARMOR
+        playerAttributes.bonus.unbreakable_equip |= equip_pos.EQP_ARMOR; // Assuming 2 represents EQP_ARMOR
       }
       break;
     case bonusTypeToStatusPointType.bUnbreakableHelm:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= 4; // Assuming 4 represents EQP_HELM
+        playerAttributes.bonus.unbreakable_equip |= EQP_HELM; // Assuming 4 represents EQP_HELM
       }
       break;
     case bonusTypeToStatusPointType.bUnbreakableShield:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= 8; // Assuming 8 represents EQP_SHIELD
+        playerAttributes.bonus.unbreakable_equip |= EQP_SHIELD; // Assuming 8 represents EQP_SHIELD
       }
       break;
     case bonusTypeToStatusPointType.bUnbreakableGarment:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= 16; // Assuming 16 represents EQP_GARMENT
+        playerAttributes.bonus.unbreakable_equip |= equip_pos.EQP_GARMENT; // Assuming 16 represents EQP_GARMENT
       }
       break;
     case bonusTypeToStatusPointType.bUnbreakableShoes:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= 32; // Assuming 32 represents EQP_SHOES
+        playerAttributes.bonus.unbreakable_equip |= equip_pos.EQP_SHOES; // Assuming 32 represents EQP_SHOES
       }
       break;
     case bonusTypeToStatusPointType.bClassChange:
@@ -509,40 +661,60 @@ export function pc_bonus(
       break;
     case bonusTypeToStatusPointType.bUnstripableWeapon:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unstripable_equip |= 1; // Assuming 1 represents EQP_WEAPON
+        playerAttributes.bonus.unstripable_equip |= EQP_WEAPON; // Assuming 1 represents EQP_WEAPON
       }
       break;
     case bonusTypeToStatusPointType.bUnstripableArmor:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unstripable_equip |= 2; // Assuming 2 represents EQP_ARMOR
+        playerAttributes.bonus.unstripable_equip |= equip_pos.EQP_ARMOR; // Assuming 2 represents EQP_ARMOR
       }
       break;
     case bonusTypeToStatusPointType.bUnstripableHelm:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unstripable_equip |= 4; // Assuming 4 represents EQP_HELM
+        playerAttributes.bonus.unstripable_equip |= EQP_HELM; // Assuming 4 represents EQP_HELM
       }
       break;
     case bonusTypeToStatusPointType.bUnstripableShield:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unstripable_equip |= 8; // Assuming 8 represents EQP_SHIELD
+        playerAttributes.bonus.unstripable_equip |= EQP_SHIELD; // Assuming 8 represents EQP_SHIELD
       }
       break;
     case bonusTypeToStatusPointType.bHPDrainValue:
       if (playerAttributes.state.lr_flag === 0) {
-        playerAttributes.right_weapon.hp_drain[0].value += val; // Assuming 0 index represents RC_NONBOSS
-        playerAttributes.right_weapon.hp_drain[1].value += val; // Assuming 1 index represents RC_BOSS
+        const test1 =
+          playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].value;
+        const test2 =
+          playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].value;
+        playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].value =
+          test1 + val;
+        playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].value =
+          test2 + val;
       } else if (playerAttributes.state.lr_flag === 1) {
-        playerAttributes.left_weapon.hp_drain[0].value += val; // Assuming 0 index represents RC_NONBOSS
-        playerAttributes.left_weapon.hp_drain[1].value += val; // Assuming 1 index represents RC_BOSS
+        const test1 =
+          playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].value;
+        const test2 = playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].value;
+        playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].value =
+          test1 + val; // Assuming 0 index represents RC_NONBOSS
+        playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].value = test2 + val; // Assuming 1 index represents RC_BOSS
       }
       break;
     case bonusTypeToStatusPointType.bSPDrainValue:
       if (playerAttributes.state.lr_flag === 0) {
-        playerAttributes.right_weapon.sp_drain[0].value += val; // Assuming 0 index represents RC_NONBOSS
-        playerAttributes.right_weapon.sp_drain[1].value += val; // Assuming 1 index represents RC_BOSS
+        const test1 =
+          playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].value;
+        const test2 =
+          playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].value;
+        playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].value =
+          test1 + val; // Assuming 0 index represents RC_NONBOSS
+        playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].value =
+          test2 + val; // Assuming 1 index represents RC_BOSS
       } else if (playerAttributes.state.lr_flag === 1) {
-        playerAttributes.left_weapon.sp_drain[0].value += val; // Assuming 0 index represents RC_NONBOSS
-        playerAttributes.left_weapon.sp_drain[1].value += val; // Assuming 1 index represents RC_BOSS
+        const test1 =
+          playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].value;
+        const test2 = playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].value;
+        playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].value =
+          test1 + val; // Assuming 0 index represents RC_NONBOSS
+        playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].value = test2 + val; // Assuming 1 index represents RC_BOSS
       }
       break;
     case bonusTypeToStatusPointType.bSPGainValue:
@@ -606,6 +778,9 @@ export function pc_bonus(
       }
       break;
     case bonusTypeToStatusPointType.bAddMonsterDropChainItem:
+      console.warn(
+        `pc_bonus: bAddMonsterDropChainItem SP_ADD_MONSTER_DROP_CHAINITEM: not implemented`
+      );
       if (playerAttributes.state.lr_flag !== 2) {
         // Handle bonus item drop logic, consider adding utility functions if necessary.
       }

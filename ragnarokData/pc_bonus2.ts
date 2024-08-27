@@ -1,12 +1,10 @@
-import { ValueOf } from "next/dist/shared/lib/constants";
 import { PlayerAttributes } from "./PlayerAttributes";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
-import { Race, RaceMask, map_race_id2mask } from "./map_race_id2mask";
+import { RaceMask, map_race_id2mask } from "./map_race_id2mask";
 import {
   RC_MAX,
   ELE_MAX,
   ELE_ALL,
-  ELE_NEUTRAL,
   SC_MAX,
   ATF_SELF,
   SC_COMMON_MIN,
@@ -81,12 +79,15 @@ export function pc_bonus2(
 ): PlayerAttributes {
   switch (type) {
     case bonusTypeToStatusPointType.bAddEle:
-      if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
+      if (
+        (type2 >= ELE_MAX && type2 !== ELE_ALL) ||
+        type2 < ElementEnum.Neutro
+      ) {
         console.error(`pc_bonus2: SP_ADDELE: Invalid element ${type2}`);
         break;
       }
       if (type2 === ELE_ALL) {
-        for (let i = ELE_NEUTRAL; i < ELE_MAX; i++) {
+        for (let i = ElementEnum.Neutro; i < ELE_MAX; i++) {
           addElementBonus(playerAttributes, i, val);
         }
       } else {
@@ -108,13 +109,16 @@ export function pc_bonus2(
       break;
 
     case bonusTypeToStatusPointType.bSubEle:
-      if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
+      if (
+        (type2 >= ELE_MAX && type2 !== ELE_ALL) ||
+        type2 < ElementEnum.Neutro
+      ) {
         console.error(`pc_bonus2: SP_SUBELE: Invalid element ${type2}`);
         break;
       }
       if (playerAttributes.state.lr_flag !== 2) {
         if (type2 === ELE_ALL) {
-          for (let i = ELE_NEUTRAL; i < ELE_MAX; i++) {
+          for (let i = ElementEnum.Neutro; i < ELE_MAX; i++) {
             playerAttributes.subele[i] += Number(val);
           }
         } else {
@@ -178,13 +182,16 @@ export function pc_bonus2(
       break;
 
     case bonusTypeToStatusPointType.bMagicAddEle:
-      if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
+      if (
+        (type2 >= ELE_MAX && type2 !== ELE_ALL) ||
+        type2 < ElementEnum.Neutro
+      ) {
         console.error(`pc_bonus2: SP_MAGIC_ADDELE: Invalid element ${type2}`);
         break;
       }
       if (playerAttributes.state.lr_flag !== 2) {
         if (type2 === ELE_ALL) {
-          for (let i = ELE_NEUTRAL; i < ELE_MAX; i++) {
+          for (let i = ElementEnum.Neutro; i < ELE_MAX; i++) {
             playerAttributes.magic_addele[i] += val;
           }
         } else {
@@ -215,13 +222,16 @@ export function pc_bonus2(
       break;
 
     case bonusTypeToStatusPointType.bMagicAtkEle:
-      if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
+      if (
+        (type2 >= ELE_MAX && type2 !== ELE_ALL) ||
+        type2 < ElementEnum.Neutro
+      ) {
         console.error(`pc_bonus2: SP_MAGIC_ATK_ELE: Invalid element ${type2}`);
         break;
       }
       if (playerAttributes.state.lr_flag !== 2) {
         if (type2 === ELE_ALL) {
-          for (let i = ELE_NEUTRAL; i < ELE_MAX; i++) {
+          for (let i = ElementEnum.Neutro; i < ELE_MAX; i++) {
             playerAttributes.magic_atk_ele[i] += val;
           }
         } else {
@@ -391,7 +401,10 @@ export function pc_bonus2(
       break;
 
     case bonusTypeToStatusPointType.bWeaponComaEle:
-      if ((type2 >= ELE_MAX && type2 !== ELE_ALL) || type2 < ELE_NEUTRAL) {
+      if (
+        (type2 >= ELE_MAX && type2 !== ELE_ALL) ||
+        type2 < ElementEnum.Neutro
+      ) {
         console.error(
           `pc_bonus2: SP_WEAPON_COMA_ELE: Invalid element ${type2}`
         );
@@ -399,7 +412,7 @@ export function pc_bonus2(
       }
       if (playerAttributes.state.lr_flag === 2) break;
       if (type2 === ELE_ALL) {
-        for (let i = ELE_NEUTRAL; i < ELE_MAX; i++) {
+        for (let i = ElementEnum.Neutro; i < ELE_MAX; i++) {
           playerAttributes.weapon_coma_ele[i] += val;
         }
       } else {

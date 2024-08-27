@@ -30,6 +30,8 @@ export interface WeaponData {
   star: number;
   ignore_def_ele: number;
   ignore_def_race: number;
+  ignore_mdef_ele: number;
+  ignore_mdef_race: number;
   def_ratio_atk_ele: number;
   def_ratio_atk_race: number;
   addele: number[];
@@ -49,6 +51,8 @@ export function initializeWeaponData(): WeaponData {
     star: 0,
     ignore_def_ele: 0,
     ignore_def_race: 0,
+    ignore_mdef_ele: 0,
+    ignore_mdef_race: 0,
     def_ratio_atk_ele: 0,
     def_ratio_atk_race: 0,
     addele: new Array(ELE_MAX).fill(0),

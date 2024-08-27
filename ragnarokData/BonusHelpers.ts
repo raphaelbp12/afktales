@@ -25,7 +25,7 @@ export class BonusHelpers {
             pc_bonus(
               playerAttributes,
               statusTypeKey as string,
-              bonusArray[0] as number
+              parseValueWithRagEnums(bonusArray[0] as number)
             );
           } else if (bonusType.startsWith("bonus2")) {
             pc_bonus2(

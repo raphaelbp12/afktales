@@ -154,6 +154,39 @@ bonus2 bSubEle,Ele_Dark,20;
 bonus2 bSubEle,Ele_Undead,20;
 bonus bMdef,5;`);
   });
+
+  it("should parse an item string into an object", () => {
+    const itemString = `
+      Id: 1551
+	AegisName: "Bible"
+	Name: "Bible"
+	Type: "IT_WEAPON"
+	Buy: 60000
+	Weight: 1000
+	Atk: 115
+	Range: 1
+	Slots: 2
+	Job: {
+		Priest: true
+		Sage: true
+		Star_Gladiator: true
+	}
+	Loc: "EQP_WEAPON"
+	WeaponLv: 3
+	EquipLv: 27
+	Subtype: "W_BOOK"
+	Script: <" bonus bInt,2; ">`;
+    const result = parseItem(itemString);
+    expect(result.Id).toBe(1551);
+    expect(result.Name).toBe("Bible");
+    expect(result.Type).toBe("IT_WEAPON");
+    expect(result.Buy).toBe(60000);
+    expect(result.Job?.All).toBe(undefined);
+    expect(result.Job?.Priest).toBe(true);
+    expect(result.Job?.Sage).toBe(true);
+    expect(result.Job?.Star_Gladiator).toBe(true);
+    expect(result.Script).toBe(`bonus bInt,2;`);
+  });
 });
 
 describe("parseJob", () => {

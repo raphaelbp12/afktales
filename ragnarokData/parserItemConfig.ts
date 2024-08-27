@@ -186,20 +186,7 @@ function parseArgument(
   bonusType: string,
   arg: string
 ): string | number | boolean {
-  switch (bonusType) {
-    case "bInt":
-    case "bDex":
-      return parsecfg_int(arg);
-    case "bIsMagic":
-    case "bNoWeapon":
-      return parsecfg_bool(arg);
-    case "bName":
-      return parsecfg_string(arg);
-    case "bHex":
-      return parsecfg_hexint(arg);
-    default:
-      return parsecfg_string(arg); // Default to string if the type is unknown
-  }
+  return parsecfg_string(arg); // Default to string if the type is unknown
 }
 
 function parsecfg_string(value: string): string {

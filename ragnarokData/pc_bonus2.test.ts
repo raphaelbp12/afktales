@@ -3,6 +3,7 @@ import { PlayerAttributes } from "./PlayerAttributes";
 import { pc_bonus2 } from "./pc_bonus2";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { ELE_ALL } from "./constants";
+import { Race } from "./map_race_id2mask";
 
 describe("pc_bonus2", () => {
   let playerAttributes: PlayerAttributes;
@@ -12,14 +13,15 @@ describe("pc_bonus2", () => {
   });
 
   test("should process SP_ADDELE bonus correctly", () => {
+    const ele = ElementEnum.Fantasma;
     playerAttributes.state.lr_flag = 0;
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bAddEle,
-      1,
+      ele,
       10
     );
-    expect(updatedAttributes.right_weapon.addele[1]).toBe(10);
+    expect(updatedAttributes.right_weapon.addele[ele]).toBe(10);
   });
 
   test("should process SP_ADDRACE bonus correctly", () => {
@@ -27,10 +29,10 @@ describe("pc_bonus2", () => {
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bAddRace,
-      1,
+      Race.RC_FORMLESS,
       10
     );
-    expect(updatedAttributes.right_weapon.addrace[1]).toBe(10);
+    expect(updatedAttributes.right_weapon.addrace[Race.RC_FORMLESS]).toBe(10);
   });
 
   test("should process SP_ADDSIZE bonus correctly", () => {
@@ -62,7 +64,16 @@ describe("pc_bonus2", () => {
       ELE_ALL,
       10
     );
-    expect(updatedAttributes.subele[1]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Neutro]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Agua]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Terra]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Fogo]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Vento]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Veneno]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Sagrado]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Sombrio]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.Fantasma]).toBe(10);
+    expect(updatedAttributes.subele[ElementEnum.MortoVivo]).toBe(10);
   });
 
   test("should process SP_SUBRACE bonus correctly", () => {
@@ -106,13 +117,14 @@ describe("pc_bonus2", () => {
   });
 
   test("should process SP_MAGIC_ADDELE bonus correctly", () => {
+    const ele = ElementEnum.Sagrado;
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bMagicAddEle,
-      1,
+      ele,
       10
     );
-    expect(updatedAttributes.magic_addele[1]).toBe(10);
+    expect(updatedAttributes.magic_addele[ele]).toBe(10);
   });
 
   test("should process SP_MAGIC_ADDRACE bonus correctly", () => {
@@ -136,13 +148,14 @@ describe("pc_bonus2", () => {
   });
 
   test("should process SP_MAGIC_ATK_ELE bonus correctly", () => {
+    const ele = ElementEnum.Veneno;
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bMagicAtkEle,
-      1,
+      ele,
       10
     );
-    expect(updatedAttributes.magic_atk_ele[1]).toBe(10);
+    expect(updatedAttributes.magic_atk_ele[ele]).toBe(10);
   });
 
   test("should process SP_ADD_DAMAGE_CLASS bonus correctly", () => {
@@ -291,14 +304,15 @@ describe("pc_bonus2", () => {
   });
 
   test("should process SP_WEAPON_COMA_ELE bonus correctly", () => {
+    const ele = ElementEnum.Vento;
     playerAttributes.weapon_coma_ele[1] = 0;
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bWeaponComaEle,
-      1,
+      ele,
       10
     );
-    expect(updatedAttributes.weapon_coma_ele[1]).toBe(10);
+    expect(updatedAttributes.weapon_coma_ele[ele]).toBe(10);
   });
 
   test("should process SP_WEAPON_COMA_RACE bonus correctly", () => {

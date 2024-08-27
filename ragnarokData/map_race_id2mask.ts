@@ -88,7 +88,3 @@ export function map_race_id2mask(race: Race): number {
   console.warn(`map_race_id2mask: Invalid race: ${race}`);
   return RaceMask.RCMASK_NONE;
 }
-
-// Test the function
-console.log(map_race_id2mask(Race.RC_FORMLESS)); // Expected output: 1
-console.log(map_race_id2mask(Race.RC_ALL)); // Expected output: RCMASK_ALL
