@@ -1,16 +1,12 @@
 // PlayerAttributes.ts
 import { Bonuses, s_add_drop } from "@/ragnarokData/types";
 import { WeaponData, initializeWeaponData } from "./WeaponData"; // Import the WeaponData interface and initialization function
-import {
-  ELE_MAX,
-  RC_MAX,
-  RC2_MAX,
-  SC_COMMON_MAX,
-  SC_COMMON_MIN,
-  MAX_PC_BONUS,
-} from "./constants";
+import { ELE_MAX, MAX_PC_BONUS } from "./constants";
 import { weapon_type } from "./mmo_header";
 import { StatusData } from "./StatusData";
+import { AddEffect } from "./AutoTriggerFlag";
+import { sc_type } from "./sc_type";
+import { Race, Race2 } from "./map_race_id2mask";
 
 export class PlayerAttributes {
   weapontype: weapon_type;
@@ -21,8 +17,8 @@ export class PlayerAttributes {
   state: { lr_flag: number };
   right_weapon: WeaponData; // Use WeaponData type
   left_weapon: WeaponData; // Use WeaponData type
-  addeff: any[];
-  addeff2: any[];
+  addeff: AddEffect[];
+  addeff2: AddEffect[];
   addeff3: any[];
   addEffWhenHit: any[];
   addEffOnSkill: any[];
@@ -225,6 +221,7 @@ export class PlayerAttributes {
   };
 
   constructor(bonuses: Bonuses) {
+    // Initialize single value properties
     this.weapontype = weapon_type.W_FIST;
     this.castrate = 0;
     this.hprate = 0;
@@ -233,8 +230,6 @@ export class PlayerAttributes {
     this.hprecov_rate = 0;
     this.sprecov_rate = 0;
     this.matk_rate = 0;
-    this.ignore_mdef = new Array(RC_MAX).fill(0);
-    this.ignore_def = new Array(RC_MAX).fill(0);
     this.critical_rate = 0;
     this.hit_rate = 0;
     this.flee_rate = 0;
@@ -246,19 +241,225 @@ export class PlayerAttributes {
     this.delayrate = 0;
     this.weight = 0;
     this.max_weight = 0;
-    this.add_drop = [];
     this.autospell = [];
     this.autospell2 = [];
     this.autospell3 = [];
     this.autoSpellWhenHit = [];
-    this.addEffOnSkill = [];
     this.state = { lr_flag: 0 };
     this.right_weapon = initializeWeaponData();
     this.left_weapon = initializeWeaponData();
-    this.addeff = [];
-    this.addeff2 = [];
+    this.itemBonuses = bonuses;
+
+    // Initialize base_status
+    this.base_status = {
+      hp: 0,
+      sp: 0,
+      max_hp: 0,
+      max_sp: 0,
+      str: 0,
+      agi: 0,
+      vit: 0,
+      int_: 0,
+      dex: 0,
+      luk: 0,
+      atk_percent: 0,
+      matk_percent: 0,
+      def_percent: 0,
+      mdef_percent: 0,
+      batk: 0,
+      matk_min: 0,
+      matk_max: 0,
+      speed: 0,
+      amotion: 0,
+      adelay: 0,
+      dmotion: 0,
+      mode: 0,
+      hit: 0,
+      flee: 0,
+      cri: 0,
+      flee2: 0,
+      def2: 0,
+      mdef2: 0,
+      aspd_rate: 0,
+      def: 0,
+      mdef: 0,
+      def_ele: 0,
+      ele_lv: 0,
+      size: 0,
+      race: 0,
+      rhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
+      lhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
+    };
+
+    // Initialize arrays with distinct objects
+    this.ignore_mdef = Array(Race.RC_MAX).fill(0);
+    this.ignore_def = Array(Race.RC_MAX).fill(0);
+    this.subele = Array(ELE_MAX).fill(0);
+    this.subrace = Array(Race.RC_MAX).fill(0);
+    this.subrace2 = Array(Race2.RC2_MAX).fill(0);
+    this.subsize = Array(3).fill(0);
+    this.reseff = Array(sc_type.SC_COMMON_MAX - sc_type.SC_COMMON_MIN + 1).fill(
+      0
+    );
+    this.weapon_coma_ele = Array(ELE_MAX).fill(0);
+    this.weapon_coma_race = Array(Race.RC_MAX).fill(0);
+    this.weapon_atk = Array(weapon_type.MAX_WEAPON_TYPE).fill(0);
+    this.weapon_atk_rate = Array(weapon_type.MAX_WEAPON_TYPE).fill(0);
+    this.arrow_addele = Array(ELE_MAX).fill(0);
+    this.arrow_addrace = Array(Race.RC_MAX).fill(0);
+    this.arrow_addsize = Array(3).fill(0);
+    this.magic_addele = Array(ELE_MAX).fill(0);
+    this.magic_addrace = Array(Race.RC_MAX).fill(0);
+    this.magic_addsize = Array(3).fill(0);
+    this.magic_atk_ele = Array(ELE_MAX).fill(0);
+    this.critaddrace = Array(Race.RC_MAX).fill(0);
+    this.expaddrace = Array(Race.RC_MAX).fill(0);
+    this.sp_gain_race = Array(Race.RC_MAX).fill(0);
+    this.sp_gain_race_attack = Array(Race.RC_MAX).fill(0);
+    this.hp_gain_race_attack = Array(Race.RC_MAX).fill(0);
+    this.dropaddrace = Array(Race.RC_MAX).fill(0);
+
+    this.skillatk = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.skillusesprate = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.skillusesp = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.skillheal = Array.from({ length: 5 }, () => ({ id: 0, val: 0 }));
+    this.skillheal2 = Array.from({ length: 5 }, () => ({ id: 0, val: 0 }));
+    this.skillblown = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.skillcast = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.skillcooldown = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.skillfixcast = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.skillvarcast = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.skillfixcastrate = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+    this.subskill = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      val: 0,
+    }));
+
+    this.add_def = Array.from({ length: MAX_PC_BONUS }, () => ({
+      class_: 0,
+      rate: 0,
+    }));
+    this.add_mdef = Array.from({ length: MAX_PC_BONUS }, () => ({
+      class_: 0,
+      rate: 0,
+    }));
+    this.add_mdmg = Array.from({ length: MAX_PC_BONUS }, () => ({
+      class_: 0,
+      rate: 0,
+    }));
+
+    this.itemhealrate = Array.from({ length: MAX_PC_BONUS }, () => ({
+      nameid: 0,
+      rate: 0,
+    }));
+    this.subele2 = Array.from({ length: MAX_PC_BONUS }, () => ({
+      flag: 0,
+      rate: 0,
+      ele: 0,
+    }));
+
+    this.hp_loss = { value: 0, rate: 0, tick: 0 };
+    this.sp_loss = { value: 0, rate: 0, tick: 0 };
+    this.hp_regen = { value: 0, rate: 0, tick: 0 };
+    this.sp_regen = { value: 0, rate: 0, tick: 0 };
+
+    this.sub_def_ele = Array.from({ length: ELE_MAX }, () => ({
+      rate_mob: 0,
+      rate_pc: 0,
+    }));
+    this.magic_sub_def_ele = Array.from({ length: ELE_MAX }, () => ({
+      rate_mob: 0,
+      rate_pc: 0,
+    }));
+
+    this.def_set_race = Array.from({ length: Race.RC_MAX }, () => ({
+      value: 0,
+      rate: 0,
+      tick: 0,
+    }));
+    this.mdef_set_race = Array.from({ length: Race.RC_MAX }, () => ({
+      value: 0,
+      rate: 0,
+      tick: 0,
+    }));
+    this.no_recover_state_race = Array.from({ length: Race.RC_MAX }, () => ({
+      value: 0,
+      rate: 0,
+      tick: 0,
+    }));
+
+    // Initialize addeff arrays
+    this.addeff = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: sc_type.SC_NONE,
+      rate: 0,
+      arrow_rate: 0,
+      flag: 0,
+      duration: 0,
+    }));
+
+    this.addeff2 = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: sc_type.SC_NONE,
+      rate: 0,
+      arrow_rate: 0,
+      flag: 0,
+      duration: 0,
+    }));
+
     this.addeff3 = [];
+
     this.addEffWhenHit = [];
+    this.addEffOnSkill = [];
+    this.add_def = Array.from({ length: MAX_PC_BONUS }, () => ({
+      class_: 0,
+      rate: 0,
+    }));
+    this.add_mdef = Array.from({ length: MAX_PC_BONUS }, () => ({
+      class_: 0,
+      rate: 0,
+    }));
+    this.add_mdmg = Array.from({ length: MAX_PC_BONUS }, () => ({
+      class_: 0,
+      rate: 0,
+    }));
+    this.add_drop = Array.from({ length: MAX_PC_BONUS }, () => ({
+      id: 0,
+      is_group: false,
+      race: 0,
+      rate: 0,
+    }));
+
+    this.itemhealrate = Array.from({ length: MAX_PC_BONUS }, () => ({
+      nameid: 0,
+      rate: 0,
+    }));
+
     this.bonus = {
       hp_vanish_rate: 0,
       hp_vanish_per: 0,
@@ -319,53 +520,6 @@ export class PlayerAttributes {
       add_varcast: 0,
       ematk: 0,
     };
-    this.sub_def_ele = new Array(ELE_MAX).fill({ rate_mob: 0, rate_pc: 0 });
-    this.magic_sub_def_ele = new Array(ELE_MAX).fill({
-      rate_mob: 0,
-      rate_pc: 0,
-    });
-    this.no_recover_state_race = new Array(RC_MAX).fill({ rate: 0, tick: 0 });
-    this.itemBonuses = bonuses;
-
-    this.base_status = {
-      hp: 0,
-      sp: 0,
-      max_hp: 0,
-      max_sp: 0,
-      str: 0,
-      agi: 0,
-      vit: 0,
-      int_: 0,
-      dex: 0,
-      luk: 0,
-      atk_percent: 0,
-      matk_percent: 0,
-      def_percent: 0,
-      mdef_percent: 0,
-      batk: 0,
-      matk_min: 0,
-      matk_max: 0,
-      speed: 0,
-      amotion: 0,
-      adelay: 0,
-      dmotion: 0,
-      mode: 0,
-      hit: 0,
-      flee: 0,
-      cri: 0,
-      flee2: 0,
-      def2: 0,
-      mdef2: 0,
-      aspd_rate: 0,
-      def: 0,
-      mdef: 0,
-      def_ele: 0,
-      ele_lv: 0,
-      size: 0,
-      race: 0,
-      rhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
-      lhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
-    };
 
     this.param_bonus = {
       SP_STR: 0,
@@ -384,70 +538,6 @@ export class PlayerAttributes {
       SP_DEX: 0,
       SP_LUK: 0,
     };
-
-    this.subele = new Array(ELE_MAX).fill(0);
-    this.subrace = new Array(RC_MAX).fill(0);
-    this.subrace2 = new Array(RC2_MAX).fill(0);
-    this.subsize = new Array(3).fill(0);
-    this.reseff = new Array(SC_COMMON_MAX - SC_COMMON_MIN + 1).fill(0);
-    this.weapon_coma_ele = new Array(ELE_MAX).fill(0);
-    this.weapon_coma_race = new Array(RC_MAX).fill(0);
-    this.weapon_atk = new Array(weapon_type.MAX_WEAPON_TYPE).fill(0);
-    this.weapon_atk_rate = new Array(weapon_type.MAX_WEAPON_TYPE).fill(0);
-    this.arrow_addele = new Array(ELE_MAX).fill(0);
-    this.arrow_addrace = new Array(RC_MAX).fill(0);
-    this.arrow_addsize = new Array(3).fill(0);
-    this.magic_addele = new Array(ELE_MAX).fill(0);
-    this.magic_addrace = new Array(RC_MAX).fill(0);
-    this.magic_addsize = new Array(3).fill(0);
-    this.magic_atk_ele = new Array(ELE_MAX).fill(0);
-    this.critaddrace = new Array(RC_MAX).fill(0);
-    this.expaddrace = new Array(RC_MAX).fill(0);
-    this.sp_gain_race = new Array(RC_MAX).fill(0);
-    this.sp_gain_race_attack = new Array(RC_MAX).fill(0);
-    this.hp_gain_race_attack = new Array(RC_MAX).fill(0);
-    this.dropaddrace = new Array(RC_MAX).fill(0);
-
-    this.skillatk = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.skillusesprate = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.skillusesp = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.skillheal = new Array(5).fill({ id: 0, val: 0 });
-    this.skillheal2 = new Array(5).fill({ id: 0, val: 0 });
-    this.skillblown = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.skillcast = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.skillcooldown = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.skillfixcast = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.skillvarcast = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.skillfixcastrate = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-    this.subskill = new Array(MAX_PC_BONUS).fill({ id: 0, val: 0 });
-
-    this.hp_loss = { value: 0, rate: 0, tick: 0 };
-    this.sp_loss = { value: 0, rate: 0, tick: 0 };
-    this.hp_regen = { value: 0, rate: 0, tick: 0 };
-    this.sp_regen = { value: 0, rate: 0, tick: 0 };
-
-    this.add_def = new Array(MAX_PC_BONUS).fill({ class_: 0, rate: 0 });
-    this.add_mdef = new Array(MAX_PC_BONUS).fill({ class_: 0, rate: 0 });
-    this.add_mdmg = new Array(MAX_PC_BONUS).fill({ class_: 0, rate: 0 });
-    this.add_drop = new Array(MAX_PC_BONUS).fill({ nameid: 0, rate: 0 });
-
-    this.itemhealrate = new Array(MAX_PC_BONUS).fill({ nameid: 0, rate: 0 });
-
-    this.subele2 = new Array(MAX_PC_BONUS).fill({ flag: 0, rate: 0, ele: 0 });
-
-    this.def_set_race = new Array(RC_MAX).fill({ value: 0, rate: 0, tick: 0 });
-    this.mdef_set_race = new Array(RC_MAX).fill({ value: 0, rate: 0, tick: 0 });
-    this.no_recover_state_race = new Array(RC_MAX).fill({
-      value: 0,
-      rate: 0,
-      tick: 0,
-    });
-
-    this.sub_def_ele = new Array(ELE_MAX).fill({ rate_mob: 0, rate_pc: 0 });
-    this.magic_sub_def_ele = new Array(ELE_MAX).fill({
-      rate_mob: 0,
-      rate_pc: 0,
-    });
 
     // Initialize special_state
     this.special_state = {

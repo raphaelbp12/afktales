@@ -14,10 +14,12 @@ export function removeComments(configString: string): string {
 export function parseConfig(configString: string): {
   itemsList: Item[];
   itemsDict: { [key: number]: Item };
+  itemsDictAegisNameKey: Record<string, number>;
 } {
   const cleanConfig = removeComments(configString);
   const itemsList: Item[] = [];
   const itemsDict: { [key: number]: Item } = {};
+  const itemsDictAegisNameKey: Record<string, number> = {};
 
   let match;
   const itemRegex = /{([^{}]*({[^{}]*}[^{}]*)*)},?/gs;
@@ -27,9 +29,10 @@ export function parseConfig(configString: string): {
     const item = parseItem(itemString);
     itemsList.push(item);
     itemsDict[item.Id] = item;
+    itemsDictAegisNameKey[item.AegisName] = item.Id;
   }
 
-  return { itemsList, itemsDict };
+  return { itemsList, itemsDict, itemsDictAegisNameKey };
 }
 
 export function parseItem(itemString: string): Item {

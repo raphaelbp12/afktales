@@ -1,24 +1,18 @@
 import { PlayerAttributes } from "./PlayerAttributes";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
-import { RaceMask, map_race_id2mask } from "./map_race_id2mask";
-import {
-  RC_MAX,
-  ELE_MAX,
-  ELE_ALL,
-  SC_MAX,
-  ATF_SELF,
-  SC_COMMON_MIN,
-  SC_COMMON_MAX,
-} from "./constants";
+import { Race, Race2, RaceMask, map_race_id2mask } from "./map_race_id2mask";
+import { ELE_MAX, ELE_ALL } from "./constants";
 import { capValue } from "./utils";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
+import { AddEffect, AutoTriggerFlag } from "./AutoTriggerFlag";
+import { sc_type } from "./sc_type";
 
 function applyRaceBonus(
   playerAttributes: PlayerAttributes,
   raceMask: RaceMask,
   val: number
 ) {
-  for (let i = 0; i < RC_MAX; i++) {
+  for (let i = 0; i < Race.RC_MAX; i++) {
     if ((raceMask & (1 << i)) !== 0) {
       if (playerAttributes.state.lr_flag === 0) {
         playerAttributes.right_weapon.addrace[i] += val;
@@ -59,15 +53,56 @@ function addSizeBonus(
   }
 }
 
-// Dummy implementation of pc_bonus_addeff function
 function pc_bonus_addeff(
-  addeff: any[],
-  val1: number,
-  val2: number,
-  val3: number,
-  val4: number
-) {
-  // Implement the logic for adding effect bonuses here
+  effect: AddEffect[],
+  max: number,
+  id: sc_type,
+  rate: number,
+  arrow_rate: number,
+  flag: number,
+  duration: number
+): boolean {
+  // Ensure flag has default values if not set
+  if (!(flag & (AutoTriggerFlag.SHORT | AutoTriggerFlag.LONG))) {
+    flag |= AutoTriggerFlag.SHORT | AutoTriggerFlag.LONG; // Default range: both
+  }
+  if (!(flag & (AutoTriggerFlag.TARGET | AutoTriggerFlag.SELF))) {
+    flag |= AutoTriggerFlag.TARGET; // Default target: enemy
+  }
+  if (
+    !(
+      flag &
+      (AutoTriggerFlag.WEAPON | AutoTriggerFlag.MAGIC | AutoTriggerFlag.MISC)
+    )
+  ) {
+    flag |= AutoTriggerFlag.WEAPON; // Default type: weapon
+  }
+
+  // Iterate through the effect array to find an existing effect or empty slot
+  for (let i = 0; i < max; i++) {
+    if (effect[i].flag) {
+      // Update existing effect if it matches
+      if (
+        effect[i].id === id &&
+        effect[i].flag === flag &&
+        effect[i].duration === duration
+      ) {
+        effect[i].rate += rate;
+        effect[i].arrow_rate += arrow_rate;
+        return true;
+      }
+    } else {
+      // If an empty slot is found, add the new effect
+      effect[i] = { id, rate, arrow_rate, flag, duration };
+      return true;
+    }
+  }
+
+  // If the effect array is full, return false and show a warning
+  console.warn(
+    `pc_bonus: Reached max (${max}) number of add effects per character!`
+  );
+  return false;
 }
 
 // Main function
@@ -134,7 +169,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag !== 2) {
-        for (let i = 0; i < RC_MAX; i++) {
+        for (let i = 0; i < Race.RC_MAX; i++) {
           if ((subRaceMask & (1 << i)) !== 0) {
             playerAttributes.subrace[i] += val;
           }
@@ -143,41 +178,49 @@ export function pc_bonus2(
       break;
 
     case bonusTypeToStatusPointType.bAddEff:
-      if (type2 > SC_MAX) {
+      if (type2 > sc_type.SC_MAX) {
         console.warn(`pc_bonus2 (Add Effect): ${type2} is not supported.`);
         break;
       }
       pc_bonus_addeff(
         playerAttributes.addeff,
+        playerAttributes.addeff.length, // The maximum length of the addeff array
+        type2,
         playerAttributes.state.lr_flag !== 2 ? val : 0,
         playerAttributes.state.lr_flag === 2 ? val : 0,
-        0,
-        0
+        0, // flag (defaults will be applied inside pc_bonus_addeff)
+        0 // duration
       );
       break;
 
     case bonusTypeToStatusPointType.bAddEff2:
-      if (type2 > SC_MAX) {
+      if (type2 > sc_type.SC_MAX) {
         console.warn(`pc_bonus2 (Add Effect2): ${type2} is not supported.`);
         break;
       }
       pc_bonus_addeff(
         playerAttributes.addeff,
+        playerAttributes.addeff.length, // The maximum length of the addeff array
+        type2,
         playerAttributes.state.lr_flag !== 2 ? val : 0,
         playerAttributes.state.lr_flag === 2 ? val : 0,
-        ATF_SELF,
-        0
+        AutoTriggerFlag.SELF, // flag (defaults will be applied inside pc_bonus_addeff)
+        0 // duration
       );
       break;
 
     case bonusTypeToStatusPointType.bResEff:
-      if (type2 < SC_COMMON_MIN || type2 > SC_COMMON_MAX) {
+      if (type2 < sc_type.SC_COMMON_MIN || type2 > sc_type.SC_COMMON_MAX) {
         console.warn(`pc_bonus2 (Resist Effect): ${type2} is not supported.`);
         break;
       }
       if (playerAttributes.state.lr_flag !== 2) {
-        const i = playerAttributes.reseff[type2 - SC_COMMON_MIN] + val;
-        playerAttributes.reseff[type2 - SC_COMMON_MIN] = capValue(i, 0, 10000);
+        const i = playerAttributes.reseff[type2 - sc_type.SC_COMMON_MIN] + val;
+        playerAttributes.reseff[type2 - sc_type.SC_COMMON_MIN] = capValue(
+          i,
+          0,
+          10000
+        );
       }
       break;
 
@@ -207,7 +250,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag !== 2) {
-        for (let i = 0; i < RC_MAX; i++) {
+        for (let i = 0; i < Race.RC_MAX; i++) {
           if ((magicRaceMask & (1 << i)) !== 0) {
             playerAttributes.magic_addrace[i] += val;
           }
@@ -307,57 +350,153 @@ export function pc_bonus2(
 
     case bonusTypeToStatusPointType.bHPDrainRate:
       if (playerAttributes.state.lr_flag === 0) {
-        playerAttributes.right_weapon.hp_drain[0].rate += type2;
-        playerAttributes.right_weapon.hp_drain[0].per += val;
-        playerAttributes.right_weapon.hp_drain[1].rate += type2;
-        playerAttributes.right_weapon.hp_drain[1].per += val;
+        const value1rate =
+          playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].rate;
+        const value1per =
+          playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].per;
+        const value2rate =
+          playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].rate;
+        const value2per =
+          playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].per;
+        playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].rate =
+          value1rate + type2;
+        playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].per =
+          value1per + val;
+        playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].rate =
+          value2rate + type2;
+        playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].per =
+          value2per + val;
       } else if (playerAttributes.state.lr_flag === 1) {
-        playerAttributes.left_weapon.hp_drain[0].rate += type2;
-        playerAttributes.left_weapon.hp_drain[0].per += val;
-        playerAttributes.left_weapon.hp_drain[1].rate += type2;
-        playerAttributes.left_weapon.hp_drain[1].per += val;
+        const value1rate =
+          playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].rate;
+        const value1per =
+          playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].per;
+        const value2rate =
+          playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].rate;
+        const value2per =
+          playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].per;
+        playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].rate =
+          value1rate + type2;
+        playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].per =
+          value1per + val;
+        playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].rate =
+          value2rate + type2;
+        playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].per =
+          value2per + val;
       }
       break;
 
     case bonusTypeToStatusPointType.bHPDrainValue:
       if (playerAttributes.state.lr_flag === 0) {
-        playerAttributes.right_weapon.hp_drain[0].value += type2;
-        playerAttributes.right_weapon.hp_drain[0].type = val;
-        playerAttributes.right_weapon.hp_drain[1].value += type2;
-        playerAttributes.right_weapon.hp_drain[1].type = val;
+        const value1value =
+          playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].value;
+        const value1type =
+          playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].type;
+        const value2value =
+          playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].value;
+        const value2type =
+          playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].type;
+        playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].value =
+          value1value + type2;
+        playerAttributes.right_weapon.hp_drain[Race.RC_NONBOSS].type =
+          value1type + val;
+        playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].value =
+          value2value + type2;
+        playerAttributes.right_weapon.hp_drain[Race.RC_BOSS].type =
+          value2type + val;
       } else if (playerAttributes.state.lr_flag === 1) {
-        playerAttributes.left_weapon.hp_drain[0].value += type2;
-        playerAttributes.left_weapon.hp_drain[0].type = val;
-        playerAttributes.left_weapon.hp_drain[1].value += type2;
-        playerAttributes.left_weapon.hp_drain[1].type = val;
+        const value1value =
+          playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].value;
+        const value1type =
+          playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].type;
+        const value2value =
+          playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].value;
+        const value2type =
+          playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].type;
+        playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].value =
+          value1value + type2;
+        playerAttributes.left_weapon.hp_drain[Race.RC_NONBOSS].type =
+          value1type + val;
+        playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].value =
+          value2value + type2;
+        playerAttributes.left_weapon.hp_drain[Race.RC_BOSS].type =
+          value2type + val;
       }
       break;
 
     case bonusTypeToStatusPointType.bSPDrainRate:
       if (playerAttributes.state.lr_flag === 0) {
-        playerAttributes.right_weapon.sp_drain[0].rate += type2;
-        playerAttributes.right_weapon.sp_drain[0].per += val;
-        playerAttributes.right_weapon.sp_drain[1].rate += type2;
-        playerAttributes.right_weapon.sp_drain[1].per += val;
+        const value1rate =
+          playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].rate;
+        const value1per =
+          playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].per;
+        const value2rate =
+          playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].rate;
+        const value2per =
+          playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].per;
+        playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].rate =
+          value1rate + type2;
+        playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].per =
+          value1per + val;
+        playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].rate =
+          value2rate + type2;
+        playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].per =
+          value2per + val;
       } else if (playerAttributes.state.lr_flag === 1) {
-        playerAttributes.left_weapon.sp_drain[0].rate += type2;
-        playerAttributes.left_weapon.sp_drain[0].per += val;
-        playerAttributes.left_weapon.sp_drain[1].rate += type2;
-        playerAttributes.left_weapon.sp_drain[1].per += val;
+        const value1rate =
+          playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].rate;
+        const value1per =
+          playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].per;
+        const value2rate =
+          playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].rate;
+        const value2per =
+          playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].per;
+        playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].rate =
+          value1rate + type2;
+        playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].per =
+          value1per + val;
+        playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].rate =
+          value2rate + type2;
+        playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].per =
+          value2per + val;
       }
       break;
 
     case bonusTypeToStatusPointType.bSPDrainValue:
       if (playerAttributes.state.lr_flag === 0) {
-        playerAttributes.right_weapon.sp_drain[0].value += type2;
-        playerAttributes.right_weapon.sp_drain[0].type = val;
-        playerAttributes.right_weapon.sp_drain[1].value += type2;
-        playerAttributes.right_weapon.sp_drain[1].type = val;
+        const value1value =
+          playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].value;
+        const value1type =
+          playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].type;
+        const value2value =
+          playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].value;
+        const value2type =
+          playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].type;
+        playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].value =
+          value1value + type2;
+        playerAttributes.right_weapon.sp_drain[Race.RC_NONBOSS].type =
+          value1type + val;
+        playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].value =
+          value2value + type2;
+        playerAttributes.right_weapon.sp_drain[Race.RC_BOSS].type =
+          value2type + val;
       } else if (playerAttributes.state.lr_flag === 1) {
-        playerAttributes.left_weapon.sp_drain[0].value += type2;
-        playerAttributes.left_weapon.sp_drain[0].type = val;
-        playerAttributes.left_weapon.sp_drain[1].value += type2;
-        playerAttributes.left_weapon.sp_drain[1].type = val;
+        const value1value =
+          playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].value;
+        const value1type =
+          playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].type;
+        const value2value =
+          playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].value;
+        const value2type =
+          playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].type;
+        playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].value =
+          value1value + type2;
+        playerAttributes.left_weapon.sp_drain[Race.RC_NONBOSS].type =
+          value1type + val;
+        playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].value =
+          value2value + type2;
+        playerAttributes.left_weapon.sp_drain[Race.RC_BOSS].type =
+          value2type + val;
       }
       break;
 
@@ -428,7 +567,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag === 2) break;
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((weaponRaceMask & (1 << i)) !== 0) {
           playerAttributes.weapon_coma_race[i] += val;
         }
@@ -455,7 +594,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag === 2) break;
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((critRaceMask & (1 << i)) !== 0) {
           playerAttributes.critaddrace[i] += val * 10;
         }
@@ -463,102 +602,110 @@ export function pc_bonus2(
       break;
 
     case bonusTypeToStatusPointType.bAddEffWhenHit:
-      if (type2 > SC_MAX) {
+      if (type2 > sc_type.SC_MAX) {
         console.warn(
           `pc_bonus2 (Add Effect when hit): ${type2} is not supported.`
         );
         break;
       }
       if (playerAttributes.state.lr_flag !== 2) {
-        pc_bonus_addeff(playerAttributes.addeff2, val, 0, 0, 0);
+        pc_bonus_addeff(
+          playerAttributes.addeff2,
+          playerAttributes.addeff2.length, // The maximum length of the addeff array
+          type2,
+          playerAttributes.state.lr_flag !== 2 ? val : 0,
+          0,
+          0, // flag (defaults will be applied inside pc_bonus_addeff)
+          0 // duration
+        );
       }
       break;
 
-    case bonusTypeToStatusPointType.bSkillAtk:
+    case bonusTypeToStatusPointType.bSkillAtk: {
       const skillAtkIndex = playerAttributes.skillatk.findIndex(
         (skill) => skill.id === 0 || skill.id === type2
       );
+      const newSkill = { id: type2, val: val };
       if (skillAtkIndex !== -1) {
         if (playerAttributes.skillatk[skillAtkIndex].id === type2) {
-          playerAttributes.skillatk[skillAtkIndex].val += val;
+          playerAttributes.skillatk[skillAtkIndex].val = newSkill.val;
         } else {
-          playerAttributes.skillatk[skillAtkIndex].id = type2;
-          playerAttributes.skillatk[skillAtkIndex].val = val;
+          playerAttributes.skillatk[skillAtkIndex] = newSkill;
         }
       }
       break;
-
-    case bonusTypeToStatusPointType.bSkillHeal:
+    }
+    case bonusTypeToStatusPointType.bSkillHeal: {
       const skillHealIndex = playerAttributes.skillheal.findIndex(
         (skill) => skill.id === 0 || skill.id === type2
       );
+      const newSkill = { id: type2, val: val };
       if (skillHealIndex !== -1) {
         if (playerAttributes.skillheal[skillHealIndex].id === type2) {
-          playerAttributes.skillheal[skillHealIndex].val += val;
+          playerAttributes.skillheal[skillHealIndex].val += newSkill.val;
         } else {
-          playerAttributes.skillheal[skillHealIndex].id = type2;
-          playerAttributes.skillheal[skillHealIndex].val = val;
+          playerAttributes.skillheal[skillHealIndex] = newSkill;
         }
       }
       break;
-
-    case bonusTypeToStatusPointType.bSkillHeal2:
+    }
+    case bonusTypeToStatusPointType.bSkillHeal2: {
       const skillHeal2Index = playerAttributes.skillheal2.findIndex(
         (skill) => skill.id === 0 || skill.id === type2
       );
+      const newSkill = { id: type2, val: val };
       if (skillHeal2Index !== -1) {
         if (playerAttributes.skillheal2[skillHeal2Index].id === type2) {
-          playerAttributes.skillheal2[skillHeal2Index].val += val;
+          playerAttributes.skillheal2[skillHeal2Index].val += newSkill.val;
         } else {
-          playerAttributes.skillheal2[skillHeal2Index].id = type2;
-          playerAttributes.skillheal2[skillHeal2Index].val = val;
+          playerAttributes.skillheal2[skillHeal2Index] = newSkill;
         }
       }
       break;
-
-    case bonusTypeToStatusPointType.bAddSkillBlow:
+    }
+    case bonusTypeToStatusPointType.bAddSkillBlow: {
       const skillBlowIndex = playerAttributes.skillblown.findIndex(
         (skill) => skill.id === 0 || skill.id === type2
       );
+      const newSkill = { id: type2, val: val };
       if (skillBlowIndex !== -1) {
         if (playerAttributes.skillblown[skillBlowIndex].id === type2) {
-          playerAttributes.skillblown[skillBlowIndex].val += val;
+          playerAttributes.skillblown[skillBlowIndex].val += newSkill.val;
         } else {
-          playerAttributes.skillblown[skillBlowIndex].id = type2;
-          playerAttributes.skillblown[skillBlowIndex].val = val;
+          playerAttributes.skillblown[skillBlowIndex] = newSkill;
         }
       }
       break;
-
-    case bonusTypeToStatusPointType.bVariableCastrate:
-    case bonusTypeToStatusPointType.bCastrate:
+    }
+    case bonusTypeToStatusPointType.bCastrate: {
       const castRateIndex = playerAttributes.skillcast.findIndex(
         (skill) => skill.id === 0 || skill.id === type2
       );
+      const newSkill = { id: type2, val: val };
       if (castRateIndex !== -1) {
         if (playerAttributes.skillcast[castRateIndex].id === type2) {
-          playerAttributes.skillcast[castRateIndex].val += val;
+          playerAttributes.skillcast[castRateIndex].val += newSkill.val;
         } else {
-          playerAttributes.skillcast[castRateIndex].id = type2;
-          playerAttributes.skillcast[castRateIndex].val = val;
+          playerAttributes.skillcast[castRateIndex] = newSkill;
         }
       }
       break;
-
-    case bonusTypeToStatusPointType.bFixedCastrate:
+    }
+    case bonusTypeToStatusPointType.bFixedCastrate: {
       const fixCastRateIndex = playerAttributes.skillfixcastrate.findIndex(
         (skill) => skill.id === 0 || skill.id === type2
       );
+      const newSkill = { id: type2, val: -val };
       if (fixCastRateIndex !== -1) {
         if (playerAttributes.skillfixcastrate[fixCastRateIndex].id === type2) {
-          playerAttributes.skillfixcastrate[fixCastRateIndex].val -= val;
+          playerAttributes.skillfixcastrate[fixCastRateIndex].val +=
+            newSkill.val;
         } else {
-          playerAttributes.skillfixcastrate[fixCastRateIndex].id = type2;
-          playerAttributes.skillfixcastrate[fixCastRateIndex].val -= val;
+          playerAttributes.skillfixcastrate[fixCastRateIndex] = newSkill;
         }
       }
       break;
-
+    }
     case bonusTypeToStatusPointType.bHPLossRate:
       if (playerAttributes.state.lr_flag !== 2) {
         playerAttributes.hp_loss.value = type2;
@@ -574,7 +721,7 @@ export function pc_bonus2(
       break;
 
     case bonusTypeToStatusPointType.bAddRace2:
-      if (!(type2 > 0 && type2 < RC_MAX)) break;
+      if (!(type2 > Race2.RC2_NONE && type2 < Race2.RC2_MAX)) break;
       if (playerAttributes.state.lr_flag !== 2) {
         playerAttributes.right_weapon.addrace2[type2] += val;
       } else {
@@ -589,7 +736,7 @@ export function pc_bonus2(
       break;
 
     case bonusTypeToStatusPointType.bSubRace2:
-      if (!(type2 > 0 && type2 < RC_MAX)) break;
+      if (!(type2 > Race2.RC2_NONE && type2 < Race2.RC2_MAX)) break;
       if (playerAttributes.state.lr_flag !== 2) {
         playerAttributes.subrace2[type2] += val;
       }
@@ -614,7 +761,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag === 2) break;
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((expRaceMask & (1 << i)) !== 0) {
           playerAttributes.expaddrace[i] += val;
         }
@@ -628,7 +775,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag === 2) break;
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((spGainRaceMask & (1 << i)) !== 0) {
           playerAttributes.sp_gain_race[i] += val;
         }
@@ -663,7 +810,7 @@ export function pc_bonus2(
         );
         break;
       }
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((hpDrainRaceMask & (1 << i)) !== 0) {
           if (playerAttributes.state.lr_flag === 0) {
             playerAttributes.right_weapon.hp_drain[i].value += val;
@@ -682,7 +829,7 @@ export function pc_bonus2(
         );
         break;
       }
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((spDrainRaceMask & (1 << i)) !== 0) {
           if (playerAttributes.state.lr_flag === 0) {
             playerAttributes.right_weapon.sp_drain[i].value += val;
@@ -700,7 +847,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag === 2) break;
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((ignoreMdefRaceMask & (1 << i)) !== 0) {
           playerAttributes.ignore_mdef[i] += val;
         }
@@ -714,7 +861,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag === 2) break;
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((ignoreDefRaceMask & (1 << i)) !== 0) {
           playerAttributes.ignore_def[i] += val;
         }
@@ -730,7 +877,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag === 2) break;
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((spGainRaceAttackMask & (1 << i)) !== 0) {
           playerAttributes.sp_gain_race_attack[i] = capValue(
             playerAttributes.sp_gain_race_attack[i] + val,
@@ -750,7 +897,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag === 2) break;
-      for (let i = 0; i < RC_MAX; i++) {
+      for (let i = 0; i < Race.RC_MAX; i++) {
         if ((hpGainRaceAttackMask & (1 << i)) !== 0) {
           playerAttributes.hp_gain_race_attack[i] = capValue(
             playerAttributes.hp_gain_race_attack[i] + val,
@@ -870,7 +1017,7 @@ export function pc_bonus2(
         break;
       }
       if (playerAttributes.state.lr_flag !== 2) {
-        for (let i = 0; i < RC_MAX; i++) {
+        for (let i = 0; i < Race.RC_MAX; i++) {
           if ((dropRaceMask & (1 << i)) !== 0) {
             playerAttributes.dropaddrace[i] += val;
           }

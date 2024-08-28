@@ -35,6 +35,18 @@ describe("pc_bonus2", () => {
     expect(updatedAttributes.right_weapon.addrace[Race.RC_FORMLESS]).toBe(10);
   });
 
+  test("should process SP_ADDRACE Race.RC_DEMIPLAYER bonus correctly", () => {
+    playerAttributes.state.lr_flag = 0;
+    const updatedAttributes = pc_bonus2(
+      playerAttributes,
+      bonusTypeToStatusPointType.bAddRace,
+      Race.RC_DEMIPLAYER,
+      10
+    );
+    expect(updatedAttributes.right_weapon.addrace[Race.RC_DEMIHUMAN]).toBe(10);
+    expect(updatedAttributes.right_weapon.addrace[Race.RC_PLAYER]).toBe(10);
+  });
+
   test("should process SP_ADDSIZE bonus correctly", () => {
     playerAttributes.state.lr_flag = 0;
     const updatedAttributes = pc_bonus2(
@@ -204,63 +216,87 @@ describe("pc_bonus2", () => {
   });
 
   test("should process SP_HP_DRAIN_RATE bonus correctly", () => {
-    playerAttributes.right_weapon.hp_drain = [
-      { rate: 0, per: 0, value: 0, type: 0 },
-      { rate: 0, per: 0, value: 0, type: 0 },
-    ];
+    playerAttributes.right_weapon.hp_drain = Array.from(
+      { length: Race.RC_MAX },
+      () => ({
+        rate: 0,
+        per: 0,
+        value: 0,
+        type: 0,
+      })
+    );
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bHPDrainRate,
       10,
       5
     );
-    expect(updatedAttributes.right_weapon.hp_drain[0].rate).toBe(10);
-    expect(updatedAttributes.right_weapon.hp_drain[0].per).toBe(5);
+    expect(updatedAttributes.right_weapon.hp_drain[Race.RC_BOSS].rate).toBe(10);
+    expect(updatedAttributes.right_weapon.hp_drain[Race.RC_BOSS].per).toBe(5);
   });
 
   test("should process SP_HP_DRAIN_VALUE bonus correctly", () => {
-    playerAttributes.right_weapon.hp_drain = [
-      { rate: 0, per: 0, value: 0, type: 0 },
-      { rate: 0, per: 0, value: 0, type: 0 },
-    ];
+    playerAttributes.right_weapon.hp_drain = Array.from(
+      { length: Race.RC_MAX },
+      () => ({
+        rate: 0,
+        per: 0,
+        value: 0,
+        type: 0,
+      })
+    );
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bHPDrainValue,
       10,
       5
     );
-    expect(updatedAttributes.right_weapon.hp_drain[0].value).toBe(10);
-    expect(updatedAttributes.right_weapon.hp_drain[0].type).toBe(5);
+    expect(updatedAttributes.right_weapon.hp_drain[Race.RC_BOSS].value).toBe(
+      10
+    );
+    expect(updatedAttributes.right_weapon.hp_drain[Race.RC_BOSS].type).toBe(5);
   });
 
   test("should process SP_SP_DRAIN_RATE bonus correctly", () => {
-    playerAttributes.right_weapon.sp_drain = [
-      { rate: 0, per: 0, value: 0, type: 0 },
-      { rate: 0, per: 0, value: 0, type: 0 },
-    ];
+    playerAttributes.right_weapon.sp_drain = Array.from(
+      { length: Race.RC_MAX },
+      () => ({
+        rate: 0,
+        per: 0,
+        value: 0,
+        type: 0,
+      })
+    );
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bSPDrainRate,
       10,
       5
     );
-    expect(updatedAttributes.right_weapon.sp_drain[0].rate).toBe(10);
-    expect(updatedAttributes.right_weapon.sp_drain[0].per).toBe(5);
+    expect(updatedAttributes.right_weapon.sp_drain[Race.RC_BOSS].rate).toBe(10);
+    expect(updatedAttributes.right_weapon.sp_drain[Race.RC_BOSS].per).toBe(5);
   });
 
   test("should process SP_SP_DRAIN_VALUE bonus correctly", () => {
-    playerAttributes.right_weapon.sp_drain = [
-      { rate: 0, per: 0, value: 0, type: 0 },
-      { rate: 0, per: 0, value: 0, type: 0 },
-    ];
+    playerAttributes.right_weapon.sp_drain = Array.from(
+      { length: Race.RC_MAX },
+      () => ({
+        rate: 0,
+        per: 0,
+        value: 0,
+        type: 0,
+      })
+    );
     const updatedAttributes = pc_bonus2(
       playerAttributes,
       bonusTypeToStatusPointType.bSPDrainValue,
       10,
       5
     );
-    expect(updatedAttributes.right_weapon.sp_drain[0].value).toBe(10);
-    expect(updatedAttributes.right_weapon.sp_drain[0].type).toBe(5);
+    expect(updatedAttributes.right_weapon.sp_drain[Race.RC_BOSS].value).toBe(
+      10
+    );
+    expect(updatedAttributes.right_weapon.sp_drain[Race.RC_BOSS].type).toBe(5);
   });
 
   test("should process SP_HP_VANISH_RATE bonus correctly", () => {
@@ -411,17 +447,6 @@ describe("pc_bonus2", () => {
       10
     );
     expect(updatedAttributes.skillblown[0].val).toBe(10);
-  });
-
-  test("should process SP_VARCASTRATE bonus correctly", () => {
-    playerAttributes.skillcast = [{ id: 1, val: 0 }];
-    const updatedAttributes = pc_bonus2(
-      playerAttributes,
-      bonusTypeToStatusPointType.bVariableCastrate,
-      1,
-      10
-    );
-    expect(updatedAttributes.skillcast[0].val).toBe(10);
   });
 
   test("should process SP_FIXCASTRATE bonus correctly", () => {

@@ -1,17 +1,14 @@
 import { PlayerAttributes } from "./PlayerAttributes";
-import {
-  BonusArgs,
-  Bonuses,
-  bonusTypeToStatusPointType,
-} from "@/ragnarokData/types";
+import { BonusArgs, Bonuses } from "@/ragnarokData/types";
 import { pc_bonus3 } from "./pc_bonus3";
 import { pc_bonus4 } from "./pc_bonus4";
 import { pc_bonus5 } from "./pc_bonus5";
 import { pc_bonus } from "./pc_bonus";
-import { SC_MAX, ELE_MAX, ELE_ALL } from "./constants";
+import { ELE_MAX, ELE_ALL } from "./constants";
 import { pc_bonus2 } from "./pc_bonus2";
 import { parseValueWithRagEnums } from "./utils";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
+import { sc_type } from "./sc_type";
 
 export class BonusHelpers {
   static processBonuses(
@@ -33,7 +30,7 @@ export class BonusHelpers {
               playerAttributes,
               statusTypeKey as string,
               parseValueWithRagEnums(bonusArray[0] as number),
-              bonusArray[1] as number
+              parseValueWithRagEnums(bonusArray[1] as number)
             );
           } else if (bonusType.startsWith("bonus3")) {
             pc_bonus3(
@@ -193,7 +190,7 @@ export class BonusHelpers {
     type3: number,
     val: number
   ) {
-    if (type2 > SC_MAX) {
+    if (type2 > sc_type.SC_MAX) {
       console.warn(`handleAddEff: ${type2} is not supported.`);
       return;
     }
@@ -206,7 +203,7 @@ export class BonusHelpers {
     type3: number,
     val: number
   ) {
-    if (type2 > SC_MAX) {
+    if (type2 > sc_type.SC_MAX) {
       console.warn(`handleAddEffWhenHit: ${type2} is not supported.`);
       return;
     }
@@ -220,7 +217,7 @@ export class BonusHelpers {
     val: number,
     type4?: number
   ) {
-    if (type3 > SC_MAX) {
+    if (type3 > sc_type.SC_MAX) {
       console.warn(`handleAddEffOnSkill: ${type3} is not supported.`);
       return;
     }

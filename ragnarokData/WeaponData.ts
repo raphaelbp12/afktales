@@ -1,10 +1,6 @@
 // WeaponData.ts
-import {
-  ELE_MAX,
-  RC_MAX,
-  RC2_MAX,
-  MAX_PC_BONUS,
-} from "@/ragnarokData/constants"; // Make sure to define or import these constants
+import { ELE_MAX, MAX_PC_BONUS } from "@/ragnarokData/constants"; // Make sure to define or import these constants
+import { Race, Race2 } from "./map_race_id2mask";
 
 export interface DrainData {
   rate: number;
@@ -55,13 +51,30 @@ export function initializeWeaponData(): WeaponData {
     ignore_mdef_race: 0,
     def_ratio_atk_ele: 0,
     def_ratio_atk_race: 0,
-    addele: new Array(ELE_MAX).fill(0),
-    addrace: new Array(RC_MAX).fill(0),
-    addrace2: new Array(RC2_MAX).fill(0),
+    addele: Array(ELE_MAX).fill(0),
+    addrace: Array(Race.RC_MAX).fill(0),
+    addrace2: Array(Race2.RC2_MAX).fill(0),
     addsize: [0, 0, 0],
-    hp_drain: new Array(RC_MAX).fill({ rate: 0, per: 0, value: 0, type: 0 }),
-    sp_drain: new Array(RC_MAX).fill({ rate: 0, per: 0, value: 0, type: 0 }),
-    add_dmg: new Array(MAX_PC_BONUS).fill({ class_: 0, rate: 0 }),
-    addele2: new Array(MAX_PC_BONUS).fill({ flag: 0, rate: 0, ele: 0 }),
+    hp_drain: Array.from({ length: Race.RC_MAX }, () => ({
+      rate: 0,
+      per: 0,
+      value: 0,
+      type: 0,
+    })),
+    sp_drain: Array.from({ length: Race.RC_MAX }, () => ({
+      rate: 0,
+      per: 0,
+      value: 0,
+      type: 0,
+    })),
+    add_dmg: Array.from({ length: MAX_PC_BONUS }, () => ({
+      class_: 0,
+      rate: 0,
+    })),
+    addele2: Array.from({ length: MAX_PC_BONUS }, () => ({
+      flag: 0,
+      rate: 0,
+      ele: 0,
+    })),
   };
 }

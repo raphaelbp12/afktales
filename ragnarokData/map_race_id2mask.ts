@@ -1,3 +1,16 @@
+export enum Race2 {
+  RC2_NONE = 0,
+  RC2_GOBLIN,
+  RC2_KOBOLD,
+  RC2_ORC,
+  RC2_GOLEM,
+  RC2_GUARDIAN,
+  RC2_NINJA,
+  RC2_SCARABA,
+  RC2_TURTLE,
+  RC2_MAX,
+}
+
 export enum Race {
   RC_FORMLESS = 0, // Formless
   RC_UNDEAD, // Undead
