@@ -1,4 +1,4 @@
-import { PlayerAttributes } from "./PlayerAttributes";
+import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { Race, Race2, RaceMask, map_race_id2mask } from "./map_race_id2mask";
 import { ELE_MAX, ELE_ALL } from "./constants";

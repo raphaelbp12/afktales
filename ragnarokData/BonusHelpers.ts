@@ -1,4 +1,4 @@
-import { PlayerAttributes } from "./PlayerAttributes";
+import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { BonusArgs, Bonuses } from "@/ragnarokData/types";
 import { pc_bonus3 } from "./pc_bonus3";
 import { pc_bonus4 } from "./pc_bonus4";

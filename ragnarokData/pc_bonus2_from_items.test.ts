@@ -1,7 +1,7 @@
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import { BonusHelpers } from "./BonusHelpers";
 import { parseItem } from "./parserItemConfig";
-import { PlayerAttributes } from "./PlayerAttributes";
+import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { Race, Race2 } from "./map_race_id2mask";
 import { Effect } from "./AutoTriggerFlag";
 import { Sizes } from "./utils";

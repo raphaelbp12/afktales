@@ -1,7 +1,7 @@
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import { BonusHelpers } from "./BonusHelpers";
 import { parseItem } from "./parserItemConfig";
-import { PlayerAttributes } from "./PlayerAttributes";
+import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { weapon_type } from "./mmo_header";
 import { map_race_id2mask, Race, RaceMask } from "./map_race_id2mask";
 import { EQP_HELM, EQP_SHIELD, EQP_WEAPON, equip_pos } from "./constants";

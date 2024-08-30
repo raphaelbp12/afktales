@@ -13,7 +13,7 @@ import { predefinedSetups } from "@/components/Calc/predefinedSetups";
 import { parseConfig } from "@/ragnarokData/parserItemConfig";
 import { item_db } from "@/ragnarokData/item_db";
 import { BonusHelpers } from "@/ragnarokData/BonusHelpers";
-import { PlayerAttributes } from "@/ragnarokData/PlayerAttributes";
+import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttributes";
 
 interface CalcContextType {
   minMatk: number | "";

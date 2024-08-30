@@ -1,4 +1,4 @@
-import { PlayerAttributes } from "./PlayerAttributes";
+import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { BonusHelpers } from "./BonusHelpers";
 import { Bonuses, bonusTypeToStatusPointType } from "@/ragnarokData/types";
 

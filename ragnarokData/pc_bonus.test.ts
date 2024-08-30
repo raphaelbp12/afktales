@@ -1,4 +1,4 @@
-import { PlayerAttributes } from "./PlayerAttributes";
+import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { BonusHelpers } from "./BonusHelpers";
 import { Bonuses, bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { EQP_HELM, EQP_SHIELD, EQP_WEAPON, equip_pos } from "./constants";

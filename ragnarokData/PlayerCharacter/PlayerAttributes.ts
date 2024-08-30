@@ -1,12 +1,13 @@
 // PlayerAttributes.ts
 import { Bonuses, s_add_drop } from "@/ragnarokData/types";
-import { WeaponData, initializeWeaponData } from "./WeaponData"; // Import the WeaponData interface and initialization function
-import { ELE_MAX, MAX_PC_BONUS } from "./constants";
-import { weapon_type } from "./mmo_header";
-import { StatusData } from "./StatusData";
-import { AddEffect } from "./AutoTriggerFlag";
-import { sc_type } from "./sc_type";
-import { Race, Race2 } from "./map_race_id2mask";
+import { WeaponData, initializeWeaponData } from "../WeaponData"; // Import the WeaponData interface and initialization function
+import { ELE_MAX, MAX_PC_BONUS } from "../constants";
+import { weapon_type } from "../mmo_header";
+import { StatusData } from "../StatusData";
+import { AddEffect } from "../AutoTriggerFlag";
+import { sc_type } from "../sc_type";
+import { Race, Race2 } from "../map_race_id2mask";
+import { persistent_status } from "./persistent_status";
 
 export class PlayerAttributes {
   weapontype: weapon_type;
@@ -83,7 +84,9 @@ export class PlayerAttributes {
     ematk: number;
   };
   itemBonuses: Bonuses;
+  persistent_status: persistent_status;
   base_status: StatusData;
+  battle_status: StatusData;
   param_bonus: { [key: string]: number };
   param_equip: { [key: string]: number };
   subele: number[];
@@ -250,46 +253,10 @@ export class PlayerAttributes {
     this.left_weapon = initializeWeaponData();
     this.itemBonuses = bonuses;
 
+    this.persistent_status = new persistent_status();
     // Initialize base_status
-    this.base_status = {
-      hp: 0,
-      sp: 0,
-      max_hp: 0,
-      max_sp: 0,
-      str: 0,
-      agi: 0,
-      vit: 0,
-      int_: 0,
-      dex: 0,
-      luk: 0,
-      atk_percent: 0,
-      matk_percent: 0,
-      def_percent: 0,
-      mdef_percent: 0,
-      batk: 0,
-      matk_min: 0,
-      matk_max: 0,
-      speed: 0,
-      amotion: 0,
-      adelay: 0,
-      dmotion: 0,
-      mode: 0,
-      hit: 0,
-      flee: 0,
-      cri: 0,
-      flee2: 0,
-      def2: 0,
-      mdef2: 0,
-      aspd_rate: 0,
-      def: 0,
-      mdef: 0,
-      def_ele: 0,
-      ele_lv: 0,
-      size: 0,
-      race: 0,
-      rhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
-      lhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
-    };
+    this.base_status = initializeStatusData();
+    this.battle_status = initializeStatusData();
 
     // Initialize arrays with distinct objects
     this.ignore_mdef = Array(Race.RC_MAX).fill(0);
@@ -599,4 +566,46 @@ export class PlayerAttributes {
       },
     };
   }
+}
+
+function initializeStatusData(): StatusData {
+  return {
+    hp: 0,
+    sp: 0,
+    max_hp: 0,
+    max_sp: 0,
+    str: 0,
+    agi: 0,
+    vit: 0,
+    int_: 0,
+    dex: 0,
+    luk: 0,
+    atk_percent: 0,
+    matk_percent: 0,
+    def_percent: 0,
+    mdef_percent: 0,
+    batk: 0,
+    matk_min: 0,
+    matk_max: 0,
+    speed: 0,
+    amotion: 0,
+    adelay: 0,
+    dmotion: 0,
+    mode: 0,
+    hit: 0,
+    flee: 0,
+    cri: 0,
+    flee2: 0,
+    def2: 0,
+    mdef2: 0,
+    aspd_rate: 0,
+    def: 0,
+    mdef: 0,
+    def_ele: 0,
+    ele_lv: 0,
+    size: 0,
+    race: 0,
+    rhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
+    lhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
+  };
 }

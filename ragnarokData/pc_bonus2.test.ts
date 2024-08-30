@@ -1,5 +1,5 @@
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
-import { PlayerAttributes } from "./PlayerAttributes";
+import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { pc_bonus2 } from "./pc_bonus2";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { ELE_ALL } from "./constants";
