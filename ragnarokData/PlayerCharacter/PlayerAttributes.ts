@@ -7,7 +7,7 @@ import { StatusData } from "../StatusData";
 import { AddEffect } from "../AutoTriggerFlag";
 import { sc_type } from "../sc_type";
 import { Race, Race2 } from "../map_race_id2mask";
-import { persistent_status } from "./persistent_status";
+import { persistent_status } from "./persistentStatus";
 
 export class PlayerAttributes {
   weapontype: weapon_type;
