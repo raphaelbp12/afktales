@@ -4,7 +4,7 @@ import { Race, Race2 } from "./map_race_id2mask";
 import { effectStringToEnum } from "./AutoTriggerFlag";
 import { skillStringToEnum } from "./SkillsEnum";
 import { parseConfig } from "./parserItemConfig";
-import { item_db } from "@/ragnarokData/item_db";
+import { item_db } from "@/ragnarokData/ItemDB/item_db";
 
 export function capValue(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));

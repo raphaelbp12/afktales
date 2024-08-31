@@ -1,18 +1,11 @@
 import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { capValue } from "./utils";
-import {
-  ELE_ALL,
-  ELE_MAX,
-  EQP_HELM,
-  EQP_SHIELD,
-  EQP_WEAPON,
-  equip_pos,
-} from "./constants";
+import { ELE_ALL, ELE_MAX } from "./constants";
 import { weapon_type } from "./mmo_header";
-import { StatusData } from "./StatusData";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import { map_race_id2mask, Race, RaceMask } from "./map_race_id2mask";
+import { EQP_WEAPON, equip_pos, EQP_HELM, EQP_SHIELD } from "./ItemDB/types";
 
 export function pc_bonus(
   playerAttributes: PlayerAttributes,

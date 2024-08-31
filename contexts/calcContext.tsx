@@ -11,7 +11,7 @@ import { Bonuses } from "@/ragnarokData/types";
 import { SkillFactory } from "@/data/SkillFactory";
 import { predefinedSetups } from "@/components/Calc/predefinedSetups";
 import { parseConfig } from "@/ragnarokData/parserItemConfig";
-import { item_db } from "@/ragnarokData/item_db";
+import { item_db } from "@/ragnarokData/ItemDB/item_db";
 import { BonusHelpers } from "@/ragnarokData/BonusHelpers";
 import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttributes";
 

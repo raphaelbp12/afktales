@@ -1,8 +1,8 @@
 import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { BonusHelpers } from "./BonusHelpers";
 import { Bonuses, bonusTypeToStatusPointType } from "@/ragnarokData/types";
-import { EQP_HELM, EQP_SHIELD, EQP_WEAPON, equip_pos } from "./constants";
 import { Race } from "./map_race_id2mask";
+import { EQP_WEAPON, equip_pos, EQP_HELM, EQP_SHIELD } from "./ItemDB/types";
 
 describe("BonusHelpers", () => {
   let playerAttributes: PlayerAttributes;

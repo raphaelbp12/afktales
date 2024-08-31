@@ -1,5 +1,5 @@
 import React from "react";
-import { item_db } from "@/ragnarokData/item_db";
+import { item_db } from "@/ragnarokData/ItemDB/item_db";
 import { parseConfig } from "@/ragnarokData/parserItemConfig";
 import DropdownSelector from "../commonComponents/DropdownSelector";
 import { Item } from "@/ragnarokData/types";

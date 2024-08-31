@@ -1,4 +1,4 @@
-import { equip_pos } from "../constants";
+import { equip_pos } from "../ItemDB/types";
 import {
   persistent_status,
   serializePersistentStatus,

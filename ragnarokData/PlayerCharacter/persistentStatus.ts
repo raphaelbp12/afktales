@@ -1,4 +1,5 @@
-import { equip_pos, MAX_INVENTORY } from "../constants";
+import { MAX_INVENTORY } from "../constants";
+import { item, item_option } from "../ItemDB/types";
 
 export class persistent_status {
   hp: number;
@@ -31,46 +32,6 @@ export class persistent_status {
     this.inventory = Array.from({ length: MAX_INVENTORY }, () => new item());
   }
 }
-
-class item {
-  id: number;
-  nameid: number;
-  amount: number;
-  equip: equip_pos;
-  identify: string;
-  refine: string;
-  grade: string;
-  attribute: string;
-  card: number[];
-  expire_time: number;
-  favorite: string;
-  bound: string;
-  unique_id: number;
-  option: item_option[];
-
-  constructor() {
-    this.id = 0;
-    this.nameid = 0;
-    this.amount = 0;
-    this.equip = equip_pos.EQP_NONE;
-    this.identify = "";
-    this.refine = "";
-    this.grade = "";
-    this.attribute = "";
-    this.card = [];
-    this.expire_time = 0;
-    this.favorite = "";
-    this.bound = "";
-    this.unique_id = 0;
-    this.option = [];
-  }
-}
-
-type item_option = {
-  index: number;
-  value: number;
-  param: number;
-};
 
 // Function to serialize the class to a string
 export function serializePersistentStatus(status: persistent_status): string {
