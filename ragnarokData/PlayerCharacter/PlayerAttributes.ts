@@ -8,6 +8,7 @@ import { AddEffect } from "../AutoTriggerFlag";
 import { sc_type } from "../sc_type";
 import { Race, Race2 } from "../map_race_id2mask";
 import { persistent_status } from "./persistentStatus";
+import { item_persistent } from "../ItemDB/types";
 
 export class PlayerAttributes {
   weapontype: weapon_type;
@@ -223,7 +224,7 @@ export class PlayerAttributes {
     };
   };
 
-  constructor(bonuses: Bonuses) {
+  constructor(bonuses?: Bonuses) {
     // Initialize single value properties
     this.weapontype = weapon_type.W_FIST;
     this.castrate = 0;
@@ -251,7 +252,7 @@ export class PlayerAttributes {
     this.state = { lr_flag: 0 };
     this.right_weapon = initializeWeaponData();
     this.left_weapon = initializeWeaponData();
-    this.itemBonuses = bonuses;
+    this.itemBonuses = bonuses ? bonuses : {};
 
     this.persistent_status = new persistent_status();
     // Initialize base_status
@@ -565,6 +566,18 @@ export class PlayerAttributes {
         },
       },
     };
+  }
+
+  public addItem(itemPersistent: item_persistent, amount: number): void {
+    const emptySlot = this.persistent_status.inventory.findIndex(
+      (item) => item.id === 0
+    );
+    if (emptySlot === -1) {
+      return;
+    }
+
+    this.persistent_status.inventory[emptySlot] = itemPersistent;
+    this.persistent_status.inventory[emptySlot].amount = amount;
   }
 }
 

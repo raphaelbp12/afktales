@@ -1,7 +1,7 @@
 import { Job, Trade, Nouse, Bonuses } from "../types";
 
 // item_data in itemdb.h
-export interface ItemData {
+export class ItemData {
   nameid: number;
   Id: number;
   AegisName: string;
@@ -47,6 +47,74 @@ export interface ItemData {
   OnRentalStartScript?: string;
   OnRentalEndScript?: string;
   Bonuses?: Bonuses;
+
+  constructor(data?: Partial<ItemData>) {
+    // Assign default values or provided values
+    this.nameid = data?.Id ?? 0;
+    this.Id = data?.Id ?? 0;
+    this.AegisName = data?.AegisName ?? "";
+    this.Name = data?.Name ?? "";
+    this.CloneItem = data?.CloneItem;
+    this.Type = data?.Type;
+    this.Buy = data?.Buy;
+    this.Sell = data?.Sell;
+    this.Weight = data?.Weight;
+    this.Atk = data?.Atk;
+    this.Matk = data?.Matk;
+    this.Def = data?.Def;
+    this.Range = data?.Range;
+    this.Slots = data?.Slots;
+    this.Job = data?.Job;
+    this.Upper = data?.Upper;
+    this.Gender = data?.Gender;
+    this.Loc = data?.Loc;
+    this.WeaponLv = data?.WeaponLv;
+    this.EquipLv = data?.EquipLv;
+    this.Refine = data?.Refine;
+    this.Grade = data?.Grade;
+    this.DisableOptions = data?.DisableOptions;
+    this.Subtype = data?.Subtype;
+    this.ViewSprite = data?.ViewSprite;
+    this.BindOnEquip = data?.BindOnEquip;
+    this.ForceSerial = data?.ForceSerial;
+    this.BuyingStore = data?.BuyingStore;
+    this.Delay = data?.Delay;
+    this.KeepAfterUse = data?.KeepAfterUse;
+    this.DropAnnounce = data?.DropAnnounce;
+    this.ShowDropEffect = data?.ShowDropEffect;
+    this.DropEffectMode = data?.DropEffectMode;
+    this.IgnoreDiscount = data?.IgnoreDiscount;
+    this.IgnoreOvercharge = data?.IgnoreOvercharge;
+    this.Trade = data?.Trade;
+    this.Nouse = data?.Nouse;
+    this.Stack = data?.Stack;
+    this.Sprite = data?.Sprite;
+    this.Script = data?.Script;
+    this.OnEquipScript = data?.OnEquipScript;
+    this.OnUnequipScript = data?.OnUnequipScript;
+    this.OnRentalStartScript = data?.OnRentalStartScript;
+    this.OnRentalEndScript = data?.OnRentalEndScript;
+    this.Bonuses = data?.Bonuses;
+  }
+
+  public toPersistentItem(): item_persistent {
+    return {
+      id: this.Id,
+      nameid: this.nameid,
+      amount: 1,
+      equip: equip_pos.EQP_NONE,
+      identify: "",
+      refine: "",
+      grade: "",
+      attribute: "",
+      card: [],
+      expire_time: 0,
+      favorite: "",
+      bound: "",
+      unique_id: 0,
+      option: [],
+    };
+  }
 }
 
 // from item struct in mmo.h

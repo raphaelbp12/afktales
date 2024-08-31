@@ -27,7 +27,8 @@ export function parseConfig(configString: string): {
 
   while ((match = itemRegex.exec(cleanConfig)) !== null) {
     const itemString = match[1];
-    const item = parseItem(itemString);
+    const partialItem = parseItem(itemString);
+    const item: ItemData = new ItemData(partialItem);
     itemsList.push(item);
     itemsDict[item.Id] = item;
     itemsDictAegisNameKey[item.AegisName] = item.Id;
