@@ -2,8 +2,8 @@ import React from "react";
 import { item_db } from "@/ragnarokData/ItemDB/item_db";
 import { parseConfig } from "@/ragnarokData/parserItemConfig";
 import DropdownSelector from "../commonComponents/DropdownSelector";
-import { Item } from "@/ragnarokData/types";
 import { useCalc } from "@/contexts/calcContext";
+import { ItemData } from "@/ragnarokData/ItemDB/types";
 
 const equipmentPlacements: { [key: string]: string } = {
   EQP_HEAD_LOW: "Lower Headgear",
@@ -36,8 +36,8 @@ const equipmentPlacements: { [key: string]: string } = {
   EQP_SHADOW_ACC: "Shadow Accessories",
 };
 
-function categorizeItems(items: Item[]): { [key: string]: Item[] } {
-  const categorizedItems: { [key: string]: Item[] } = {};
+function categorizeItems(items: ItemData[]): { [key: string]: ItemData[] } {
+  const categorizedItems: { [key: string]: ItemData[] } = {};
 
   items.forEach((item) => {
     if (item.Type === "IT_CARD") return;

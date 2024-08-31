@@ -1,4 +1,5 @@
-import { Item, Job, Bonuses, bonusTypeToStatusPointType } from "./types";
+import { ItemData } from "./ItemDB/types";
+import { Job, Bonuses, bonusTypeToStatusPointType } from "./types";
 
 // Function to remove comments from the config string
 export function removeComments(configString: string): string {
@@ -12,13 +13,13 @@ export function removeComments(configString: string): string {
 
 // Function to parse the config string into a list of item objects and a dictionary
 export function parseConfig(configString: string): {
-  itemsList: Item[];
-  itemsDict: { [key: number]: Item };
+  itemsList: ItemData[];
+  itemsDict: { [key: number]: ItemData };
   itemsDictAegisNameKey: Record<string, number>;
 } {
   const cleanConfig = removeComments(configString);
-  const itemsList: Item[] = [];
-  const itemsDict: { [key: number]: Item } = {};
+  const itemsList: ItemData[] = [];
+  const itemsDict: { [key: number]: ItemData } = {};
   const itemsDictAegisNameKey: Record<string, number> = {};
 
   let match;
@@ -35,13 +36,13 @@ export function parseConfig(configString: string): {
   return { itemsList, itemsDict, itemsDictAegisNameKey };
 }
 
-export function parseItem(itemString: string): Item {
-  const item: Partial<Item> = {};
+export function parseItem(itemString: string): ItemData {
+  const item: Partial<ItemData> = {};
   const lines = itemString.split("\n");
-  let currentKey: keyof Item | null = null;
+  let currentKey: keyof ItemData | null = null;
   let currentValue: string | null = null;
   let nestedObjectDepth = 0;
-  let nestedObjectKey: keyof Item | null = null;
+  let nestedObjectKey: keyof ItemData | null = null;
   let nestedObjectValue = "";
   let inScript = false;
 
@@ -53,9 +54,9 @@ export function parseItem(itemString: string): Item {
       currentValue += "\n" + line;
       if (line.endsWith('">')) {
         inScript = false;
-        item[currentKey as keyof Item] = parseValue(
+        item[currentKey as keyof ItemData] = parseValue(
           currentValue as string,
-          currentKey as keyof Item
+          currentKey as keyof ItemData
         );
         currentKey = null;
         currentValue = null;
@@ -85,7 +86,7 @@ export function parseItem(itemString: string): Item {
       if (currentKey && currentValue !== null) {
         (item as any)[currentKey] = parseValue(currentValue.trim(), currentKey);
       }
-      currentKey = fieldMatch[1] as keyof Item;
+      currentKey = fieldMatch[1] as keyof ItemData;
       currentValue = fieldMatch[2];
       if (currentValue.startsWith('<"') && !currentValue.endsWith('">')) {
         inScript = true;
@@ -121,10 +122,10 @@ export function parseItem(itemString: string): Item {
     item.Bonuses = parseBonuses(item.Script);
   }
 
-  return item as Item;
+  return item as ItemData;
 }
 
-function parseValue(value: string, key: keyof Item): any {
+function parseValue(value: string, key: keyof ItemData): any {
   if (value.startsWith('"') && value.endsWith('"')) {
     return value.slice(1, -1);
   } else if (value.startsWith("{") && value.endsWith("}")) {

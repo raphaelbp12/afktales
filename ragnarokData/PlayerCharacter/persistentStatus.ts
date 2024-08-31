@@ -1,5 +1,5 @@
 import { MAX_INVENTORY } from "../constants";
-import { item, item_option } from "../ItemDB/types";
+import { item_persistent, item_option } from "../ItemDB/types";
 
 export class persistent_status {
   hp: number;
@@ -14,7 +14,7 @@ export class persistent_status {
   dex: number;
   luk: number;
 
-  inventory: item[];
+  inventory: item_persistent[];
 
   constructor() {
     this.hp = 0;
@@ -29,7 +29,10 @@ export class persistent_status {
     this.dex = 0;
     this.luk = 0;
 
-    this.inventory = Array.from({ length: MAX_INVENTORY }, () => new item());
+    this.inventory = Array.from(
+      { length: MAX_INVENTORY },
+      () => new item_persistent()
+    );
   }
 }
 
@@ -56,7 +59,7 @@ export function deserializePersistentStatus(data: string): persistent_status {
   status.luk = parsedData.luk;
 
   status.inventory = parsedData.inventory.map((itemData: any) => {
-    const itm = new item();
+    const itm = new item_persistent();
     itm.id = itemData.id;
     itm.nameid = itemData.nameid;
     itm.amount = itemData.amount;

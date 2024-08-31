@@ -67,53 +67,6 @@ export interface s_add_drop {
   rate: number;
 }
 
-export interface Item {
-  Id: number;
-  AegisName: string;
-  Name: string;
-  CloneItem?: number | string;
-  Type?: string;
-  Buy?: number;
-  Sell?: number;
-  Weight?: number;
-  Atk?: number;
-  Matk?: number;
-  Def?: number;
-  Range?: number;
-  Slots?: number;
-  Job?: Job | number;
-  Upper?: string | number;
-  Gender?: string;
-  Loc?: string | number | (string | number)[];
-  WeaponLv?: number;
-  EquipLv?: number | [number, number];
-  Refine?: boolean;
-  Grade?: boolean;
-  DisableOptions?: boolean;
-  Subtype?: number;
-  ViewSprite?: number;
-  BindOnEquip?: boolean;
-  ForceSerial?: boolean;
-  BuyingStore?: boolean;
-  Delay?: number;
-  KeepAfterUse?: boolean;
-  DropAnnounce?: boolean;
-  ShowDropEffect?: boolean;
-  DropEffectMode?: number;
-  IgnoreDiscount?: boolean;
-  IgnoreOvercharge?: boolean;
-  Trade?: Trade;
-  Nouse?: Nouse;
-  Stack?: [number, number];
-  Sprite?: number;
-  Script?: string;
-  OnEquipScript?: string;
-  OnUnequipScript?: string;
-  OnRentalStartScript?: string;
-  OnRentalEndScript?: string;
-  Bonuses?: Bonuses;
-}
-
 export const bonusTypeToStatusPointType: Record<string, string> = {
   bMaxHP: "SP_MAXHP",
   bMaxSP: "SP_MAXSP",
