@@ -2,9 +2,9 @@ import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import { BonusHelpers } from "./BonusHelpers";
 import { parseItem } from "./parserItemConfig";
 import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
-import { weapon_type } from "./mmo_header";
+import { weapon_type } from "./ItemDB/weapon_type";
 import { map_race_id2mask, Race } from "./map_race_id2mask";
-import { equip_pos, EQP_HELM, EQP_SHIELD, EQP_WEAPON } from "./ItemDB/types";
+import { equip_pos } from "./ItemDB/types";
 
 describe("pc_bonus from items", () => {
   it("should test bonus bStr", () => {
@@ -1707,7 +1707,7 @@ describe("pc_bonus from items", () => {
         (equip_pos.EQP_HEAD_LOW |
           equip_pos.EQP_HEAD_MID |
           equip_pos.EQP_HEAD_TOP)
-    ).toBe(EQP_HELM); // EQP_HELM
+    ).toBe(equip_pos.EQP_HELM); // EQP_HELM
   });
 
   it("should test bonus bUnbreakableShield", () => {
@@ -1723,9 +1723,9 @@ describe("pc_bonus from items", () => {
       attributes
     );
 
-    expect(processedAttributes.bonus.unbreakable_equip & EQP_SHIELD).toBe(
-      EQP_SHIELD
-    ); // EQP_SHIELD
+    expect(
+      processedAttributes.bonus.unbreakable_equip & equip_pos.EQP_SHIELD
+    ).toBe(equip_pos.EQP_SHIELD); // EQP_SHIELD
   });
 
   it("should test bonus bUnbreakableGarment", () => {
@@ -1905,9 +1905,9 @@ describe("pc_bonus from items", () => {
       attributes
     );
 
-    expect(processedAttributes.bonus.unstripable_equip & EQP_WEAPON).toBe(
-      EQP_WEAPON
-    ); // EQP_WEAPON
+    expect(
+      processedAttributes.bonus.unstripable_equip & equip_pos.EQP_WEAPON
+    ).toBe(equip_pos.EQP_WEAPON); // EQP_WEAPON
   });
 
   it("should test bonus bUnstripableArmor", () => {
@@ -1941,9 +1941,9 @@ describe("pc_bonus from items", () => {
       attributes
     );
 
-    expect(processedAttributes.bonus.unstripable_equip & EQP_HELM).toBe(
-      EQP_HELM
-    ); // EQP_HELM
+    expect(
+      processedAttributes.bonus.unstripable_equip & equip_pos.EQP_HELM
+    ).toBe(equip_pos.EQP_HELM); // EQP_HELM
   });
 
   it("should test bonus bUnstripableShield", () => {
@@ -1959,9 +1959,9 @@ describe("pc_bonus from items", () => {
       attributes
     );
 
-    expect(processedAttributes.bonus.unstripable_equip & EQP_SHIELD).toBe(
-      EQP_SHIELD
-    ); // EQP_SHIELD
+    expect(
+      processedAttributes.bonus.unstripable_equip & equip_pos.EQP_SHIELD
+    ).toBe(equip_pos.EQP_SHIELD); // EQP_SHIELD
   });
 
   it("should test bonus bHPDrainValue with lr_flag 0", () => {

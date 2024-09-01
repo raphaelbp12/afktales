@@ -2,7 +2,7 @@ import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { BonusHelpers } from "./BonusHelpers";
 import { Bonuses, bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { Race } from "./map_race_id2mask";
-import { EQP_WEAPON, equip_pos, EQP_HELM, EQP_SHIELD } from "./ItemDB/types";
+import { equip_pos } from "./ItemDB/types";
 
 describe("BonusHelpers", () => {
   let playerAttributes: PlayerAttributes;
@@ -1058,7 +1058,9 @@ describe("BonusHelpers", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableWeapon]: [[EQP_WEAPON]],
+        [bonusTypeToStatusPointType.bUnbreakableWeapon]: [
+          [equip_pos.EQP_WEAPON],
+        ],
       },
     };
 
@@ -1067,7 +1069,9 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(EQP_WEAPON); // Assuming 1 represents EQP_WEAPON
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(
+      equip_pos.EQP_WEAPON
+    ); // Assuming 1 represents EQP_WEAPON
   });
 
   test("should process SP_UNBREAKABLE_ARMOR bonus correctly", () => {
@@ -1090,7 +1094,7 @@ describe("BonusHelpers", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableHelm]: [[EQP_HELM]],
+        [bonusTypeToStatusPointType.bUnbreakableHelm]: [[equip_pos.EQP_HELM]],
       },
     };
 
@@ -1099,14 +1103,16 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(EQP_HELM); // Assuming 4 represents EQP_HELM
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(equip_pos.EQP_HELM); // Assuming 4 represents EQP_HELM
   });
 
   test("should process SP_UNBREAKABLE_SHIELD bonus correctly", () => {
     playerAttributes.bonus.unbreakable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnbreakableShield]: [[EQP_SHIELD]],
+        [bonusTypeToStatusPointType.bUnbreakableShield]: [
+          [equip_pos.EQP_SHIELD],
+        ],
       },
     };
 
@@ -1115,7 +1121,9 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unbreakable_equip).toBe(EQP_SHIELD); // Assuming 8 represents EQP_SHIELD
+    expect(updatedAttributes.bonus.unbreakable_equip).toBe(
+      equip_pos.EQP_SHIELD
+    ); // Assuming 8 represents EQP_SHIELD
   });
 
   test("should process SP_UNBREAKABLE_GARMENT bonus correctly", () => {
@@ -1286,7 +1294,9 @@ describe("BonusHelpers", () => {
     playerAttributes.bonus.unstripable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnstripableWeapon]: [[EQP_WEAPON]],
+        [bonusTypeToStatusPointType.bUnstripableWeapon]: [
+          [equip_pos.EQP_WEAPON],
+        ],
       },
     };
 
@@ -1295,7 +1305,9 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unstripable_equip).toBe(EQP_WEAPON); // Assuming 1 represents EQP_WEAPON
+    expect(updatedAttributes.bonus.unstripable_equip).toBe(
+      equip_pos.EQP_WEAPON
+    ); // Assuming 1 represents EQP_WEAPON
   });
 
   test("should process SP_UNSTRIPABLE_ARMOR bonus correctly", () => {
@@ -1318,7 +1330,7 @@ describe("BonusHelpers", () => {
     playerAttributes.bonus.unstripable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnstripableHelm]: [[EQP_HELM]],
+        [bonusTypeToStatusPointType.bUnstripableHelm]: [[equip_pos.EQP_HELM]],
       },
     };
 
@@ -1327,14 +1339,16 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unstripable_equip).toBe(EQP_HELM); // Assuming 4 represents EQP_HELM
+    expect(updatedAttributes.bonus.unstripable_equip).toBe(equip_pos.EQP_HELM); // Assuming 4 represents EQP_HELM
   });
 
   test("should process SP_UNSTRIPABLE_SHIELD bonus correctly", () => {
     playerAttributes.bonus.unstripable_equip = 0;
     const bonuses: Bonuses = {
       bonus: {
-        [bonusTypeToStatusPointType.bUnstripableShield]: [[EQP_SHIELD]],
+        [bonusTypeToStatusPointType.bUnstripableShield]: [
+          [equip_pos.EQP_SHIELD],
+        ],
       },
     };
 
@@ -1343,7 +1357,9 @@ describe("BonusHelpers", () => {
       playerAttributes
     );
 
-    expect(updatedAttributes.bonus.unstripable_equip).toBe(EQP_SHIELD); // Assuming 8 represents EQP_SHIELD
+    expect(updatedAttributes.bonus.unstripable_equip).toBe(
+      equip_pos.EQP_SHIELD
+    ); // Assuming 8 represents EQP_SHIELD
   });
 
   test("should process SP_HP_DRAIN_VALUE bonus correctly for right hand", () => {

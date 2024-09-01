@@ -1,17 +1,21 @@
 // PlayerAttributes.ts
 import { Bonuses, s_add_drop } from "@/ragnarokData/types";
 import { WeaponData, initializeWeaponData } from "../WeaponData"; // Import the WeaponData interface and initialization function
-import { ELE_MAX, MAX_PC_BONUS } from "../constants";
-import { weapon_type } from "../mmo_header";
+import { ELE_MAX, MAX_INVENTORY, MAX_PC_BONUS } from "../constants";
+import { weapon_type } from "../ItemDB/weapon_type";
 import { StatusData } from "../StatusData";
 import { AddEffect } from "../AutoTriggerFlag";
 import { sc_type } from "../sc_type";
 import { Race, Race2 } from "../map_race_id2mask";
 import { persistent_status } from "./persistentStatus";
-import { item_persistent } from "../ItemDB/types";
+import { equip_pos, item_persistent, ItemData } from "../ItemDB/types";
+import { Inventory } from "./Inventory";
 
 export class PlayerAttributes {
+  has_shield: boolean;
   weapontype: weapon_type;
+  weapontype1: weapon_type;
+  weapontype2: weapon_type;
   autospell: any[];
   autospell2: any[];
   autospell3: any[];
@@ -84,8 +88,11 @@ export class PlayerAttributes {
     add_varcast: number;
     ematk: number;
   };
+  equip_pos: equip_pos[];
+  equip_index: number[];
   itemBonuses: Bonuses;
   persistent_status: persistent_status;
+  inventory: Inventory;
   base_status: StatusData;
   battle_status: StatusData;
   param_bonus: { [key: string]: number };
@@ -226,7 +233,10 @@ export class PlayerAttributes {
 
   constructor(bonuses?: Bonuses) {
     // Initialize single value properties
+    this.has_shield = false;
     this.weapontype = weapon_type.W_FIST;
+    this.weapontype1 = weapon_type.W_FIST;
+    this.weapontype2 = weapon_type.W_FIST;
     this.castrate = 0;
     this.hprate = 0;
     this.sprate = 0;
@@ -254,7 +264,10 @@ export class PlayerAttributes {
     this.left_weapon = initializeWeaponData();
     this.itemBonuses = bonuses ? bonuses : {};
 
+    this.equip_pos = initEquipPos();
+    this.equip_index = Array(equip_index.EQI_MAX).fill(-1);
     this.persistent_status = new persistent_status();
+    this.inventory = new Inventory(MAX_INVENTORY);
     // Initialize base_status
     this.base_status = initializeStatusData();
     this.battle_status = initializeStatusData();
@@ -568,16 +581,143 @@ export class PlayerAttributes {
     };
   }
 
-  public addItem(itemPersistent: item_persistent, amount: number): void {
+  public getInvSlotInEquipPos(pos: equip_pos): number {
+    for (let i = 0; i < equip_index.EQI_MAX; i++) {
+      if (this.equip_pos[i] === pos) {
+        return this.equip_index[i];
+      }
+    }
+
+    return -1;
+  }
+
+  public addItem(itemData: ItemData, amount: number = 1): number {
+    const itemCopy = itemData.copy();
     const emptySlot = this.persistent_status.inventory.findIndex(
       (item) => item.id === 0
     );
     if (emptySlot === -1) {
-      return;
+      return -1;
     }
 
-    this.persistent_status.inventory[emptySlot] = itemPersistent;
+    this.persistent_status.inventory[emptySlot] = itemCopy.toPersistentItem();
     this.persistent_status.inventory[emptySlot].amount = amount;
+
+    return this.inventory.addItem(itemCopy, amount);
+  }
+
+  // pc_equipitem
+  public equipItem(inventorySlot: number): void {
+    const item = this.inventory.getItemInSlot(inventorySlot);
+    if (!item) return;
+    if (!item.isEquip()) return;
+
+    const itemLoc = item.getLoc();
+
+    for (let i = 0; i < equip_index.EQI_MAX; i++) {
+      if (this.equip_pos[i] === itemLoc) {
+        if (this.equip_index[i] !== -1) {
+          this.unequipItem(this.equip_index[i]);
+        }
+        this.equip_index[i] = inventorySlot;
+      }
+    }
+
+    const invItem = this.inventory.getItemInSlot(inventorySlot);
+    invItem?.equip(itemLoc);
+  }
+
+  public unequipItemPos(pos: equip_pos): void {
+    if (pos === equip_pos.EQP_NONE) return;
+    if (pos === equip_pos.EQP_HAND_R) {
+      this.weapontype1 = weapon_type.W_FIST;
+      this.calcWeaponType();
+    }
+    if (pos === equip_pos.EQP_HAND_L) {
+      this.has_shield = false;
+      this.weapontype2 = weapon_type.W_FIST;
+      this.calcWeaponType();
+    }
+  }
+
+  //pc_unequipitem
+  public unequipItem(invSlotIndex: number): void {
+    const item = this.inventory.getItemInSlot(invSlotIndex);
+    if (!item) return;
+    const itemLoc = item.getLoc();
+    const equipInvSlotIndex = this.getInvSlotInEquipPos(itemLoc);
+    if (equipInvSlotIndex === -1) return;
+
+    for (let i = 0; i < equip_index.EQI_MAX; i++) {
+      if (this.equip_pos[i] === itemLoc) {
+        if (this.equip_index[i] !== -1) {
+          this.equip_index[i] = -1;
+        }
+      }
+    }
+    this.unequipItemPos(itemLoc);
+    item.unequip();
+    // TODO
+    // Check for combos. (MUST be done before status->calc_pc()!)
+  }
+
+  public calcWeaponType(): number {
+    // single-hand
+    if (this.weapontype2 === weapon_type.W_FIST) {
+      this.weapontype = this.weapontype1;
+      return 1;
+    }
+    if (this.weapontype1 === weapon_type.W_FIST) {
+      this.weapontype = this.weapontype2;
+      return 1;
+    }
+
+    // dual-wield
+    this.weapontype = weapon_type.W_FIST;
+    switch (this.weapontype1) {
+      case weapon_type.W_DAGGER:
+        switch (this.weapontype2) {
+          case weapon_type.W_DAGGER:
+            this.weapontype = weapon_type.W_DOUBLE_DD;
+            break;
+          case weapon_type.W_1HSWORD:
+            this.weapontype = weapon_type.W_DOUBLE_DS;
+            break;
+          case weapon_type.W_1HAXE:
+            this.weapontype = weapon_type.W_DOUBLE_DA;
+            break;
+        }
+      case weapon_type.W_1HSWORD:
+        switch (this.weapontype2) {
+          case weapon_type.W_DAGGER:
+            this.weapontype = weapon_type.W_DOUBLE_DS;
+            break;
+          case weapon_type.W_1HSWORD:
+            this.weapontype = weapon_type.W_DOUBLE_SS;
+            break;
+          case weapon_type.W_1HAXE:
+            this.weapontype = weapon_type.W_DOUBLE_SA;
+            break;
+        }
+      case weapon_type.W_1HAXE:
+        switch (this.weapontype2) {
+          case weapon_type.W_DAGGER:
+            this.weapontype = weapon_type.W_DOUBLE_DA;
+            break;
+          case weapon_type.W_1HSWORD:
+            this.weapontype = weapon_type.W_DOUBLE_SA;
+            break;
+          case weapon_type.W_1HAXE:
+            this.weapontype = weapon_type.W_DOUBLE_AA;
+            break;
+        }
+    }
+
+    if (this.weapontype === weapon_type.W_FIST) {
+      this.weapontype = this.weapontype1;
+    }
+
+    return 2;
   }
 }
 
@@ -621,4 +761,55 @@ function initializeStatusData(): StatusData {
     rhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
     lhw: { atk: 0, atk2: 0, range: 0, ele: 0 },
   };
+}
+
+enum equip_index {
+  EQI_ACC_L = 0,
+  EQI_ACC_R,
+  EQI_SHOES,
+  EQI_GARMENT,
+  EQI_HEAD_LOW,
+  EQI_HEAD_MID,
+  EQI_HEAD_TOP,
+  EQI_ARMOR,
+  EQI_HAND_L,
+  EQI_HAND_R,
+  EQI_COSTUME_TOP,
+  EQI_COSTUME_MID,
+  EQI_COSTUME_LOW,
+  EQI_COSTUME_GARMENT,
+  EQI_AMMO,
+  EQI_SHADOW_ARMOR,
+  EQI_SHADOW_WEAPON,
+  EQI_SHADOW_SHIELD,
+  EQI_SHADOW_SHOES,
+  EQI_SHADOW_ACC_R,
+  EQI_SHADOW_ACC_L,
+  EQI_MAX,
+}
+
+function initEquipPos(): equip_pos[] {
+  return [
+    equip_pos.EQP_ACC_L,
+    equip_pos.EQP_ACC_R,
+    equip_pos.EQP_SHOES,
+    equip_pos.EQP_GARMENT,
+    equip_pos.EQP_HEAD_LOW,
+    equip_pos.EQP_HEAD_MID,
+    equip_pos.EQP_HEAD_TOP,
+    equip_pos.EQP_ARMOR,
+    equip_pos.EQP_HAND_L,
+    equip_pos.EQP_HAND_R,
+    equip_pos.EQP_COSTUME_HEAD_TOP,
+    equip_pos.EQP_COSTUME_HEAD_MID,
+    equip_pos.EQP_COSTUME_HEAD_LOW,
+    equip_pos.EQP_COSTUME_GARMENT,
+    equip_pos.EQP_AMMO,
+    equip_pos.EQP_SHADOW_ARMOR,
+    equip_pos.EQP_SHADOW_WEAPON,
+    equip_pos.EQP_SHADOW_SHIELD,
+    equip_pos.EQP_SHADOW_SHOES,
+    equip_pos.EQP_SHADOW_ACC_R,
+    equip_pos.EQP_SHADOW_ACC_L,
+  ];
 }

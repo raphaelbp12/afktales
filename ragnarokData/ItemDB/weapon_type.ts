@@ -33,3 +33,25 @@ export enum weapon_type {
   W_DOUBLE_SA, ///< sword + axe
   MAX_WEAPON_TYPE,
 }
+
+export function weaponTypeStringToEnum(
+  weaponTypeString: string
+): weapon_type | null {
+  if (
+    typeof weaponTypeString === "string" &&
+    isNaN(Number(weaponTypeString)) && // Ensures that the string is not a numeric value
+    weaponTypeString in weapon_type
+  ) {
+    return weapon_type[weaponTypeString as keyof typeof weapon_type];
+  } else {
+    return null;
+  }
+}
+
+export function tryParseWeaponType(value: string | weapon_type): weapon_type {
+  if (typeof value === "string") {
+    return weaponTypeStringToEnum(value) ?? weapon_type.W_FIST;
+  } else {
+    return value;
+  }
+}

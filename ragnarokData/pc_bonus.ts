@@ -2,10 +2,10 @@ import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { capValue } from "./utils";
 import { ELE_ALL, ELE_MAX } from "./constants";
-import { weapon_type } from "./mmo_header";
+import { weapon_type } from "./ItemDB/weapon_type";
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import { map_race_id2mask, Race, RaceMask } from "./map_race_id2mask";
-import { EQP_WEAPON, equip_pos, EQP_HELM, EQP_SHIELD } from "./ItemDB/types";
+import { equip_pos } from "./ItemDB/types";
 
 export function pc_bonus(
   playerAttributes: PlayerAttributes,
@@ -584,7 +584,7 @@ export function pc_bonus(
       break;
     case bonusTypeToStatusPointType.bUnbreakableWeapon:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= EQP_WEAPON; // Assuming 1 represents EQP_WEAPON
+        playerAttributes.bonus.unbreakable_equip |= equip_pos.EQP_WEAPON; // Assuming 1 represents EQP_WEAPON
       }
       break;
     case bonusTypeToStatusPointType.bUnbreakableArmor:
@@ -594,12 +594,12 @@ export function pc_bonus(
       break;
     case bonusTypeToStatusPointType.bUnbreakableHelm:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= EQP_HELM; // Assuming 4 represents EQP_HELM
+        playerAttributes.bonus.unbreakable_equip |= equip_pos.EQP_HELM; // Assuming 4 represents EQP_HELM
       }
       break;
     case bonusTypeToStatusPointType.bUnbreakableShield:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unbreakable_equip |= EQP_SHIELD; // Assuming 8 represents EQP_SHIELD
+        playerAttributes.bonus.unbreakable_equip |= equip_pos.EQP_SHIELD; // Assuming 8 represents EQP_SHIELD
       }
       break;
     case bonusTypeToStatusPointType.bUnbreakableGarment:
@@ -654,7 +654,7 @@ export function pc_bonus(
       break;
     case bonusTypeToStatusPointType.bUnstripableWeapon:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unstripable_equip |= EQP_WEAPON; // Assuming 1 represents EQP_WEAPON
+        playerAttributes.bonus.unstripable_equip |= equip_pos.EQP_WEAPON; // Assuming 1 represents EQP_WEAPON
       }
       break;
     case bonusTypeToStatusPointType.bUnstripableArmor:
@@ -664,12 +664,12 @@ export function pc_bonus(
       break;
     case bonusTypeToStatusPointType.bUnstripableHelm:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unstripable_equip |= EQP_HELM; // Assuming 4 represents EQP_HELM
+        playerAttributes.bonus.unstripable_equip |= equip_pos.EQP_HELM; // Assuming 4 represents EQP_HELM
       }
       break;
     case bonusTypeToStatusPointType.bUnstripableShield:
       if (playerAttributes.state.lr_flag !== 2) {
-        playerAttributes.bonus.unstripable_equip |= EQP_SHIELD; // Assuming 8 represents EQP_SHIELD
+        playerAttributes.bonus.unstripable_equip |= equip_pos.EQP_SHIELD; // Assuming 8 represents EQP_SHIELD
       }
       break;
     case bonusTypeToStatusPointType.bHPDrainValue:

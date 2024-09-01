@@ -1,3 +1,4 @@
+import { tryParseWeaponType, weapon_type } from "./weapon_type";
 import { Job, Trade, Nouse, Bonuses } from "../types";
 
 // item_data in itemdb.h
@@ -7,7 +8,7 @@ export class ItemData {
   AegisName: string;
   Name: string;
   CloneItem?: number | string;
-  Type?: string;
+  Type?: string | item_types;
   Buy?: number;
   Sell?: number;
   Weight?: number;
@@ -19,13 +20,13 @@ export class ItemData {
   Job?: Job | number;
   Upper?: string | number;
   Gender?: string;
-  Loc?: string | number | (string | number)[];
+  Loc?: equip_pos | string | number | (string | number)[];
   WeaponLv?: number;
   EquipLv?: number | [number, number];
   Refine?: boolean;
   Grade?: boolean;
   DisableOptions?: boolean;
-  Subtype?: number;
+  Subtype?: string | weapon_type;
   ViewSprite?: number;
   BindOnEquip?: boolean;
   ForceSerial?: boolean;
@@ -48,14 +49,22 @@ export class ItemData {
   OnRentalEndScript?: string;
   Bonuses?: Bonuses;
 
-  constructor(data?: Partial<ItemData>) {
+  Amount?: number;
+  Options?: item_option[];
+  EquipPosWhenEquipped?: equip_pos;
+  Cards?: number[];
+  RefineLevel?: number;
+
+  constructor(data?: Partial<ItemData>, persistentData?: item_persistent) {
     // Assign default values or provided values
     this.nameid = data?.Id ?? 0;
     this.Id = data?.Id ?? 0;
     this.AegisName = data?.AegisName ?? "";
     this.Name = data?.Name ?? "";
     this.CloneItem = data?.CloneItem;
-    this.Type = data?.Type;
+    this.Type = data?.Type
+      ? tryParseItemType(data.Type)
+      : item_types.IT_UNKNOWN;
     this.Buy = data?.Buy;
     this.Sell = data?.Sell;
     this.Weight = data?.Weight;
@@ -67,13 +76,16 @@ export class ItemData {
     this.Job = data?.Job;
     this.Upper = data?.Upper;
     this.Gender = data?.Gender;
-    this.Loc = data?.Loc;
+    this.Loc = tryParseLoc(data?.Loc);
+    this.EquipPosWhenEquipped = equip_pos.EQP_NONE;
     this.WeaponLv = data?.WeaponLv;
     this.EquipLv = data?.EquipLv;
     this.Refine = data?.Refine;
     this.Grade = data?.Grade;
     this.DisableOptions = data?.DisableOptions;
-    this.Subtype = data?.Subtype;
+    this.Subtype = data?.Subtype
+      ? tryParseWeaponType(data.Subtype)
+      : weapon_type.W_FIST;
     this.ViewSprite = data?.ViewSprite;
     this.BindOnEquip = data?.BindOnEquip;
     this.ForceSerial = data?.ForceSerial;
@@ -95,6 +107,85 @@ export class ItemData {
     this.OnRentalStartScript = data?.OnRentalStartScript;
     this.OnRentalEndScript = data?.OnRentalEndScript;
     this.Bonuses = data?.Bonuses;
+
+    if (persistentData) {
+      this.nameid = persistentData.nameid;
+      this.Id = persistentData.id;
+      this.Amount = persistentData.amount;
+      this.Options = persistentData.option;
+      this.EquipPosWhenEquipped = persistentData.equip;
+      this.Cards = persistentData.card;
+      this.RefineLevel = persistentData.refine;
+    }
+  }
+
+  public copy(): ItemData {
+    return new ItemData(this);
+  }
+
+  public isEquip(): boolean {
+    if (this.Type === undefined || typeof this.Type === "string") {
+      throw new Error("Item type was not parsed correctly.");
+    }
+
+    switch (this.Type) {
+      case item_types.IT_WEAPON:
+      case item_types.IT_ARMOR:
+      case item_types.IT_AMMO:
+        return true;
+      case item_types.IT_HEALING:
+      case item_types.IT_UNKNOWN:
+      case item_types.IT_USABLE:
+      case item_types.IT_ETC:
+      case item_types.IT_CARD:
+      case item_types.IT_PETEGG:
+      case item_types.IT_PETARMOR:
+      case item_types.IT_UNKNOWN2:
+      case item_types.IT_DELAYCONSUME:
+      case item_types.IT_SELECTPACKAGE:
+      case item_types.IT_CASH:
+      case item_types.IT_MAX:
+      default:
+        return false;
+    }
+  }
+
+  public equip(loc: equip_pos): void {
+    if (!this.isEquip()) {
+      return;
+    }
+
+    this.EquipPosWhenEquipped = loc;
+  }
+
+  public unequip(): void {
+    if (!this.isEquip()) {
+      return;
+    }
+
+    this.EquipPosWhenEquipped = equip_pos.EQP_NONE;
+  }
+
+  public getLoc(): equip_pos {
+    return tryParseLoc(this.Loc);
+  }
+
+  public getEquipPosIfEquipped(): equip_pos {
+    if (!this.isEquip()) {
+      return equip_pos.EQP_NONE;
+    }
+
+    //TODO: check pc_item_equippoint
+    // if (
+    //   this.Subtype !== undefined &&
+    //   (this.Subtype === weapon_type.W_DAGGER ||
+    //     this.Subtype === weapon_type.W_1HSWORD ||
+    //     this.Subtype === weapon_type.W_1HAXE)
+    // ) {
+
+    // }
+
+    return this.EquipPosWhenEquipped ?? equip_pos.EQP_NONE;
   }
 
   public toPersistentItem(): item_persistent {
@@ -102,17 +193,17 @@ export class ItemData {
       id: this.Id,
       nameid: this.nameid,
       amount: 1,
-      equip: equip_pos.EQP_NONE,
+      equip: this.EquipPosWhenEquipped ?? equip_pos.EQP_NONE,
       identify: "",
-      refine: "",
+      refine: this.RefineLevel ?? 0,
       grade: "",
       attribute: "",
-      card: [],
+      card: this.Cards ?? [],
       expire_time: 0,
       favorite: "",
       bound: "",
       unique_id: 0,
-      option: [],
+      option: this.Options ?? [],
     };
   }
 }
@@ -124,7 +215,7 @@ export class item_persistent {
   amount: number;
   equip: equip_pos;
   identify: string;
-  refine: string;
+  refine: number;
   grade: string;
   attribute: string;
   card: number[];
@@ -140,7 +231,7 @@ export class item_persistent {
     this.amount = 0;
     this.equip = equip_pos.EQP_NONE;
     this.identify = "";
-    this.refine = "";
+    this.refine = 0;
     this.grade = "";
     this.attribute = "";
     this.card = [];
@@ -180,21 +271,81 @@ export enum equip_pos {
   EQP_SHADOW_SHIELD = 0x040000, // 262144
   EQP_SHADOW_SHOES = 0x080000, // 524288
   EQP_SHADOW_ACC_R = 0x100000, // 1048576
-  EQP_SHADOW_ACC_L = 0x200000, // 2097152
+  EQP_SHADOW_ACC_L = 0x200000, // 2097152,
+
+  // Combined values
+  EQP_WEAPON = 0x000002, // EQP_HAND_R
+  EQP_SHIELD = 0x000020, // EQP_HAND_L
+  EQP_ARMS = 0x000002 | 0x000020, // EQP_HAND_R | EQP_HAND_L
+  EQP_HELM = 0x000001 | 0x000200 | 0x000100, // EQP_HEAD_LOW | EQP_HEAD_MID | EQP_HEAD_TOP
+  EQP_ACC = 0x000008 | 0x000080, // EQP_ACC_L | EQP_ACC_R
+  EQP_COSTUME = 0x000400 | 0x000800 | 0x001000 | 0x002000, // Costume items combined
+  EQP_SHADOW_ACC = 0x100000 | 0x200000, // EQP_SHADOW_ACC_R | EQP_SHADOW_ACC_L
+  EQP_SHADOW_ARMS = 0x020000 | 0x040000, // EQP_SHADOW_WEAPON | EQP_SHADOW_SHIELD
 }
 
-export const EQP_WEAPON = equip_pos.EQP_HAND_R;
-export const EQP_SHIELD = equip_pos.EQP_HAND_L;
-export const EQP_ARMS = equip_pos.EQP_HAND_R | equip_pos.EQP_HAND_L;
-export const EQP_HELM =
-  equip_pos.EQP_HEAD_LOW | equip_pos.EQP_HEAD_MID | equip_pos.EQP_HEAD_TOP;
-export const EQP_ACC = equip_pos.EQP_ACC_L | equip_pos.EQP_ACC_R;
-export const EQP_COSTUME =
-  equip_pos.EQP_COSTUME_HEAD_TOP |
-  equip_pos.EQP_COSTUME_HEAD_MID |
-  equip_pos.EQP_COSTUME_HEAD_LOW |
-  equip_pos.EQP_COSTUME_GARMENT;
-export const EQP_SHADOW_ACC =
-  equip_pos.EQP_SHADOW_ACC_R | equip_pos.EQP_SHADOW_ACC_L;
-export const EQP_SHADOW_ARMS =
-  equip_pos.EQP_SHADOW_WEAPON | equip_pos.EQP_SHADOW_SHIELD;
+export function tryParseLoc(
+  value: string | number | (string | number)[] | undefined
+): equip_pos {
+  if (Array.isArray(value) || value === undefined) {
+    return equip_pos.EQP_NONE;
+  }
+
+  if (typeof value === "string") {
+    return equipPosStringToEnum(value) ?? equip_pos.EQP_NONE;
+  } else {
+    return value;
+  }
+}
+
+export function equipPosStringToEnum(equipPosString: string): equip_pos | null {
+  if (
+    typeof equipPosString === "string" &&
+    isNaN(Number(equipPosString)) && // Ensures that the string is not a numeric value
+    equipPosString in equip_pos
+  ) {
+    return equip_pos[equipPosString as keyof typeof equip_pos];
+  }
+
+  return equip_pos.EQP_NONE;
+}
+
+export enum item_types {
+  IT_HEALING = 0,
+  IT_UNKNOWN, //1
+  IT_USABLE, //2
+  IT_ETC, //3
+  IT_WEAPON, //4
+  IT_ARMOR, //5
+  IT_CARD, //6
+  IT_PETEGG, //7
+  IT_PETARMOR, //8
+  IT_UNKNOWN2, //9
+  IT_AMMO, //10
+  IT_DELAYCONSUME, //11
+  IT_SELECTPACKAGE, //12
+  IT_CASH = 18,
+  IT_MAX,
+}
+
+function tryParseItemType(value: string | item_types): item_types {
+  if (typeof value === "string") {
+    return itemTypeStringToEnum(value) ?? item_types.IT_UNKNOWN;
+  } else {
+    return value;
+  }
+}
+
+export function itemTypeStringToEnum(
+  itemTypeString: string
+): item_types | null {
+  if (
+    typeof itemTypeString === "string" &&
+    isNaN(Number(itemTypeString)) && // Ensures that the string is not a numeric value
+    itemTypeString in item_types
+  ) {
+    return item_types[itemTypeString as keyof typeof item_types];
+  } else {
+    return null;
+  }
+}
