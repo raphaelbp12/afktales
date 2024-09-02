@@ -12,6 +12,7 @@ import { equip_pos, item_persistent, ItemData } from "../ItemDB/types";
 import { Inventory } from "./Inventory";
 
 export class PlayerAttributes {
+  name: string;
   has_shield: boolean;
   weapontype: weapon_type;
   weapontype1: weapon_type;
@@ -231,7 +232,8 @@ export class PlayerAttributes {
     };
   };
 
-  constructor(bonuses?: Bonuses) {
+  constructor(name: string, bonuses?: Bonuses) {
+    this.name = name;
     // Initialize single value properties
     this.has_shield = false;
     this.weapontype = weapon_type.W_FIST;

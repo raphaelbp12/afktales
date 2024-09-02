@@ -4,7 +4,7 @@ import { PlayerAttributes } from "./PlayerAttributes";
 
 describe("PlayerAttributes", () => {
   it("add item", () => {
-    const playerAttributes = new PlayerAttributes();
+    const playerAttributes = new PlayerAttributes('test');
     const itemDB = new ItemDB();
 
     const item503 = itemDB.search(503);
@@ -34,7 +34,7 @@ describe("PlayerAttributes", () => {
   });
 
   it("equip yellow potion", () => {
-    const playerAttributes = new PlayerAttributes();
+    const playerAttributes = new PlayerAttributes('test');
     const itemDB = new ItemDB();
 
     const item503 = itemDB.search(503);
@@ -55,7 +55,7 @@ describe("PlayerAttributes", () => {
   });
 
   it("equip knife", () => {
-    const playerAttributes = new PlayerAttributes();
+    const playerAttributes = new PlayerAttributes('test');
     const itemDB = new ItemDB();
 
     const item503 = itemDB.search(503);
@@ -80,7 +80,7 @@ describe("PlayerAttributes", () => {
   });
 
   it("equip knife unequip equip Gaia_Sword", () => {
-    const playerAttributes = new PlayerAttributes();
+    const playerAttributes = new PlayerAttributes('test');
     const itemDB = new ItemDB();
 
     const item1201 = itemDB.search(1201);
