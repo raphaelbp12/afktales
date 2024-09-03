@@ -81,7 +81,10 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
   const selectedOption = items.find((item) => item.nameid === selectedItemId);
 
   return (
-    <div className="relative flex flex-col items-center" ref={dropdownRef}>
+    <div
+      className="relative flex flex-col items-center min-w-80"
+      ref={dropdownRef}
+    >
       <label htmlFor={id} className="mb-2 font-bold">
         {label}
       </label>
@@ -93,7 +96,7 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
         {selectedOption?.nameid && (
           <ItemSpriteImage itemId={selectedOption.nameid} />
         )}
-        {selectedOption?.Name || "Select..."}
+        {selectedOption?.Name || "Clique para selecionar..."}
       </div>
       {isOpen && (
         <div
@@ -105,7 +108,7 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
           <input
             type="text"
             className="w-full p-2 bg-gray-600 text-white"
-            placeholder="Search..."
+            placeholder="Digite o nome do item..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             ref={inputRef}
@@ -115,7 +118,7 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
             onClick={() => handleOptionClick("")}
             onTouchEnd={() => handleOptionClick("")} // For mobile touch support
           >
-            None
+            Vazio
           </div>
           {filteredOptions.map((option, index) => (
             <div

@@ -1,9 +1,7 @@
-import { ItemDB } from "../ItemDB/ItemDB";
 import { ItemData } from "../ItemDB/types";
 
 export class Inventory {
   private items: ItemData[];
-  private itemDB = new ItemDB();
 
   constructor(length: number) {
     this.items = Array.from({ length }, () => new ItemData());
@@ -42,6 +40,7 @@ export class Inventory {
         existingItem.Amount = 0;
       }
       existingItem.Amount += amount;
+      return this.items.findIndex((i) => i.nameid === item.nameid);
     }
 
     const emptySlot = this.getNextEmptySlot();

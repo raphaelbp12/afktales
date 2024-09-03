@@ -35,7 +35,7 @@ const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
 
   return (
     <div className="flex flex-col items-center p-4">
-      <h2 className="text-xl font-bold">Add Item</h2>
+      <h2 className="text-xl font-bold">Adicionar Item</h2>
       <div className="mt-4 text-center">
         <ItemDropdownSelector
           id={"item"}
@@ -44,24 +44,26 @@ const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
           items={itemDB.getFilteredItems((item) => true)}
           onChange={handleChange}
         />
-        <button
-          onClick={() => handleAddItem(1)}
-          className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-        >
-          +1
-        </button>
-        <button
-          onClick={() => handleAddItem(10)}
-          className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md"
-        >
-          +10
-        </button>
-        <button
-          onClick={() => handleAddItem(100)}
-          className="mt-4 px-4 py-2 bg-orange-500 text-white rounded-md"
-        >
-          +100
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={() => handleAddItem(1)}
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+          >
+            +1
+          </button>
+          <button
+            onClick={() => handleAddItem(10)}
+            className="mt-4 px-4 py-2 bg-green-500 text-white rounded-md"
+          >
+            +10
+          </button>
+          <button
+            onClick={() => handleAddItem(100)}
+            className="mt-4 px-4 py-2 bg-orange-500 text-white rounded-md"
+          >
+            +100
+          </button>
+        </div>
       </div>
     </div>
   );
