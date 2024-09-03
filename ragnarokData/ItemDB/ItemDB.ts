@@ -17,7 +17,11 @@ export class ItemDB {
     this.itemsDictAegisNameKey = parsedData.itemsDictAegisNameKey;
   }
 
-  public search(nameid: number): ItemData {
+  public getItemByNameid(nameid: number): ItemData {
     return this.itemsDict[nameid];
+  }
+
+  public getFilteredItems(filter: (item: ItemData) => boolean): ItemData[] {
+    return this.itemList.filter(filter);
   }
 }

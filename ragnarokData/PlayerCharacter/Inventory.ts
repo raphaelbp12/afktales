@@ -1,10 +1,16 @@
+import { ItemDB } from "../ItemDB/ItemDB";
 import { ItemData } from "../ItemDB/types";
 
 export class Inventory {
-  items: ItemData[];
+  private items: ItemData[];
+  private itemDB = new ItemDB();
 
   constructor(length: number) {
     this.items = Array.from({ length }, () => new ItemData());
+  }
+
+  public getItems(): ItemData[] {
+    return this.items;
   }
 
   public searchByNameId(nameid: number): ItemData | undefined {

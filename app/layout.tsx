@@ -7,6 +7,8 @@ import { InventoryProvider } from "../contexts/inventoryContext";
 import NavBar from "../components/commonComponents/NavBar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { AccountProvider } from "@/contexts/RagContexts.tsx/AccountContext";
+import { ItemDBProvider } from "@/contexts/RagContexts.tsx/ItemDBContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,14 +27,18 @@ export default function RootLayout({
       <SpeedInsights />
       <Analytics />
       <body className={`${inter.className} h-full`}>
-        <AlertProvider>
-          <InventoryProvider>
-            <NavBar />
-            <main className="flex-grow flex flex-col items-center p-2 relative overflow-hidden">
-              {children}
-            </main>
-          </InventoryProvider>
-        </AlertProvider>
+        <ItemDBProvider>
+          <AccountProvider>
+            <AlertProvider>
+              <InventoryProvider>
+                <NavBar />
+                <main className="flex-grow flex flex-col items-center p-2 relative overflow-hidden">
+                  {children}
+                </main>
+              </InventoryProvider>
+            </AlertProvider>
+          </AccountProvider>
+        </ItemDBProvider>
       </body>
     </html>
   );

@@ -583,6 +583,22 @@ export class PlayerAttributes {
     };
   }
 
+  // Method to update the character's name
+  updateName(newName: string): void {
+    this.name = newName;
+  }
+
+  // Generic method to update a specific attribute by key
+  updateAttribute(key: keyof this, value: any): void {
+    if (key in this) {
+      (this as any)[key] = value;
+    } else {
+      throw new Error(
+        `Attribute ${key.toString()} does not exist on PlayerAttributes`
+      );
+    }
+  }
+
   public getInvSlotInEquipPos(pos: equip_pos): number {
     for (let i = 0; i < equip_index.EQI_MAX; i++) {
       if (this.equip_pos[i] === pos) {

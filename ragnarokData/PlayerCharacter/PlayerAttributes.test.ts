@@ -4,11 +4,11 @@ import { PlayerAttributes } from "./PlayerAttributes";
 
 describe("PlayerAttributes", () => {
   it("add item", () => {
-    const playerAttributes = new PlayerAttributes('test');
+    const playerAttributes = new PlayerAttributes("test");
     const itemDB = new ItemDB();
 
-    const item503 = itemDB.search(503);
-    const item12014 = itemDB.search(12014);
+    const item503 = itemDB.getItemByNameid(503);
+    const item12014 = itemDB.getItemByNameid(12014);
     playerAttributes.addItem(item503, 10);
     playerAttributes.addItem(item12014, 100);
 
@@ -34,11 +34,11 @@ describe("PlayerAttributes", () => {
   });
 
   it("equip yellow potion", () => {
-    const playerAttributes = new PlayerAttributes('test');
+    const playerAttributes = new PlayerAttributes("test");
     const itemDB = new ItemDB();
 
-    const item503 = itemDB.search(503);
-    const item12014 = itemDB.search(12014);
+    const item503 = itemDB.getItemByNameid(503);
+    const item12014 = itemDB.getItemByNameid(12014);
     const item503Slot = playerAttributes.addItem(item503, 10);
     const item12014Slot = playerAttributes.addItem(item12014, 100);
 
@@ -55,11 +55,11 @@ describe("PlayerAttributes", () => {
   });
 
   it("equip knife", () => {
-    const playerAttributes = new PlayerAttributes('test');
+    const playerAttributes = new PlayerAttributes("test");
     const itemDB = new ItemDB();
 
-    const item503 = itemDB.search(503);
-    const item1201 = itemDB.search(1201);
+    const item503 = itemDB.getItemByNameid(503);
+    const item1201 = itemDB.getItemByNameid(1201);
     const item503Slot = playerAttributes.addItem(item503, 10);
     const item1201Slot = playerAttributes.addItem(item1201);
 
@@ -80,16 +80,16 @@ describe("PlayerAttributes", () => {
   });
 
   it("equip knife unequip equip Gaia_Sword", () => {
-    const playerAttributes = new PlayerAttributes('test');
+    const playerAttributes = new PlayerAttributes("test");
     const itemDB = new ItemDB();
 
-    const item1201 = itemDB.search(1201);
-    const item1143 = itemDB.search(1143);
-    playerAttributes.addItem(itemDB.search(503));
-    playerAttributes.addItem(itemDB.search(504));
-    playerAttributes.addItem(itemDB.search(505));
-    playerAttributes.addItem(itemDB.search(506));
-    playerAttributes.addItem(itemDB.search(507));
+    const item1201 = itemDB.getItemByNameid(1201);
+    const item1143 = itemDB.getItemByNameid(1143);
+    playerAttributes.addItem(itemDB.getItemByNameid(503));
+    playerAttributes.addItem(itemDB.getItemByNameid(504));
+    playerAttributes.addItem(itemDB.getItemByNameid(505));
+    playerAttributes.addItem(itemDB.getItemByNameid(506));
+    playerAttributes.addItem(itemDB.getItemByNameid(507));
     const item1201Slot = playerAttributes.addItem(item1201);
     const item1143Slot = playerAttributes.addItem(item1143);
 
