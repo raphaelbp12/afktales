@@ -670,16 +670,11 @@ export class PlayerAttributes {
       }
 
       if (
-        this.equip_pos[i] === pos ||
-        ((pos & equip_pos.EQP_ARMS) !== 0 &&
-          (this.equip_pos[i] & equip_pos.EQP_ARMS) !== 0 &&
-          (item.isTwoHanded() || itemInEquipPos?.isTwoHanded())) ||
-        ((pos &
-          (itemInEquipPos?.EquipPosWhenEquipped ?? equip_pos.EQP_NONE)) !==
+        (pos & (itemInEquipPos?.EquipPosWhenEquipped ?? equip_pos.EQP_NONE)) !==
           0 &&
-          (this.equip_pos[i] &
-            (itemInEquipPos?.EquipPosWhenEquipped ?? equip_pos.EQP_NONE)) !==
-            0)
+        (this.equip_pos[i] &
+          (itemInEquipPos?.EquipPosWhenEquipped ?? equip_pos.EQP_NONE)) !==
+          0
       ) {
         if (invSlot !== -1) {
           this.unequipItem(invSlot);
