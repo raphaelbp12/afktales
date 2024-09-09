@@ -1,13 +1,13 @@
-// InventoryGrid.tsx
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import InventorySlot from "./InventorySlot";
 import Modal from "@/components/commonComponents/Modal";
 import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
-import { ItemData } from "@/ragnarokData/ItemDB/types";
+import { equip_pos, ItemData } from "@/ragnarokData/ItemDB/types";
 import ItemPanel from "./ItemPanel";
 import AddItemPanel from "./AddItemPanel";
 import InventoryListItem from "./InventoryListItem";
 import ViewToggle from "@/components/commonComponents/ViewToggle";
+import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 
 interface InventoryGridProps {
   title: string;
@@ -24,16 +24,49 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({
   columns,
   isPlayerInventory,
 }) => {
+  const { moveItemFromStorageToPlayer, equipItem, unequipItem } =
+    useAccountService();
   const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(
     null
   );
   const [isGridView, setIsGridView] = useState<boolean>(true);
+  const clickTimeout = useRef<NodeJS.Timeout | null>(null); // To store the timeout ID
 
   const inventoryItems = inventory.getItems(); // Assuming getItems returns an array of items
 
   const handleSlotClick = (slotIndex: number) => {
     console.log("Slot clicked", slotIndex);
     setSelectedSlotIndex(slotIndex);
+  };
+
+  const handleDoubleClick = (item: ItemData, slotIndex: number) => {
+    console.log("Slot double-clicked", slotIndex);
+    // Implement your double-click action here
+    if (!isPlayerInventory && characterId) {
+      moveItemFromStorageToPlayer(slotIndex, characterId);
+      return;
+    }
+
+    if (!characterId) return;
+
+    if (item.EquipPosWhenEquipped !== equip_pos.EQP_NONE) {
+      unequipItem(characterId, slotIndex);
+    } else {
+      equipItem(characterId, slotIndex);
+    }
+  };
+
+  const handleClick = (item: ItemData, slotIndex: number) => {
+    if (clickTimeout.current) {
+      clearTimeout(clickTimeout.current);
+      clickTimeout.current = null;
+      handleDoubleClick(item, slotIndex);
+    } else {
+      clickTimeout.current = setTimeout(() => {
+        handleSlotClick(slotIndex);
+        clickTimeout.current = null;
+      }, 250); // 250ms threshold to detect double-click
+    }
   };
 
   const closeModal = () => {
@@ -67,7 +100,7 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({
             <InventorySlot
               key={`${index}-${item.nameid}-${item.EquipPosWhenEquipped}`}
               item={item}
-              onClick={() => handleSlotClick(index)}
+              onClick={() => handleClick(item, index)} // Detect both single and double clicks
             />
           ))}
         </div>
@@ -79,7 +112,7 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({
               <InventoryListItem
                 key={`${index}-${item.nameid}-${item.EquipPosWhenEquipped}`}
                 item={item}
-                onClick={() => handleSlotClick(index)}
+                onClick={() => handleClick(item, index)} // Detect both single and double clicks
               />
             ))}
         </div>
