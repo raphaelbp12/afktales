@@ -1,3 +1,4 @@
+import { equip_pos } from "./ItemDB/types";
 import {
   removeComments,
   parseConfig,
@@ -186,6 +187,33 @@ bonus bMdef,5;`);
     expect(result.Job?.Sage).toBe(true);
     expect(result.Job?.Star_Gladiator).toBe(true);
     expect(result.Script).toBe(`bonus bInt,2;`);
+  });
+
+  it("should parse an Munak Hat string into an object", () => {
+    const itemString = `
+      Id: 5167
+	AegisName: "Munak_Turban_"
+	Name: "Munak Hat"
+	Type: "IT_ARMOR"
+	Buy: 20
+	Weight: 300
+	Def: 5
+	Slots: 1
+	Loc: ["EQP_HEAD_LOW", "EQP_HEAD_TOP", "EQP_HEAD_MID"]
+	Refine: false
+	ViewSprite: 51
+	Script: <" bonus2 bSubRace,RC_Undead,10; ">`;
+    const result = parseItem(itemString);
+    expect(result.Id).toBe(5167);
+    expect(result.Name).toBe("Munak Hat");
+    expect(result.Type).toBe("IT_ARMOR");
+    expect(result.Buy).toBe(20);
+    expect(result.Script).toBe(`bonus2 bSubRace,RC_Undead,10;`);
+    expect(result.Loc).toStrictEqual([
+      "EQP_HEAD_LOW",
+      "EQP_HEAD_TOP",
+      "EQP_HEAD_MID",
+    ]);
   });
 });
 

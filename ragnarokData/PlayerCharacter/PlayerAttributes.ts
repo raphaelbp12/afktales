@@ -12,6 +12,7 @@ import { equip_pos, item_persistent, ItemData } from "../ItemDB/types";
 import { Inventory } from "./Inventory";
 
 export class PlayerAttributes {
+  id: number;
   name: string;
   has_shield: boolean;
   weapontype: weapon_type;
@@ -232,8 +233,9 @@ export class PlayerAttributes {
     };
   };
 
-  constructor(name: string, bonuses?: Bonuses) {
-    this.name = name;
+  constructor(name?: string, id?: number, bonuses?: Bonuses) {
+    this.id = id ?? 1;
+    this.name = name ?? "test";
     // Initialize single value properties
     this.has_shield = false;
     this.weapontype = weapon_type.W_FIST;
@@ -599,14 +601,17 @@ export class PlayerAttributes {
     }
   }
 
-  public getInvSlotInEquipPos(pos: equip_pos): number {
+  public getInvSlotInEquipPos(pos: equip_pos): number[] {
+    const slots = [];
     for (let i = 0; i < equip_index.EQI_MAX; i++) {
-      if (this.equip_pos[i] === pos) {
-        return this.equip_index[i];
+      if ((this.equip_pos[i] & pos) !== 0) {
+        if (this.equip_index[i] !== -1) {
+          slots.push(this.equip_index[i]);
+        }
       }
     }
 
-    return -1;
+    return slots;
   }
 
   public addItem(itemData: ItemData, amount: number = 1): number {
@@ -625,24 +630,71 @@ export class PlayerAttributes {
   }
 
   // pc_equipitem
-  public equipItem(inventorySlot: number): void {
+  public equipItem(
+    inventorySlot: number,
+    reqPos: equip_pos = equip_pos.EQP_NONE
+  ): void {
     const item = this.inventory.getItemInSlot(inventorySlot);
     if (!item) return;
     if (!item.isEquip()) return;
+    if (item.EquipPosWhenEquipped !== equip_pos.EQP_NONE) return;
 
     const itemLoc = item.getLoc();
 
-    for (let i = 0; i < equip_index.EQI_MAX; i++) {
-      if (this.equip_pos[i] === itemLoc) {
-        if (this.equip_index[i] !== -1) {
-          this.unequipItem(this.equip_index[i]);
+    if (reqPos === equip_pos.EQP_NONE) {
+      reqPos = itemLoc;
+    }
+    let pos = equip_pos.EQP_NONE;
+
+    if (reqPos === equip_pos.EQP_ACC) {
+      pos = reqPos & equip_pos.EQP_ACC;
+
+      if (pos === equip_pos.EQP_ACC) {
+        if (this.equip_index[equip_index.EQI_ACC_R] >= 0) {
+          pos = equip_pos.EQP_ACC_L;
+        } else {
+          pos = equip_pos.EQP_ACC_R;
         }
+      }
+    }
+
+    if (pos === equip_pos.EQP_NONE) {
+      pos = reqPos;
+    }
+
+    for (let i = 0; i < equip_index.EQI_MAX; i++) {
+      const invSlot = this.equip_index[i];
+      let itemInEquipPos = null;
+      if (invSlot !== -1) {
+        itemInEquipPos = this.inventory.getItemInSlot(invSlot);
+      }
+
+      if (
+        this.equip_pos[i] === pos ||
+        ((pos & equip_pos.EQP_ARMS) !== 0 &&
+          (this.equip_pos[i] & equip_pos.EQP_ARMS) !== 0 &&
+          (item.isTwoHanded() || itemInEquipPos?.isTwoHanded())) ||
+        ((pos &
+          (itemInEquipPos?.EquipPosWhenEquipped ?? equip_pos.EQP_NONE)) !==
+          0 &&
+          (this.equip_pos[i] &
+            (itemInEquipPos?.EquipPosWhenEquipped ?? equip_pos.EQP_NONE)) !==
+            0)
+      ) {
+        if (invSlot !== -1) {
+          this.unequipItem(invSlot);
+        }
+      }
+    }
+
+    for (let i = 0; i < equip_index.EQI_MAX; i++) {
+      if ((this.equip_pos[i] & pos) !== 0) {
         this.equip_index[i] = inventorySlot;
       }
     }
 
     const invItem = this.inventory.getItemInSlot(inventorySlot);
-    invItem?.equip(itemLoc);
+    invItem?.equip(pos);
   }
 
   public unequipItemPos(pos: equip_pos): void {
@@ -662,17 +714,20 @@ export class PlayerAttributes {
   public unequipItem(invSlotIndex: number): void {
     const item = this.inventory.getItemInSlot(invSlotIndex);
     if (!item) return;
-    const itemLoc = item.getLoc();
-    const equipInvSlotIndex = this.getInvSlotInEquipPos(itemLoc);
-    if (equipInvSlotIndex === -1) return;
+    const itemLoc = item.EquipPosWhenEquipped;
+    if (itemLoc === equip_pos.EQP_NONE || itemLoc === undefined) return;
+    const equipInvSlotIndexes = this.getInvSlotInEquipPos(itemLoc);
+    if (equipInvSlotIndexes.length === 0) return;
 
-    for (let i = 0; i < equip_index.EQI_MAX; i++) {
-      if (this.equip_pos[i] === itemLoc) {
-        if (this.equip_index[i] !== -1) {
-          this.equip_index[i] = -1;
+    equipInvSlotIndexes.forEach((slot) => {
+      for (let i = 0; i < equip_index.EQI_MAX; i++) {
+        if ((this.equip_pos[i] & itemLoc) !== 0) {
+          if (this.equip_index[i] !== -1) {
+            this.equip_index[i] = -1;
+          }
         }
       }
-    }
+    });
     this.unequipItemPos(itemLoc);
     item.unequip();
     // TODO

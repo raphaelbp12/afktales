@@ -10,25 +10,34 @@ import InventoryListItem from "./InventoryListItem";
 import ViewToggle from "@/components/commonComponents/ViewToggle";
 
 interface InventoryGridProps {
+  title: string;
+  characterId?: number;
   inventory: Inventory;
   columns: number;
+  isPlayerInventory: boolean;
 }
 
 const InventoryGrid: React.FC<InventoryGridProps> = ({
+  title,
+  characterId,
   inventory,
   columns,
+  isPlayerInventory,
 }) => {
-  const [selectedItem, setSelectedItem] = useState<ItemData | null>(null);
+  const [selectedSlotIndex, setSelectedSlotIndex] = useState<number | null>(
+    null
+  );
   const [isGridView, setIsGridView] = useState<boolean>(true);
 
   const inventoryItems = inventory.getItems(); // Assuming getItems returns an array of items
 
-  const handleSlotClick = (item: ItemData) => {
-    setSelectedItem(item);
+  const handleSlotClick = (slotIndex: number) => {
+    console.log("Slot clicked", slotIndex);
+    setSelectedSlotIndex(slotIndex);
   };
 
   const closeModal = () => {
-    setSelectedItem(null);
+    setSelectedSlotIndex(null);
   };
 
   const toggleView = () => {
@@ -38,7 +47,12 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-xl font-bold">Inventory</h2>
+        <h2 className="text-xl font-bold">
+          {title}{" "}
+          <span className="text-gray-400 text-sm">
+            ({inventory.getCurrentLength()}/{inventory.getMaxLength()})
+          </span>
+        </h2>
         <ViewToggle isGridView={isGridView} toggleView={toggleView} />
       </div>
 
@@ -51,9 +65,9 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({
         >
           {inventoryItems.map((item, index) => (
             <InventorySlot
-              key={index}
+              key={`${index}-${item.nameid}-${item.EquipPosWhenEquipped}`}
               item={item}
-              onClick={() => handleSlotClick(item)}
+              onClick={() => handleSlotClick(index)}
             />
           ))}
         </div>
@@ -63,16 +77,23 @@ const InventoryGrid: React.FC<InventoryGridProps> = ({
             .filter((item) => item.nameid !== 0)
             .map((item, index) => (
               <InventoryListItem
-                key={index}
+                key={`${index}-${item.nameid}-${item.EquipPosWhenEquipped}`}
                 item={item}
-                onClick={() => handleSlotClick(item)}
+                onClick={() => handleSlotClick(index)}
               />
             ))}
         </div>
       )}
 
-      <Modal isOpen={!!selectedItem} onClose={closeModal}>
-        {selectedItem && <ItemPanel item={selectedItem} />}
+      <Modal isOpen={selectedSlotIndex !== null} onClose={closeModal}>
+        {selectedSlotIndex !== null && (
+          <ItemPanel
+            item={inventory.getItemInSlot(selectedSlotIndex)!}
+            slotIndex={selectedSlotIndex}
+            characterId={characterId}
+            isPlayerInventory={isPlayerInventory}
+          />
+        )}
       </Modal>
     </div>
   );

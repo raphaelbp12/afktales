@@ -13,7 +13,7 @@ describe("pc_bonus from items", () => {
       bonus bStr,2;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -29,7 +29,7 @@ describe("pc_bonus from items", () => {
       bonus bAgi,2;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -45,7 +45,7 @@ describe("pc_bonus from items", () => {
       bonus bVit,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -59,7 +59,7 @@ describe("pc_bonus from items", () => {
     const itemString = `
     Script: <" bonus bInt,2; ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -75,7 +75,7 @@ describe("pc_bonus from items", () => {
       bonus bDex,-1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -91,7 +91,7 @@ describe("pc_bonus from items", () => {
       bonus bLuk,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -107,7 +107,7 @@ describe("pc_bonus from items", () => {
       bonus bAtk,7;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -125,7 +125,7 @@ describe("pc_bonus from items", () => {
       bonus bAtk,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -143,7 +143,7 @@ describe("pc_bonus from items", () => {
       bonus bAtk2,7;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -161,7 +161,7 @@ describe("pc_bonus from items", () => {
       bonus bAtk2,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -179,7 +179,7 @@ describe("pc_bonus from items", () => {
       bonus bBaseAtk,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -197,7 +197,7 @@ describe("pc_bonus from items", () => {
       bonus bDef,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -215,7 +215,7 @@ describe("pc_bonus from items", () => {
       bonus bDef2,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -233,7 +233,7 @@ describe("pc_bonus from items", () => {
       bonus bMdef,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -251,7 +251,7 @@ describe("pc_bonus from items", () => {
       bonus bMdef2,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
     attributes.base_status.mdef2 = 10;
 
@@ -270,7 +270,7 @@ describe("pc_bonus from items", () => {
       bonus bHit,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
     attributes.base_status.hit = 10;
 
@@ -289,7 +289,7 @@ describe("pc_bonus from items", () => {
       bonus bHit,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
     attributes.bonus.arrow_hit = 10;
 
@@ -308,7 +308,7 @@ describe("pc_bonus from items", () => {
       bonus bFlee,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
     attributes.base_status.flee = 10;
 
@@ -327,7 +327,7 @@ describe("pc_bonus from items", () => {
       bonus bFlee2,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
     attributes.base_status.flee2 = 10;
 
@@ -346,7 +346,7 @@ describe("pc_bonus from items", () => {
       bonus bCritical,5;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
     attributes.base_status.cri = 10;
 
@@ -369,7 +369,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkEle,Ele_Wind;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -387,7 +387,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkEle,Ele_Ghost;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -405,7 +405,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkEle,Ele_Undead;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -423,7 +423,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkEle,Ele_Holy;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
     attributes.weapontype = weapon_type.W_BOW; // Assuming this is a bow type
 
@@ -443,7 +443,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkEle,Ele_Holy;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
     attributes.weapontype = weapon_type.W_MUSICAL; // Assuming this is a bow type
 
@@ -461,7 +461,7 @@ describe("pc_bonus from items", () => {
       bonus bDefEle,Ele_Fire;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -478,7 +478,7 @@ describe("pc_bonus from items", () => {
       bonus bMaxHP,100;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.base_status.max_hp = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -496,7 +496,7 @@ describe("pc_bonus from items", () => {
       bonus bMaxSP,50;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.base_status.max_sp = 23;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -514,7 +514,7 @@ describe("pc_bonus from items", () => {
       bonus bCastrate,-10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -530,7 +530,7 @@ describe("pc_bonus from items", () => {
       bonus bMaxHPrate,5;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -546,7 +546,7 @@ describe("pc_bonus from items", () => {
       bonus bMaxSPrate,3;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -562,7 +562,7 @@ describe("pc_bonus from items", () => {
       bonus bUseSPrate,-5;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -578,7 +578,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkRange,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -596,7 +596,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkRange,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -614,7 +614,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkRange,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -634,7 +634,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkRange,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
     attributes.weapontype = weapon_type.W_BOW; // Assuming this is a bow type
 
@@ -654,7 +654,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkRange,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
     attributes.weapontype = weapon_type.W_MUSICAL; // Assuming this is a bow type
 
@@ -673,7 +673,7 @@ describe("pc_bonus from items", () => {
       bonus bSpeedRate,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -689,7 +689,7 @@ describe("pc_bonus from items", () => {
       bonus bSpeedAddRate,5;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -705,7 +705,7 @@ describe("pc_bonus from items", () => {
       bonus bAspd,2;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -721,7 +721,7 @@ describe("pc_bonus from items", () => {
       bonus bAspdRate,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -738,7 +738,7 @@ describe("pc_bonus from items", () => {
       bonus bHPrecovRate,3;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -754,7 +754,7 @@ describe("pc_bonus from items", () => {
       bonus bSPrecovRate,4;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -770,7 +770,7 @@ describe("pc_bonus from items", () => {
       bonus bCriticalDef,5;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -786,7 +786,7 @@ describe("pc_bonus from items", () => {
       bonus bNearAtkDef,6;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -802,7 +802,7 @@ describe("pc_bonus from items", () => {
       bonus bLongAtkDef,7;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -818,7 +818,7 @@ describe("pc_bonus from items", () => {
       bonus bDoubleRate,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
     attributes.bonus.double_rate = 5;
 
@@ -836,7 +836,7 @@ describe("pc_bonus from items", () => {
       bonus bDoubleRate,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
     attributes.bonus.double_rate = 15;
 
@@ -854,7 +854,7 @@ describe("pc_bonus from items", () => {
       bonus bDoubleAddRate,3;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -871,7 +871,7 @@ describe("pc_bonus from items", () => {
       bonus bMatkRate,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -888,7 +888,7 @@ describe("pc_bonus from items", () => {
       bonus bIgnoreDefEle,Ele_Dark;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -907,7 +907,7 @@ describe("pc_bonus from items", () => {
       bonus bIgnoreDefEle,Ele_All;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -935,7 +935,7 @@ describe("pc_bonus from items", () => {
       bonus bIgnoreDefRace,RC_Plant;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -954,7 +954,7 @@ describe("pc_bonus from items", () => {
       bonus bAtkRate,15;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.atk_rate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -971,7 +971,7 @@ describe("pc_bonus from items", () => {
       bonus bMagicAtkDef,15;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.magic_def_rate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -988,7 +988,7 @@ describe("pc_bonus from items", () => {
       bonus bMiscAtkDef,15;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.misc_def_rate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1005,7 +1005,7 @@ describe("pc_bonus from items", () => {
       bonus bIgnoreMdefRate,20;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1022,7 +1022,7 @@ describe("pc_bonus from items", () => {
       bonus bIgnoreMdefEle,Ele_Holy;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1041,7 +1041,7 @@ describe("pc_bonus from items", () => {
       bonus bIgnoreMdefEle,Ele_All;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1069,7 +1069,7 @@ describe("pc_bonus from items", () => {
       bonus bIgnoreMdefRace,RC_NonBoss;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1088,7 +1088,7 @@ describe("pc_bonus from items", () => {
       bonus bPerfectHitRate,15;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.perfect_hit = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1105,7 +1105,7 @@ describe("pc_bonus from items", () => {
       bonus bPerfectHitAddRate,7;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1121,7 +1121,7 @@ describe("pc_bonus from items", () => {
       bonus bCriticalRate,12;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1137,7 +1137,7 @@ describe("pc_bonus from items", () => {
       bonus bDefRatioAtkEle,Ele_Poison;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1156,7 +1156,7 @@ describe("pc_bonus from items", () => {
       bonus bDefRatioAtkEle,Ele_All;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1184,7 +1184,7 @@ describe("pc_bonus from items", () => {
       bonus bDefRatioAtkRace,RC_All;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1203,7 +1203,7 @@ describe("pc_bonus from items", () => {
       bonus bHitRate,14;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1219,7 +1219,7 @@ describe("pc_bonus from items", () => {
       bonus bFleeRate,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1235,7 +1235,7 @@ describe("pc_bonus from items", () => {
       bonus bFlee2Rate,9;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1251,7 +1251,7 @@ describe("pc_bonus from items", () => {
       bonus bDefRate,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1267,7 +1267,7 @@ describe("pc_bonus from items", () => {
       bonus bDef2Rate,11;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1283,7 +1283,7 @@ describe("pc_bonus from items", () => {
       bonus bMdefRate,12;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1299,7 +1299,7 @@ describe("pc_bonus from items", () => {
       bonus bMdef2Rate,13;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1315,7 +1315,7 @@ describe("pc_bonus from items", () => {
       bonus bRestartFullRecover,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1331,7 +1331,7 @@ describe("pc_bonus from items", () => {
       bonus bNoCastCancel,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1347,7 +1347,7 @@ describe("pc_bonus from items", () => {
       bonus bNoCastCancel2,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1363,7 +1363,7 @@ describe("pc_bonus from items", () => {
       bonus bNoSizeFix,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1379,7 +1379,7 @@ describe("pc_bonus from items", () => {
       bonus bNoMagicDamage,30;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.special_state.no_magic_damage = 20;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1396,7 +1396,7 @@ describe("pc_bonus from items", () => {
       bonus bNoWeaponDamage,40;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.special_state.no_weapon_damage = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1413,7 +1413,7 @@ describe("pc_bonus from items", () => {
       bonus bNoMiscDamage,25;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.special_state.no_misc_damage = 25;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1430,7 +1430,7 @@ describe("pc_bonus from items", () => {
       bonus bNoGemStone,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1446,7 +1446,7 @@ describe("pc_bonus from items", () => {
       bonus bIntravision,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1462,7 +1462,7 @@ describe("pc_bonus from items", () => {
       bonus bNoKnockback,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1478,7 +1478,7 @@ describe("pc_bonus from items", () => {
       bonus bSplashRange,4;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.splash_range = 3;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1495,7 +1495,7 @@ describe("pc_bonus from items", () => {
       bonus bSplashAddRange,2;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1511,7 +1511,7 @@ describe("pc_bonus from items", () => {
       bonus bShortWeaponDamageReturn,5;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1527,7 +1527,7 @@ describe("pc_bonus from items", () => {
       bonus bLongWeaponDamageReturn,6;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1543,7 +1543,7 @@ describe("pc_bonus from items", () => {
       bonus bMagicDamageReturn,7;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1559,7 +1559,7 @@ describe("pc_bonus from items", () => {
       bonus bAllStats,3;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.param_bonus["SP_STR"] = 1;
     attributes.param_bonus["SP_AGI"] = 1;
     attributes.param_bonus["SP_VIT"] = 1;
@@ -1586,7 +1586,7 @@ describe("pc_bonus from items", () => {
       bonus bAgiVit,2;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.param_bonus["SP_AGI"] = 3;
     attributes.param_bonus["SP_VIT"] = 3;
 
@@ -1605,7 +1605,7 @@ describe("pc_bonus from items", () => {
       bonus bAgiDexStr,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.param_bonus["SP_AGI"] = 4;
     attributes.param_bonus["SP_DEX"] = 4;
     attributes.param_bonus["SP_STR"] = 4;
@@ -1626,7 +1626,7 @@ describe("pc_bonus from items", () => {
       bonus bPerfectHide,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1642,7 +1642,7 @@ describe("pc_bonus from items", () => {
       bonus bUnbreakable,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.unbreakable = 5;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1659,7 +1659,7 @@ describe("pc_bonus from items", () => {
       bonus bUnbreakableWeapon,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1677,7 +1677,7 @@ describe("pc_bonus from items", () => {
       bonus bUnbreakableArmor,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1695,7 +1695,7 @@ describe("pc_bonus from items", () => {
       bonus bUnbreakableHelm,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1716,7 +1716,7 @@ describe("pc_bonus from items", () => {
       bonus bUnbreakableShield,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1734,7 +1734,7 @@ describe("pc_bonus from items", () => {
       bonus bUnbreakableGarment,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1752,7 +1752,7 @@ describe("pc_bonus from items", () => {
       bonus bUnbreakableShoes,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1770,7 +1770,7 @@ describe("pc_bonus from items", () => {
       bonus bClassChange,300;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1786,7 +1786,7 @@ describe("pc_bonus from items", () => {
       bonus bLongAtkRate,8;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1802,7 +1802,7 @@ describe("pc_bonus from items", () => {
       bonus bBreakWeaponRate,9;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1818,7 +1818,7 @@ describe("pc_bonus from items", () => {
       bonus bBreakArmorRate,7;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1834,7 +1834,7 @@ describe("pc_bonus from items", () => {
       bonus bAddStealRate,6;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1850,7 +1850,7 @@ describe("pc_bonus from items", () => {
       bonus bDelayRate,5;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1866,7 +1866,7 @@ describe("pc_bonus from items", () => {
       bonus bCritAtkRate,4;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1882,7 +1882,7 @@ describe("pc_bonus from items", () => {
       bonus bNoRegen,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1898,7 +1898,7 @@ describe("pc_bonus from items", () => {
       bonus bUnstripableWeapon,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1916,7 +1916,7 @@ describe("pc_bonus from items", () => {
       bonus bUnstripableArmor,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1934,7 +1934,7 @@ describe("pc_bonus from items", () => {
       bonus bUnstripableHelm,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1952,7 +1952,7 @@ describe("pc_bonus from items", () => {
       bonus bUnstripableShield,1;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1970,7 +1970,7 @@ describe("pc_bonus from items", () => {
       bonus bHPDrainValue,10;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1992,7 +1992,7 @@ describe("pc_bonus from items", () => {
       bonus bHPDrainValue,15;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -2014,7 +2014,7 @@ describe("pc_bonus from items", () => {
       bonus bSPDrainValue,20;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -2036,7 +2036,7 @@ describe("pc_bonus from items", () => {
       bonus bSPDrainValue,25;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -2058,7 +2058,7 @@ describe("pc_bonus from items", () => {
       bonus bSPGainValue,30;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -2074,7 +2074,7 @@ describe("pc_bonus from items", () => {
       bonus bHPGainValue,35;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -2090,7 +2090,7 @@ describe("pc_bonus from items", () => {
       bonus bMagicSPGainValue,40;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -2106,7 +2106,7 @@ describe("pc_bonus from items", () => {
       bonus bMagicHPGainValue,45;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -2122,7 +2122,7 @@ describe("pc_bonus from items", () => {
       bonus bHealPower,50;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -2138,7 +2138,7 @@ describe("pc_bonus from items", () => {
       bonus bHealPower2,55;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -2154,7 +2154,7 @@ describe("pc_bonus from items", () => {
       bonus bAddItemHealRate,60;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -2170,7 +2170,7 @@ describe("pc_bonus from items", () => {
       bonus bMatk,65;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -2186,7 +2186,7 @@ describe("pc_bonus from items", () => {
       bonus bFixedCastrate,-20;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.fixcastrate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -2203,7 +2203,7 @@ describe("pc_bonus from items", () => {
       bonus bFixedCast,30;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.add_fixcast = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -2220,7 +2220,7 @@ describe("pc_bonus from items", () => {
       bonus bVariableCastrate,-40;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.varcastrate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -2237,7 +2237,7 @@ describe("pc_bonus from items", () => {
       bonus bVariableCast,50;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.bonus.add_varcast = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -2254,7 +2254,7 @@ describe("pc_bonus from items", () => {
       bonus bAddMaxWeight,100;
     ">`;
     const item = parseItem(itemString);
-    const attributes = new PlayerAttributes(item.Bonuses!);
+    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
     attributes.max_weight = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(

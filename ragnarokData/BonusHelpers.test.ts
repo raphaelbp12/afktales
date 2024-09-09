@@ -6,7 +6,7 @@ describe("BonusHelpers", () => {
   let playerAttributes: PlayerAttributes;
 
   beforeEach(() => {
-    playerAttributes = new PlayerAttributes({});
+    playerAttributes = new PlayerAttributes("test", 1, {});
   });
 
   test("should process SP_HP_VANISH_RATE bonus correctly", () => {

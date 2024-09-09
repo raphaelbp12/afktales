@@ -119,6 +119,12 @@ export class ItemData {
     }
   }
 
+  public getName(): string {
+    return `${this.Name} ${
+      this.Slots && this.Slots > 0 ? `[${this.Slots}]` : ""
+    }`;
+  }
+
   public copy(): ItemData {
     return new ItemData(this);
   }
@@ -145,6 +151,54 @@ export class ItemData {
       case item_types.IT_SELECTPACKAGE:
       case item_types.IT_CASH:
       case item_types.IT_MAX:
+      default:
+        return false;
+    }
+  }
+
+  public isTwoHanded(): boolean {
+    if (!this.isEquip()) return false;
+    if (this.Loc !== equip_pos.EQP_ARMS) return false;
+    if (this.Subtype === undefined || typeof this.Subtype === "string") {
+      throw new Error("Item subtype was not parsed correctly.");
+    }
+
+    switch (this.Subtype) {
+      case weapon_type.W_BOW:
+      case weapon_type.W_KATAR:
+      case weapon_type.W_BOOK:
+      case weapon_type.W_REVOLVER:
+      case weapon_type.W_RIFLE:
+      case weapon_type.W_GATLING:
+      case weapon_type.W_SHOTGUN:
+      case weapon_type.W_GRENADE:
+      case weapon_type.W_HUUMA:
+      case weapon_type.W_WHIP:
+      case weapon_type.W_WHIP:
+      case weapon_type.W_DAGGER:
+      case weapon_type.W_1HSWORD:
+      case weapon_type.W_1HAXE:
+      case weapon_type.W_1HSPEAR:
+      case weapon_type.W_2HSWORD:
+      case weapon_type.W_2HAXE:
+      case weapon_type.W_2HSPEAR:
+      case weapon_type.W_2HSTAFF:
+      case weapon_type.W_2HSWORD:
+        return true;
+      case weapon_type.W_FIST:
+      case weapon_type.W_MACE:
+      case weapon_type.W_STAFF:
+      case weapon_type.W_BOW:
+      case weapon_type.W_KATAR:
+      case weapon_type.W_BOOK:
+      case weapon_type.W_REVOLVER:
+      case weapon_type.W_RIFLE:
+      case weapon_type.W_GATLING:
+      case weapon_type.W_SHOTGUN:
+      case weapon_type.W_GRENADE:
+      case weapon_type.W_HUUMA:
+      case weapon_type.W_WHIP:
+      case weapon_type.W_WHIP:
       default:
         return false;
     }
@@ -287,8 +341,16 @@ export enum equip_pos {
 export function tryParseLoc(
   value: string | number | (string | number)[] | undefined
 ): equip_pos {
-  if (Array.isArray(value) || value === undefined) {
+  if (value === undefined) {
     return equip_pos.EQP_NONE;
+  }
+
+  if (Array.isArray(value)) {
+    const newVal = value.reduce(
+      (acc: equip_pos, val) => acc | tryParseLoc(val),
+      equip_pos.EQP_NONE
+    );
+    return newVal;
   }
 
   if (typeof value === "string") {

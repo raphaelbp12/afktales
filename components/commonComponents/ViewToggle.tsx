@@ -9,8 +9,19 @@ interface ViewToggleProps {
 
 const ViewToggle: React.FC<ViewToggleProps> = ({ isGridView, toggleView }) => {
   return (
-    <button onClick={toggleView} className="text-gray-600 hover:text-gray-800">
-      {isGridView ? <FaList size={24} /> : <FaTh size={24} />}
+    <button
+      onClick={toggleView}
+      className="text-gray-400 hover:text-gray-100 min-w-12"
+    >
+      {isGridView ? (
+        <div className="flex gap-3">
+          Ver Lista <FaList size={24} />
+        </div>
+      ) : (
+        <div className="flex gap-3">
+          Ver Tabela <FaTh size={24} />
+        </div>
+      )}
     </button>
   );
 };

@@ -1,3 +1,4 @@
+// Inventory.ts
 import { ItemData } from "../ItemDB/types";
 
 export class Inventory {
@@ -5,6 +6,14 @@ export class Inventory {
 
   constructor(length: number) {
     this.items = Array.from({ length }, () => new ItemData());
+  }
+
+  public getCurrentLength(): number {
+    return this.items.filter((item) => item.nameid !== 0).length;
+  }
+
+  public getMaxLength(): number {
+    return this.items.length;
   }
 
   public getItems(): ItemData[] {
@@ -34,13 +43,16 @@ export class Inventory {
   }
 
   public addItem(item: ItemData, amount: number): number {
-    const existingItem = this.searchByNameId(item.nameid);
-    if (existingItem) {
-      if (!existingItem.Amount) {
-        existingItem.Amount = 0;
+    const itemCopy = item.copy();
+    if (!itemCopy.isEquip()) {
+      const existingItem = this.searchByNameId(itemCopy.nameid);
+      if (existingItem) {
+        if (!existingItem.Amount) {
+          existingItem.Amount = 0;
+        }
+        existingItem.Amount += amount;
+        return this.items.findIndex((i) => i.nameid === itemCopy.nameid);
       }
-      existingItem.Amount += amount;
-      return this.items.findIndex((i) => i.nameid === item.nameid);
     }
 
     const emptySlot = this.getNextEmptySlot();
@@ -48,8 +60,29 @@ export class Inventory {
       throw new Error("Inventory is full");
     }
 
-    this.items[emptySlot] = item;
+    this.items[emptySlot] = itemCopy;
     this.items[emptySlot].Amount = amount;
     return emptySlot;
+  }
+
+  public removeItemInSlot(slot: number): void {
+    if (slot >= 0 && slot < this.items.length) {
+      this.items[slot] = new ItemData(); // Reset the item in the slot
+    } else {
+      throw new Error(`Invalid slot: ${slot}`);
+    }
+  }
+
+  public moveItemTo(slotIndex: number, targetInventory: Inventory): void {
+    const item = this.getItemInSlot(slotIndex);
+    if (!item) {
+      throw new Error(`No item found in slot ${slotIndex}`);
+    }
+
+    // Add item to target inventory
+    targetInventory.addItem(item, item.Amount ?? 1);
+
+    // Remove item from current inventory
+    this.removeItemInSlot(slotIndex);
   }
 }

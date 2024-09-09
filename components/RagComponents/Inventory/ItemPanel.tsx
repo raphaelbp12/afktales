@@ -7,11 +7,25 @@ import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 
 interface ItemPanelProps {
   item: ItemData;
+  slotIndex: number;
+  characterId?: number;
+  isPlayerInventory?: boolean;
 }
 
-const ItemPanel: React.FC<ItemPanelProps> = ({ item }) => {
+const ItemPanel: React.FC<ItemPanelProps> = ({
+  item,
+  slotIndex,
+  characterId,
+  isPlayerInventory,
+}) => {
   const itemDB = useItemDB();
-  const { addItemToStorage } = useAccountService();
+  const {
+    addItemToStorage,
+    moveItemFromStorageToPlayer,
+    moveItemFromPlayerToStorage,
+    equipItem,
+    unequipItem,
+  } = useAccountService();
 
   const handleAddItem = (amount: number = 1) => {
     const newItem = itemDB.getItemByNameid(item.nameid);
@@ -22,14 +36,54 @@ const ItemPanel: React.FC<ItemPanelProps> = ({ item }) => {
     }
   };
 
+  const handleTakeItem = () => {
+    if (isPlayerInventory) return;
+    if (!characterId) return;
+    moveItemFromStorageToPlayer(slotIndex, characterId);
+  };
+
+  const handleStoreItem = () => {
+    if (!isPlayerInventory) return;
+    if (!characterId) return;
+    moveItemFromPlayerToStorage(characterId, slotIndex);
+  };
+
+  const handleEquip = async () => {
+    if (!isPlayerInventory) return;
+    if (!characterId) return;
+    try {
+      await equipItem(characterId, slotIndex);
+      console.log("Item equipped!");
+    } catch (error) {
+      console.error("Failed to equip item:", error);
+    }
+  };
+
+  const handleUnequip = async () => {
+    if (!isPlayerInventory) return;
+    if (!characterId) return;
+    try {
+      await unequipItem(characterId, slotIndex);
+      console.log("Item unequipped!");
+    } catch (error) {
+      console.error("Failed to unequip item:", error);
+    }
+  };
+
+  if (!item) return null;
+
   return (
     <div className="flex flex-col items-center p-4">
       {/* Reuse InventorySlot to display the item image */}
       <InventorySlot item={item} />
 
       <div className="mt-4 text-center">
-        <h2 className="text-xl font-bold">{item.Name}</h2>
-        <p className="text-gray-400">Qauntidade: {item.Amount}</p>
+        <h2 className="text-xl font-bold">{item.getName()}</h2>
+        <p className="text-gray-400 text-sm">Id: {item.nameid}</p>
+        <p className="text-gray-400 text-sm">
+          Equiped: {item.EquipPosWhenEquipped}
+        </p>
+        <p className="text-gray-400">Quantidade: {item.Amount}</p>
         {/* Add more item details as needed */}
         <div className="flex gap-2">
           <button
@@ -59,6 +113,42 @@ const ItemPanel: React.FC<ItemPanelProps> = ({ item }) => {
             </button>
           )}
         </div>
+        {characterId && (
+          <>
+            <div>
+              <button
+                onClick={() => handleTakeItem()}
+                className="mt-4 px-4 py-2 bg-orange-500 text-white rounded-md"
+              >
+                Pegar
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={() => handleStoreItem()}
+                className="mt-4 px-4 py-2 bg-purple-500 text-white rounded-md"
+              >
+                Armazenar
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={() => handleEquip()}
+                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+              >
+                Equipar
+              </button>
+            </div>
+            <div>
+              <button
+                onClick={() => handleUnequip()}
+                className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+              >
+                Desequipar
+              </button>
+            </div>
+          </>
+        )}
       </div>
     </div>
   );

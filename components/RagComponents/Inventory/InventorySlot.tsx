@@ -1,6 +1,6 @@
 // InventorySlot.tsx
 import ItemSpriteImage from "@/components/commonComponents/ItemSpriteImage";
-import { ItemData } from "@/ragnarokData/ItemDB/types";
+import { equip_pos, ItemData } from "@/ragnarokData/ItemDB/types";
 import React from "react";
 
 interface InventorySlotProps {
@@ -13,8 +13,11 @@ const InventorySlot: React.FC<InventorySlotProps> = ({ item, onClick }) => {
     <div
       className={`relative w-10 h-10 border border-gray-300 flex items-center justify-center ${
         item?.AegisName ? "cursor-pointer" : ""
-      }`}
-      title={item ? item.Name : "Empty Slot"}
+      }
+        ${
+          item?.EquipPosWhenEquipped !== equip_pos.EQP_NONE ? "bg-blue-800" : ""
+        }`}
+      title={item ? item.getName() : "Empty Slot"}
       onClick={item?.AegisName ? onClick : () => {}}
     >
       {item ? <ItemSpriteImage itemId={item.nameid} /> : null}

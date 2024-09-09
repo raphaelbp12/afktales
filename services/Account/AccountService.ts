@@ -76,8 +76,78 @@ export class AccountService {
     }
   }
 
-  // Add an item to the inventory
+  // Add an item to the storage inventory
   addItemToStorage(item: ItemData, amount: number = 1): void {
     this.account.addItem(item, amount);
+  }
+
+  // Move an item from storage to a player's inventory
+  moveItemFromStorageToPlayer(
+    slotIndex: number,
+    playerIndex: number
+  ): Promise<void> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      const storage = this.account.getStorage();
+      storage.moveItemTo(slotIndex, player.inventory);
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  moveItemFromPlayerToStorage(
+    playerIndex: number,
+    slotIndex: number
+  ): Promise<void> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      const storage = this.account.getStorage();
+      player.inventory.moveItemTo(slotIndex, storage);
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  addItemToPlayerInventory(
+    playerIndex: number,
+    item: ItemData,
+    amount: number = 1
+  ): Promise<void> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      player.inventory.addItem(item, amount);
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  equipItemInPlayerInventory(
+    playerIndex: number,
+    inventorySlot: number
+  ): Promise<void> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      player.equipItem(inventorySlot); // Call the equip method
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  // Method to unequip an item
+  unequipItemFromPlayer(
+    playerIndex: number,
+    inventorySlot: number
+  ): Promise<void> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      player.unequipItem(inventorySlot); // Call the unequip method
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
   }
 }

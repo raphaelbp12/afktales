@@ -29,7 +29,7 @@ export class Account {
 
   public newCharacter(name: string): PlayerAttributes {
     console.log("Creating new character", name);
-    const newCharacter = new PlayerAttributes(name);
+    const newCharacter = new PlayerAttributes(name, this.characters.length, {});
     this.characters.push(newCharacter);
     return newCharacter;
   }

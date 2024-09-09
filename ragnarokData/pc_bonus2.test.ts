@@ -9,7 +9,7 @@ describe("pc_bonus2", () => {
   let playerAttributes: PlayerAttributes;
 
   beforeEach(() => {
-    playerAttributes = new PlayerAttributes({});
+    playerAttributes = new PlayerAttributes("test", 1, {});
   });
 
   test("should process SP_ADDELE bonus correctly", () => {

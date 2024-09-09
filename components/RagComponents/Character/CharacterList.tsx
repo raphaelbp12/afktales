@@ -5,24 +5,13 @@ import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttribute
 
 interface CharacterListProps {
   characters: PlayerAttributes[];
-  onDeleteCharacter: (index: number) => void;
-  onUpdateCharacterName: (index: number) => void;
 }
 
-const CharacterList: React.FC<CharacterListProps> = ({
-  characters,
-  onDeleteCharacter,
-  onUpdateCharacterName,
-}) => {
+const CharacterList: React.FC<CharacterListProps> = ({ characters }) => {
   return (
     <div className="grid gap-4 grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       {characters.map((character, index) => (
-        <CharacterCard
-          key={index}
-          character={character}
-          onDelete={() => onDeleteCharacter(index)}
-          onNameChange={() => onUpdateCharacterName(index)}
-        />
+        <CharacterCard key={index} character={character} />
       ))}
     </div>
   );

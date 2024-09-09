@@ -1,6 +1,6 @@
 // InventoryListItem.tsx
 import React from "react";
-import { ItemData } from "@/ragnarokData/ItemDB/types";
+import { equip_pos, ItemData } from "@/ragnarokData/ItemDB/types";
 import ItemSpriteImage from "@/components/commonComponents/ItemSpriteImage";
 
 interface InventoryListItemProps {
@@ -16,6 +16,9 @@ const InventoryListItem: React.FC<InventoryListItemProps> = ({
     <div
       className={`flex items-center p-2 border border-gray-300 rounded-md ${
         item?.AegisName ? "cursor-pointer" : ""
+      }
+      ${
+        item?.EquipPosWhenEquipped !== equip_pos.EQP_NONE ? "bg-blue-800" : ""
       }`}
       onClick={item?.AegisName ? onClick : () => {}}
     >
@@ -24,7 +27,7 @@ const InventoryListItem: React.FC<InventoryListItemProps> = ({
           className={`relative w-10 h-10 flex items-center justify-center ${
             item?.AegisName ? "cursor-pointer" : ""
           }`}
-          title={item ? item.Name : "Empty Slot"}
+          title={item ? item.getName() : "Empty Slot"}
         >
           {item ? <ItemSpriteImage itemId={item.nameid} /> : null}
           {item && item.Amount && item.Amount > 1 && (
@@ -34,7 +37,7 @@ const InventoryListItem: React.FC<InventoryListItemProps> = ({
           )}
         </div>
         <div className="ml-4 flex flex-col justify-center">
-          <h3 className="text-lg font-semibold">{item.Name}</h3>
+          <h3 className="text-lg font-semibold">{item.getName()}</h3>
         </div>
       </div>
     </div>

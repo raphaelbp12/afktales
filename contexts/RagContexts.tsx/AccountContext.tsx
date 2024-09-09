@@ -28,6 +28,21 @@ interface AccountContextValue {
     value: any
   ) => Promise<void>;
   addItemToStorage: (item: ItemData, amount?: number) => void;
+  addItemToPlayerInventory: (
+    playerIndex: number,
+    item: ItemData,
+    amount?: number
+  ) => Promise<void>;
+  moveItemFromStorageToPlayer: (
+    slotIndex: number,
+    playerIndex: number
+  ) => Promise<void>;
+  moveItemFromPlayerToStorage: (
+    playerIndex: number,
+    slotIndex: number
+  ) => Promise<void>;
+  equipItem: (playerIndex: number, inventorySlot: number) => Promise<void>;
+  unequipItem: (playerIndex: number, inventorySlot: number) => Promise<void>;
   reloadCharacters: () => Promise<void>;
   reloadStorage: () => Promise<void>;
 }
@@ -129,10 +144,84 @@ export const AccountProvider: React.FC<{ children: ReactNode }> = ({
   const addItemToStorage = useCallback(
     (item: ItemData, amount: number = 1) => {
       accountService.addItemToStorage(item, amount);
-      // Trigger re-render by updating storage state
       loadStorage();
     },
     [accountService, loadStorage]
+  );
+
+  const addItemToPlayerInventory = useCallback(
+    async (playerIndex: number, item: ItemData, amount: number = 1) => {
+      try {
+        await accountService.addItemToPlayerInventory(
+          playerIndex,
+          item,
+          amount
+        );
+        loadCharacters();
+      } catch (err) {
+        console.error("Failed to add item to player inventory:", err);
+      }
+    },
+    [accountService, loadCharacters]
+  );
+
+  const moveItemFromStorageToPlayer = useCallback(
+    async (slotIndex: number, playerIndex: number) => {
+      try {
+        await accountService.moveItemFromStorageToPlayer(
+          slotIndex,
+          playerIndex
+        );
+        loadStorage();
+        loadCharacters();
+      } catch (err) {
+        console.error("Failed to move item from storage to player:", err);
+      }
+    },
+    [accountService, loadStorage, loadCharacters]
+  );
+
+  const moveItemFromPlayerToStorage = useCallback(
+    async (playerIndex: number, slotIndex: number) => {
+      try {
+        await accountService.moveItemFromPlayerToStorage(
+          playerIndex,
+          slotIndex
+        );
+        loadStorage();
+        loadCharacters();
+      } catch (err) {
+        console.error("Failed to move item from player to storage:", err);
+      }
+    },
+    [accountService, loadStorage, loadCharacters]
+  );
+
+  const equipItem = useCallback(
+    async (playerIndex: number, inventorySlot: number) => {
+      try {
+        await accountService.equipItemInPlayerInventory(
+          playerIndex,
+          inventorySlot
+        );
+        loadCharacters(); // Refresh characters to reflect the equipped item
+      } catch (err) {
+        console.error("Failed to equip item:", err);
+      }
+    },
+    [accountService, loadCharacters]
+  );
+
+  const unequipItem = useCallback(
+    async (playerIndex: number, inventorySlot: number) => {
+      try {
+        await accountService.unequipItemFromPlayer(playerIndex, inventorySlot);
+        loadCharacters(); // Refresh characters to reflect the unequipped item
+      } catch (err) {
+        console.error("Failed to unequip item:", err);
+      }
+    },
+    [accountService, loadCharacters]
   );
 
   useEffect(() => {
@@ -151,8 +240,13 @@ export const AccountProvider: React.FC<{ children: ReactNode }> = ({
         deleteCharacter,
         updateCharacter,
         addItemToStorage,
+        addItemToPlayerInventory,
+        moveItemFromStorageToPlayer,
+        moveItemFromPlayerToStorage,
         reloadCharacters: loadCharacters,
         reloadStorage: loadStorage,
+        equipItem,
+        unequipItem,
       }}
     >
       {children}

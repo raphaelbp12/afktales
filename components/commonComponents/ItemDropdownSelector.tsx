@@ -128,7 +128,7 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
               onTouchEnd={() => handleOptionClick(option.nameid)} // For mobile touch support
             >
               {option.nameid && <ItemSpriteImage itemId={option.nameid} />}
-              {option.Name}
+              {option.getName()}
             </div>
           ))}
         </div>
