@@ -8,7 +8,7 @@ import { AddEffect } from "../AutoTriggerFlag";
 import { sc_type } from "../sc_type";
 import { Race, Race2 } from "../map_race_id2mask";
 import { persistent_status } from "./persistentStatus";
-import { equip_pos, item_persistent, ItemData } from "../ItemDB/types";
+import { equip_pos, item_types, ItemData } from "../ItemDB/types";
 import { Inventory } from "./Inventory";
 
 export class PlayerAttributes {
@@ -786,6 +786,64 @@ export class PlayerAttributes {
     }
 
     return 2;
+  }
+
+  // pc_can_insert_card
+  public canInsertCard(cardInvSlot: number): boolean {
+    const cardItem = this.inventory.getItemInSlot(cardInvSlot);
+    if (!cardItem) return false;
+    if (!cardItem.Amount || cardItem.Amount <= 0) return false;
+    if (cardItem.Type !== item_types.IT_CARD) return false;
+    return true;
+  }
+
+  // pc_can_insert_card_into
+  public canInsertCardInto(cardInvSlot: number, equipInvSlot: number): boolean {
+    if (!this.canInsertCard(cardInvSlot)) return false;
+
+    const cardItem = this.inventory.getItemInSlot(cardInvSlot);
+    const equipItem = this.inventory.getItemInSlot(equipInvSlot);
+
+    if (!cardItem) return false;
+    if (!equipItem) return false;
+
+    if (
+      equipItem.Type !== item_types.IT_WEAPON &&
+      equipItem.Type !== item_types.IT_ARMOR
+    )
+      return false;
+    if (((equipItem.Loc as equip_pos) & (cardItem.Loc as equip_pos)) === 0)
+      return false;
+    if (
+      equipItem.Type === item_types.IT_WEAPON &&
+      cardItem.Loc === equip_pos.EQP_SHIELD
+    )
+      return false;
+
+    const cardSlots = equipItem.Cards?.filter((card) => card === 0).length;
+    if (!cardSlots || cardSlots <= 0) return false;
+
+    return true;
+  }
+
+  // pc_insert_card
+  public insertCard(cardInvSlot: number, equipInvSlot: number): boolean {
+    if (!this.canInsertCardInto(cardInvSlot, equipInvSlot)) return false;
+
+    const cardItem = this.inventory.getItemInSlot(cardInvSlot);
+    const equipItem = this.inventory.getItemInSlot(equipInvSlot);
+
+    if (!cardItem) return false;
+    if (!equipItem) return false;
+    if (!equipItem.Cards) return false;
+
+    const nextSlot = equipItem.Cards?.findIndex((card) => card === 0);
+    if (nextSlot === -1) return false;
+
+    this.inventory.removeAmountFromItemInSlot(cardInvSlot, 1);
+    equipItem.Cards[nextSlot] = cardItem.nameid;
+
+    return true;
   }
 }
 

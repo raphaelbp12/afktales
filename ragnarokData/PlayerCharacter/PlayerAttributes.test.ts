@@ -734,4 +734,125 @@ describe("PlayerAttributes", () => {
       playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_GARMENT)
     ).toStrictEqual([itemManteauSlot]);
   });
+
+  it("insert raydric card into manteau", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemManteau = itemDB.getItemByNameid(2506);
+    const itemRaydricCard = itemDB.getItemByNameid(4133);
+    playerAttributes.addItem(itemDB.getItemByNameid(503));
+    playerAttributes.addItem(itemDB.getItemByNameid(504));
+    playerAttributes.addItem(itemDB.getItemByNameid(505));
+    playerAttributes.addItem(itemDB.getItemByNameid(506));
+    playerAttributes.addItem(itemDB.getItemByNameid(507));
+    const itemManteauSlot = playerAttributes.addItem(itemManteau);
+    const itemRaydricCardSlot = playerAttributes.addItem(itemRaydricCard);
+
+    playerAttributes.equipItem(itemManteauSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemManteauSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_GARMENT);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_GARMENT)
+    ).toStrictEqual([itemManteauSlot]);
+
+    playerAttributes.insertCard(itemRaydricCardSlot, itemManteauSlot);
+    expect(playerAttributes.inventory.getItemInSlot(itemRaydricCardSlot)).toBe(
+      undefined
+    );
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemManteauSlot)?.Cards
+    ).not.toBeNull();
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemManteauSlot)!.Cards![0]
+    ).toBe(4133);
+  });
+
+  it("insert 4 andre card into knife", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemKnife = itemDB.getItemByNameid(1202);
+    const itemAndreCard = itemDB.getItemByNameid(4043);
+    playerAttributes.addItem(itemDB.getItemByNameid(503));
+    playerAttributes.addItem(itemDB.getItemByNameid(504));
+    playerAttributes.addItem(itemDB.getItemByNameid(505));
+    playerAttributes.addItem(itemDB.getItemByNameid(506));
+    playerAttributes.addItem(itemDB.getItemByNameid(507));
+    const itemKnifeSlot = playerAttributes.addItem(itemKnife);
+    const itemAndreCardSlot = playerAttributes.addItem(itemAndreCard, 4);
+
+    playerAttributes.equipItem(itemKnifeSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemKnifeSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_HAND_R);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_R)
+    ).toStrictEqual([itemKnifeSlot]);
+
+    playerAttributes.insertCard(itemAndreCardSlot, itemKnifeSlot);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemAndreCardSlot)?.Amount
+    ).toBe(3);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemAndreCardSlot)?.Cards
+    ).not.toBeNull();
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![0]
+    ).toBe(4043);
+
+    playerAttributes.insertCard(itemAndreCardSlot, itemKnifeSlot);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemAndreCardSlot)?.Amount
+    ).toBe(2);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemAndreCardSlot)?.Cards
+    ).not.toBeNull();
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![0]
+    ).toBe(4043);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![1]
+    ).toBe(4043);
+
+    playerAttributes.insertCard(itemAndreCardSlot, itemKnifeSlot);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemAndreCardSlot)?.Amount
+    ).toBe(1);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemAndreCardSlot)?.Cards
+    ).not.toBeNull();
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![0]
+    ).toBe(4043);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![1]
+    ).toBe(4043);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![2]
+    ).toBe(4043);
+
+    playerAttributes.insertCard(itemAndreCardSlot, itemKnifeSlot);
+    expect(playerAttributes.inventory.getItemInSlot(itemAndreCardSlot)).toBe(
+      undefined
+    );
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemAndreCardSlot)?.Cards
+    ).not.toBeNull();
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![0]
+    ).toBe(4043);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![1]
+    ).toBe(4043);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![2]
+    ).toBe(4043);
+    expect(
+      playerAttributes.inventory.getItemInSlot(itemKnifeSlot)!.Cards![3]
+    ).toBe(4043);
+  });
 });

@@ -73,6 +73,20 @@ export class Inventory {
     }
   }
 
+  public removeAmountFromItemInSlot(slot: number, amount: number): void {
+    if (slot >= 0 && slot < this.items.length) {
+      const item = this.items[slot];
+      if (item && item.Amount) {
+        item.Amount -= amount;
+        if (item.Amount <= 0) {
+          this.removeItemInSlot(slot);
+        }
+      }
+    } else {
+      throw new Error(`Invalid slot: ${slot}`);
+    }
+  }
+
   public moveItemTo(slotIndex: number, targetInventory: Inventory): void {
     const item = this.getItemInSlot(slotIndex);
     if (!item) {

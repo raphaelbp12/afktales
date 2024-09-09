@@ -107,6 +107,7 @@ export class ItemData {
     this.OnRentalStartScript = data?.OnRentalStartScript;
     this.OnRentalEndScript = data?.OnRentalEndScript;
     this.Bonuses = data?.Bonuses;
+    this.Cards = data?.Cards ?? Array(this.Slots).fill(0);
 
     if (persistentData) {
       this.nameid = persistentData.nameid;
