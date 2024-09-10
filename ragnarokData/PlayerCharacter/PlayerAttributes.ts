@@ -853,6 +853,16 @@ export class PlayerAttributes {
     // Set inventory using persistent items from the status
     player.inventory = Inventory.deserialize(MAX_INVENTORY, status.inventory);
 
+    const equippedItems = player.inventory.getEquippedItems();
+
+    equippedItems.forEach((item) => {
+      for (let i = 0; i < equip_index.EQI_MAX; i++) {
+        if ((player.equip_pos[i] & item.pos) !== 0) {
+          player.equip_index[i] = item.invSlot;
+        }
+      }
+    });
+
     // Populate any other fields from persistent_status as necessary
 
     return player;

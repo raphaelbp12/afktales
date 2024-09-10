@@ -1,6 +1,6 @@
 // Inventory.ts
 import { ItemDB } from "../ItemDB/ItemDB";
-import { item_persistent, ItemData } from "../ItemDB/types";
+import { equip_pos, item_persistent, ItemData } from "../ItemDB/types";
 
 export class Inventory {
   private items: ItemData[];
@@ -54,6 +54,17 @@ export class Inventory {
       console.error(`Error while getting item in slot ${slot}: ${error}`);
       return undefined;
     }
+  }
+
+  public getEquippedItems(): { invSlot: number; pos: number }[] {
+    const items: { invSlot: number; pos: number }[] = [];
+    this.items.forEach((item, index) => {
+      if (item.EquipPosWhenEquipped === equip_pos.EQP_NONE) return;
+
+      items.push({ invSlot: index, pos: item.EquipPosWhenEquipped! });
+    });
+
+    return items;
   }
 
   public addItem(item: ItemData, amount: number): number {
