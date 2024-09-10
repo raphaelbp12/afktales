@@ -3,15 +3,13 @@
 import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 import React, { useEffect, useState } from "react";
 import InventoryGrid from "../Inventory/InventoryGrid";
-import CharacterList from "../Character/CharacterList";
-import AddItemPanel from "../Inventory/AddItemPanel";
-import Modal from "@/components/commonComponents/Modal";
 import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttributes";
 import Link from "next/link";
-import { FaArrowLeft, FaBackward } from "react-icons/fa";
+import { FaArrowLeft } from "react-icons/fa";
 import PageWrapper from "@/components/commonComponents/PageWrapper";
 import GetBasicItemsButton from "../Inventory/GetBasicItemsButton";
 import EquipAllButton from "../Inventory/EquipAllButton";
+import EquipmentList from "../Character/EquipmentList";
 
 type CharacterProps = {
   characterId: number;
@@ -55,6 +53,10 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
           <div className="mt-4">
             Id: {characterId} Name: {character?.name}
           </div>
+          <EquipmentList
+            equipedItemIndexes={character.equip_index}
+            inventory={character.inventory}
+          />
         </div>
 
         <div className="flex flex-1 flex-col">
