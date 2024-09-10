@@ -16,18 +16,39 @@ const Game: React.FC = () => {
     loading,
     error,
     createCharacter,
-    deleteCharacter,
-    updateCharacter,
+    saveAccountToLocalStorage,
+    loadAccountFromLocalStorage,
   } = useAccountService();
   const [openAddItemModal, setOpenAddItemModal] = useState<boolean>(false);
 
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error: {error}</div>;
 
+  const handleSaveAccount = () => {
+    const serializedAccount = saveAccountToLocalStorage();
+    console.log("Serialized account", serializedAccount);
+  };
+
+  const handleLoadAccount = () => {
+    loadAccountFromLocalStorage();
+  };
+
   return (
     <PageWrapper overflowAuto>
       <div className="flex flex-col md:flex-row gap-5 w-4/5">
         <div className="flex-1">
+          <button
+            onClick={() => handleSaveAccount()}
+            className="my-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+          >
+            Salvar
+          </button>
+          <button
+            onClick={() => handleLoadAccount()}
+            className="my-4 px-4 py-2 bg-green-500 text-white rounded-md"
+          >
+            Carregar
+          </button>
           <h1 className="text-xl font-bold mb-4">Meus Personagens</h1>
           <CharacterList characters={characters} />
           <button

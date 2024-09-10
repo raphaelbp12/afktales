@@ -150,4 +150,15 @@ export class AccountService {
       return Promise.reject(error);
     }
   }
+
+  // Serialize the account data into a string
+  serializeAccount(): string {
+    return this.account.serialize();
+  }
+
+  // Deserialize the account data from a string
+  deserializeAccount(data: string): void {
+    const acc = Account.deserialize(data);
+    this.account = acc;
+  }
 }

@@ -84,4 +84,15 @@ describe("Account", () => {
       );
     });
   });
+
+  describe("deserialize", () => {
+    it("should serialize an empty new account, deserialize a string and return an Account instance", () => {
+      const acc = new Account();
+      const string = acc.serialize();
+      const deserialized = Account.deserialize(string);
+      expect(deserialized).toBeInstanceOf(Account);
+      expect(deserialized.getCharacters()).toEqual([]);
+      expect(deserialized.getStorage().getItems().length).toEqual(1000);
+    });
+  });
 });

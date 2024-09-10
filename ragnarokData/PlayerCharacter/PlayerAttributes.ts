@@ -234,8 +234,11 @@ export class PlayerAttributes {
   };
 
   constructor(name?: string, id?: number, bonuses?: Bonuses) {
+    this.persistent_status = new persistent_status();
     this.id = id ?? 1;
     this.name = name ?? "test";
+    this.persistent_status.id = this.id;
+    this.persistent_status.name = this.name;
     // Initialize single value properties
     this.has_shield = false;
     this.weapontype = weapon_type.W_FIST;
@@ -270,7 +273,6 @@ export class PlayerAttributes {
 
     this.equip_pos = initEquipPos();
     this.equip_index = Array(equip_index.EQI_MAX).fill(-1);
-    this.persistent_status = new persistent_status();
     this.inventory = new Inventory(MAX_INVENTORY);
     // Initialize base_status
     this.base_status = initializeStatusData();
@@ -616,15 +618,6 @@ export class PlayerAttributes {
 
   public addItem(itemData: ItemData, amount: number = 1): number {
     const itemCopy = itemData.copy();
-    const emptySlot = this.persistent_status.inventory.findIndex(
-      (item) => item.id === 0
-    );
-    if (emptySlot === -1) {
-      return -1;
-    }
-
-    this.persistent_status.inventory[emptySlot] = itemCopy.toPersistentItem();
-    this.persistent_status.inventory[emptySlot].amount = amount;
 
     return this.inventory.addItem(itemCopy, amount);
   }
@@ -844,6 +837,36 @@ export class PlayerAttributes {
     equipItem.Cards[nextSlot] = cardItem.nameid;
 
     return true;
+  }
+
+  // This method constructs PlayerAttributes from a persistent_status object
+  public static fromPersistentStatus(
+    status: persistent_status,
+    name: string,
+    id: number
+  ): PlayerAttributes {
+    const player = new PlayerAttributes(name, id);
+
+    // Set basic status values
+    player.persistent_status = status;
+
+    // Set inventory using persistent items from the status
+    player.inventory = Inventory.deserialize(MAX_INVENTORY, status.inventory);
+
+    // Populate any other fields from persistent_status as necessary
+
+    return player;
+  }
+
+  // Method to convert the PlayerAttributes back to persistent_status
+  public toPersistentStatus(): persistent_status {
+    const status = this.persistent_status;
+
+    // Convert inventory items to persistent items
+    status.inventory = this.inventory.serialize();
+
+    // Set any other status-related fields you want to persist here
+    return status;
   }
 }
 

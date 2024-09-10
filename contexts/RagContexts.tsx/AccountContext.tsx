@@ -43,6 +43,10 @@ interface AccountContextValue {
   ) => Promise<void>;
   equipItem: (playerIndex: number, inventorySlot: number) => Promise<void>;
   unequipItem: (playerIndex: number, inventorySlot: number) => Promise<void>;
+  serializeAccount: () => string;
+  deserializeAccount: (data: string) => void;
+  saveAccountToLocalStorage: () => string;
+  loadAccountFromLocalStorage: () => void;
   reloadCharacters: () => Promise<void>;
   reloadStorage: () => Promise<void>;
 }
@@ -224,6 +228,36 @@ export const AccountProvider: React.FC<{ children: ReactNode }> = ({
     [accountService, loadCharacters]
   );
 
+  const serializeAccount = useCallback(() => {
+    return accountService.serializeAccount();
+  }, [accountService]);
+
+  const deserializeAccount = useCallback(
+    (data: string) => {
+      accountService.deserializeAccount(data);
+      loadCharacters();
+      loadStorage();
+    },
+    [accountService, loadCharacters, loadStorage]
+  );
+
+  // Serialize account to string and save to localStorage
+  const saveAccountToLocalStorage = useCallback(() => {
+    const serializedData = accountService.serializeAccount();
+    localStorage.setItem("accountData", serializedData);
+    return serializedData;
+  }, [accountService]);
+
+  // Load account from localStorage and deserialize
+  const loadAccountFromLocalStorage = useCallback(() => {
+    const storedData = localStorage.getItem("accountData");
+    if (storedData) {
+      accountService.deserializeAccount(storedData);
+      loadCharacters();
+      loadStorage();
+    }
+  }, [accountService, loadCharacters, loadStorage]);
+
   useEffect(() => {
     loadCharacters();
     loadStorage();
@@ -247,6 +281,10 @@ export const AccountProvider: React.FC<{ children: ReactNode }> = ({
         reloadStorage: loadStorage,
         equipItem,
         unequipItem,
+        serializeAccount,
+        deserializeAccount,
+        saveAccountToLocalStorage,
+        loadAccountFromLocalStorage,
       }}
     >
       {children}

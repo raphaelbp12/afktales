@@ -1,7 +1,14 @@
 // Account.ts
 import { Inventory } from "../PlayerCharacter/Inventory";
+import {
+  serializePersistentStatus,
+  deserializePersistentStatus,
+  persistent_status,
+} from "../PlayerCharacter/persistentStatus";
 import { PlayerAttributes } from "../PlayerCharacter/PlayerAttributes";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
+
+const MAX_STORAGE = 1000;
 
 export class Account {
   private characters: PlayerAttributes[];
@@ -9,7 +16,7 @@ export class Account {
 
   constructor() {
     this.characters = [];
-    this.storage = new Inventory(1000);
+    this.storage = new Inventory(MAX_STORAGE);
   }
 
   public getStorage(): Inventory {
@@ -44,5 +51,38 @@ export class Account {
 
   public addItem(item: ItemData, amount: number = 1): void {
     this.storage.addItem(item, amount);
+  }
+
+  // Serialize the account by serializing the characters and the inventory
+  public serialize(): string {
+    const serializedCharacters = this.characters.map((char) =>
+      serializePersistentStatus(char.toPersistentStatus())
+    );
+    const serializedStorage = this.storage.serialize();
+
+    return JSON.stringify({
+      characters: serializedCharacters,
+      storage: serializedStorage,
+    });
+  }
+
+  // Deserialize the account by reconstructing characters and the inventory
+  public static deserialize(serializedData: string): Account {
+    const parsedData = JSON.parse(serializedData);
+    const account = new Account();
+    const persistent_status_characters: persistent_status[] =
+      parsedData.characters.map((charData: string) =>
+        deserializePersistentStatus(charData)
+      );
+    account.characters = persistent_status_characters.map((status) => {
+      const char = PlayerAttributes.fromPersistentStatus(
+        status,
+        status.name,
+        status.id
+      );
+      return char;
+    });
+    account.storage = Inventory.deserialize(MAX_STORAGE, parsedData.storage);
+    return account;
   }
 }

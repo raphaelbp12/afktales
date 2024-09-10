@@ -13,15 +13,6 @@ describe("PlayerAttributes", () => {
     playerAttributes.addItem(item503, 10);
     playerAttributes.addItem(item12014, 100);
 
-    expect(playerAttributes.persistent_status.inventory[0].amount).toBe(10);
-    expect(playerAttributes.persistent_status.inventory[0].nameid).toBe(
-      item503.nameid
-    );
-    expect(playerAttributes.persistent_status.inventory[1].amount).toBe(100);
-    expect(playerAttributes.persistent_status.inventory[1].nameid).toBe(
-      item12014.nameid
-    );
-
     expect(playerAttributes.inventory.getItemInSlot(0)?.nameid).toBe(503);
     expect(playerAttributes.inventory.getItemInSlot(0)?.AegisName).toBe(
       item503.AegisName

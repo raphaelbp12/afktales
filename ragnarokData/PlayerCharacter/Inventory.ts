@@ -1,11 +1,25 @@
 // Inventory.ts
-import { ItemData } from "../ItemDB/types";
+import { ItemDB } from "../ItemDB/ItemDB";
+import { item_persistent, ItemData } from "../ItemDB/types";
 
 export class Inventory {
   private items: ItemData[];
 
-  constructor(length: number) {
+  constructor(length: number, persistentItems?: item_persistent[]) {
     this.items = Array.from({ length }, () => new ItemData());
+
+    if (persistentItems) {
+      const itemDB = new ItemDB();
+      persistentItems.forEach((itemPersistent) => {
+        const item = itemDB.getItemByNameid(itemPersistent.nameid);
+        const newItem = new ItemData(item, itemPersistent);
+        const emptySlot = this.getNextEmptySlot();
+        if (emptySlot === -1) {
+          throw new Error("Inventory is full");
+        }
+        this.items[emptySlot] = newItem;
+      });
+    }
   }
 
   public getCurrentLength(): number {
@@ -98,5 +112,24 @@ export class Inventory {
 
     // Remove item from current inventory
     this.removeItemInSlot(slotIndex);
+  }
+
+  // Serialize the inventory by converting each item to a persistent form
+  public serialize(): string {
+    const serializedItems = this.items
+      .filter((item) => item.nameid !== 0)
+      .map((item) => item.toPersistentItem());
+    return JSON.stringify({ items: serializedItems });
+  }
+
+  // Deserialize the inventory from persistent items
+  public static deserialize(
+    invLenght: number,
+    serializedData: string
+  ): Inventory {
+    const parsedData = JSON.parse(serializedData);
+    const inventory = new Inventory(invLenght, parsedData.items);
+
+    return inventory;
   }
 }

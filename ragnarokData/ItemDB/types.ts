@@ -247,7 +247,7 @@ export class ItemData {
     return {
       id: this.Id,
       nameid: this.nameid,
-      amount: 1,
+      amount: this.Amount ?? 1,
       equip: this.EquipPosWhenEquipped ?? equip_pos.EQP_NONE,
       identify: "",
       refine: this.RefineLevel ?? 0,
