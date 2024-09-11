@@ -16,7 +16,7 @@ const GameWithTabs: React.FC = () => {
       content: <Game />,
     },
     {
-      label: "Adicionar Item",
+      label: "Adicionar Item ao Armazém",
       content: <AddItemTab />,
     },
     {

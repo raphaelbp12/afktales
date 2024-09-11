@@ -70,7 +70,7 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
                 content: <InventoryTab characterId={characterId} />,
               },
               {
-                label: "Adicionar Item",
+                label: "Adicionar Item ao Inventário",
                 content: <AddItemTab isPlayerTab characterId={characterId} />,
               },
               {
