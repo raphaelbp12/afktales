@@ -126,20 +126,19 @@ export class Inventory {
   }
 
   // Serialize the inventory by converting each item to a persistent form
-  public serialize(): string {
+  public prepareToSerialize(): item_persistent[] {
     const serializedItems = this.items
       .filter((item) => item.nameid !== 0)
       .map((item) => item.toPersistentItem());
-    return JSON.stringify({ items: serializedItems });
+    return serializedItems;
   }
 
   // Deserialize the inventory from persistent items
   public static deserialize(
     invLenght: number,
-    serializedData: string
+    serializedData: item_persistent[]
   ): Inventory {
-    const parsedData = JSON.parse(serializedData);
-    const inventory = new Inventory(invLenght, parsedData.items);
+    const inventory = new Inventory(invLenght, serializedData);
 
     return inventory;
   }

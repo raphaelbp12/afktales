@@ -16,7 +16,7 @@ export class persistent_status {
   dex: number;
   luk: number;
 
-  inventory: string;
+  inventory: item_persistent[];
 
   constructor() {
     this.id = 0;
@@ -33,19 +33,14 @@ export class persistent_status {
     this.dex = 0;
     this.luk = 0;
 
-    this.inventory = "";
+    this.inventory = [];
   }
 }
 
-// Function to serialize the class to a string
-export function serializePersistentStatus(status: persistent_status): string {
-  return JSON.stringify(status);
-}
-
 // Function to deserialize the string back to a class instance
-export function deserializePersistentStatus(data: string): persistent_status {
-  const parsedData = JSON.parse(data);
-
+export function deserializePersistentStatus(
+  parsedData: any
+): persistent_status {
   const status = new persistent_status();
   status.id = parsedData.id;
   status.name = parsedData.name;

@@ -1,7 +1,6 @@
 // Account.ts
 import { Inventory } from "../PlayerCharacter/Inventory";
 import {
-  serializePersistentStatus,
   deserializePersistentStatus,
   persistent_status,
 } from "../PlayerCharacter/persistentStatus";
@@ -56,9 +55,9 @@ export class Account {
   // Serialize the account by serializing the characters and the inventory
   public serialize(): string {
     const serializedCharacters = this.characters.map((char) =>
-      serializePersistentStatus(char.toPersistentStatus())
+      char.toPersistentStatus()
     );
-    const serializedStorage = this.storage.serialize();
+    const serializedStorage = this.storage.prepareToSerialize();
 
     return JSON.stringify({
       characters: serializedCharacters,

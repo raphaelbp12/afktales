@@ -908,6 +908,7 @@ export class PlayerAttributes {
 
     // Populate any other fields from persistent_status as necessary
 
+    player.calculateItemBonuses();
     return player;
   }
 
@@ -916,7 +917,7 @@ export class PlayerAttributes {
     const status = this.persistent_status;
 
     // Convert inventory items to persistent items
-    status.inventory = this.inventory.serialize();
+    status.inventory = this.inventory.prepareToSerialize();
 
     // Set any other status-related fields you want to persist here
     return status;
