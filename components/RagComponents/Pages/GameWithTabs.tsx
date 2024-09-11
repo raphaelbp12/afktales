@@ -4,6 +4,8 @@ import Game from "./Game"; // Your Game component
 import Tabs from "@/components/commonComponents/Tabs";
 import SaveAndLoadTab from "./Tabs/SaveAndLoadTab";
 import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
+import AddItemTab from "./Tabs/AddItemTab";
+import PageWrapper from "@/components/commonComponents/PageWrapper";
 
 const GameWithTabs: React.FC = () => {
   const { nextAutoSaveInSeconds } = useAccountService();
@@ -14,12 +16,20 @@ const GameWithTabs: React.FC = () => {
       content: <Game />,
     },
     {
+      label: "Adicionar Item",
+      content: <AddItemTab />,
+    },
+    {
       label: `Salvar e Carregar (${nextAutoSaveInSeconds}s)`,
       content: <SaveAndLoadTab />,
     },
   ];
 
-  return <Tabs tabs={tabs} />;
+  return (
+    <PageWrapper overflowAuto>
+      <Tabs tabs={tabs} />
+    </PageWrapper>
+  );
 };
 
 export default GameWithTabs;

@@ -58,6 +58,7 @@ const AccountContext = createContext<AccountContextValue | undefined>(
 export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [firstLoad, setFirstLoad] = useState<boolean>(false);
   const [characters, setCharacters] = useState<PlayerAttributes[]>([]);
   const [storage, setStorage] = useState<Inventory | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
@@ -269,6 +270,10 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Auto-save mechanism
   useEffect(() => {
+    if (!firstLoad) {
+      setFirstLoad(true);
+      loadAccountFromLocalStorage("autosave");
+    }
     const intervalId = setInterval(() => {
       setNextAutoSaveInSeconds((prev) => (prev > 0 ? prev - 1 : 30));
       if (nextAutoSaveInSeconds === 1) {
@@ -277,7 +282,12 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
     }, 1000);
 
     return () => clearInterval(intervalId); // Clean up interval on component unmount
-  }, [nextAutoSaveInSeconds, saveAccountToLocalStorage]);
+  }, [
+    firstLoad,
+    loadAccountFromLocalStorage,
+    nextAutoSaveInSeconds,
+    saveAccountToLocalStorage,
+  ]);
 
   useEffect(() => {
     loadCharacters();

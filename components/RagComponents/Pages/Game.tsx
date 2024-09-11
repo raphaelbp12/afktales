@@ -25,7 +25,7 @@ const Game: React.FC = () => {
   if (error) return <div>Error: {error}</div>;
 
   return (
-    <PageWrapper overflowAuto>
+    <div>
       <div className="flex flex-col md:flex-row gap-5 w-4/5">
         <div className="flex-1">
           <h1 className="text-xl font-bold mb-4">My Characters</h1>
@@ -63,7 +63,7 @@ const Game: React.FC = () => {
           <AddItemPanel />
         </Modal>
       </div>
-    </PageWrapper>
+    </div>
   );
 };
 
