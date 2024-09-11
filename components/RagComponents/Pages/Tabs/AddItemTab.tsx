@@ -47,11 +47,15 @@ const locFilters = [
 
 interface AddItemTabProps {
   isPlayerTab?: boolean;
+  characterId?: number;
 }
 
-const AddItemTab: React.FC<AddItemTabProps> = ({ isPlayerTab }) => {
+const AddItemTab: React.FC<AddItemTabProps> = ({
+  isPlayerTab,
+  characterId,
+}) => {
   const itemDB = useItemDB();
-  const { addItemToStorage } = useAccountService();
+  const { addItemToStorage, addItemToPlayerInventory } = useAccountService();
   const [selectedItem, setSelectedItem] = useState<ItemData | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<item_types | null>(null);
   const [selectWeaponType, setSelectWeaponType] = useState<weapon_type | null>(
@@ -75,6 +79,10 @@ const AddItemTab: React.FC<AddItemTabProps> = ({ isPlayerTab }) => {
 
     const item = itemDB.getItemByNameid(selectedItem.nameid);
     if (item) {
+      if (isPlayerTab) {
+        addItemToPlayerInventory(characterId!, item, amount);
+        return;
+      }
       addItemToStorage(item, amount);
     } else {
       alert("Item not found!");
