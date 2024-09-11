@@ -14,12 +14,14 @@ const Tabs: React.FC<TabsProps> = ({ tabs }) => {
 
   return (
     <div className="w-full">
-      <div className="flex justify-center mb-4">
+      <div className="flex justify-center mb-4 space-x-4">
         {tabs.map((tab, index) => (
           <button
             key={index}
             className={`p-2 ${
-              activeTab === index ? "border-b-2 border-blue-500" : ""
+              activeTab === index
+                ? "border-b-2 border-blue-500 text-blue-500"
+                : "text-gray-500"
             }`}
             onClick={() => setActiveTab(index)}
           >

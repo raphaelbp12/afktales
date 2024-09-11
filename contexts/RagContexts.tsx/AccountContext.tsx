@@ -2,7 +2,6 @@
 // AccountContext.tsx
 import React, {
   createContext,
-  ReactNode,
   useContext,
   useState,
   useEffect,
@@ -14,7 +13,6 @@ import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import { AccountService } from "@/services/Account/AccountService";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
 
-// Define the shape of the context value
 interface AccountContextValue {
   characters: PlayerAttributes[];
   storage: Inventory | null;
@@ -45,28 +43,31 @@ interface AccountContextValue {
   unequipItem: (playerIndex: number, inventorySlot: number) => Promise<void>;
   serializeAccount: () => string;
   deserializeAccount: (data: string) => void;
-  saveAccountToLocalStorage: () => string;
-  loadAccountFromLocalStorage: () => void;
+  saveAccountToLocalStorage: (saveName: string) => string;
+  loadAccountFromLocalStorage: (saveName: string) => void;
+  deleteSaveFromLocalStorage: (saveName: string) => void;
+  nextAutoSaveInSeconds: number;
   reloadCharacters: () => Promise<void>;
   reloadStorage: () => Promise<void>;
 }
 
-// Create the context with a default value of `undefined`
 const AccountContext = createContext<AccountContextValue | undefined>(
   undefined
 );
 
-// Provider component that wraps the logic from the custom hook
-export const AccountProvider: React.FC<{ children: ReactNode }> = ({
+export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [characters, setCharacters] = useState<PlayerAttributes[]>([]);
   const [storage, setStorage] = useState<Inventory | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [nextAutoSaveInSeconds, setNextAutoSaveInSeconds] =
+    useState<number>(30); // Countdown timer
 
   const accountService = useMemo(() => new AccountService(), []);
 
+  // Load characters and storage
   const loadCharacters = useCallback(async () => {
     setLoading(true);
     setError(null);
@@ -241,22 +242,42 @@ export const AccountProvider: React.FC<{ children: ReactNode }> = ({
     [accountService, loadCharacters, loadStorage]
   );
 
-  // Serialize account to string and save to localStorage
-  const saveAccountToLocalStorage = useCallback(() => {
-    const serializedData = accountService.serializeAccount();
-    localStorage.setItem("accountData", serializedData);
-    return serializedData;
-  }, [accountService]);
+  const saveAccountToLocalStorage = useCallback(
+    (saveName: string) => {
+      const serializedData = accountService.serializeAccount();
+      localStorage.setItem(`account_${saveName}`, serializedData);
+      return serializedData;
+    },
+    [accountService]
+  );
 
-  // Load account from localStorage and deserialize
-  const loadAccountFromLocalStorage = useCallback(() => {
-    const storedData = localStorage.getItem("accountData");
-    if (storedData) {
-      accountService.deserializeAccount(storedData);
-      loadCharacters();
-      loadStorage();
-    }
-  }, [accountService, loadCharacters, loadStorage]);
+  const loadAccountFromLocalStorage = useCallback(
+    (saveName: string) => {
+      const storedData = localStorage.getItem(`account_${saveName}`);
+      if (storedData) {
+        deserializeAccount(storedData);
+      } else {
+        console.error(`No save found with name: ${saveName}`);
+      }
+    },
+    [deserializeAccount]
+  );
+
+  const deleteSaveFromLocalStorage = useCallback((saveName: string) => {
+    localStorage.removeItem(`account_${saveName}`);
+  }, []);
+
+  // Auto-save mechanism
+  useEffect(() => {
+    const intervalId = setInterval(() => {
+      setNextAutoSaveInSeconds((prev) => (prev > 0 ? prev - 1 : 30));
+      if (nextAutoSaveInSeconds === 1) {
+        saveAccountToLocalStorage("autosave");
+      }
+    }, 1000);
+
+    return () => clearInterval(intervalId); // Clean up interval on component unmount
+  }, [nextAutoSaveInSeconds, saveAccountToLocalStorage]);
 
   useEffect(() => {
     loadCharacters();
@@ -285,6 +306,8 @@ export const AccountProvider: React.FC<{ children: ReactNode }> = ({
         deserializeAccount,
         saveAccountToLocalStorage,
         loadAccountFromLocalStorage,
+        deleteSaveFromLocalStorage,
+        nextAutoSaveInSeconds,
       }}
     >
       {children}
@@ -292,7 +315,6 @@ export const AccountProvider: React.FC<{ children: ReactNode }> = ({
   );
 };
 
-// Custom hook to use the Account context
 export const useAccountService = (): AccountContextValue => {
   const context = useContext(AccountContext);
   if (!context) {

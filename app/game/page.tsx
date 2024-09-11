@@ -1,9 +1,12 @@
 import dynamic from "next/dynamic";
 
-const Game = dynamic(() => import("../../components/RagComponents/Pages/Game"), {
-  ssr: false,
-});
+const GameWithTabs = dynamic(
+  () => import("../../components/RagComponents/Pages/GameWithTabs"),
+  {
+    ssr: false,
+  }
+);
 
-export default function GamePage() {
-  return <Game />;
+export default function GameWithTabsPage() {
+  return <GameWithTabs />;
 }
