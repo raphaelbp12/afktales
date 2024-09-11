@@ -2,22 +2,23 @@
 
 import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 import React, { useEffect, useState } from "react";
-import InventoryGrid from "../Inventory/InventoryGrid";
 import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttributes";
 import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import PageWrapper from "@/components/commonComponents/PageWrapper";
-import GetBasicItemsButton from "../Inventory/GetBasicItemsButton";
-import EquipAllButton from "../Inventory/EquipAllButton";
 import EquipmentList from "../Character/EquipmentList";
 import AttributeList from "../Character/AttributeList";
+import Tabs from "@/components/commonComponents/Tabs";
+import InventoryTab from "./Tabs/InventoryTab";
+import AddItemTab from "./Tabs/AddItemTab";
+import BattleInfoTab from "./Tabs/BattleInfoTab";
 
 type CharacterProps = {
   characterId: number;
 };
 
 const Character: React.FC<CharacterProps> = ({ characterId }) => {
-  const { reloadCharacters, characters, storage } = useAccountService();
+  const { reloadCharacters, characters } = useAccountService();
   const [character, setCharacter] = useState<PlayerAttributes | null>(null);
 
   useEffect(() => {
@@ -62,26 +63,42 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
         </div>
 
         <div className="flex flex-1 flex-col">
-          <div className="flex gap-4">
-            <GetBasicItemsButton characterId={characterId} />
-            <EquipAllButton
-              characterId={characterId}
-              items={character.inventory.getItems()}
-            />
-          </div>
-          <InventoryGrid
-            title="Inventário"
-            inventory={character.inventory}
-            columns={20}
-            characterId={characterId}
-            isPlayerInventory
-          />
-          <InventoryGrid
-            title="Armazém"
-            inventory={storage!}
-            columns={20}
-            characterId={characterId}
-            isPlayerInventory={false}
+          <Tabs
+            tabs={[
+              {
+                label: "Inventário",
+                content: <InventoryTab characterId={characterId} />,
+              },
+              {
+                label: "Adicionar Item",
+                content: <AddItemTab isPlayerTab characterId={characterId} />,
+              },
+              {
+                label: "Info de Batalha",
+                content: (
+                  <BattleInfoTab
+                    weapon_atk={character.weapon_atk}
+                    weapon_atk_rate={character.weapon_atk_rate}
+                    arrow_addrace={character.arrow_addrace}
+                    arrow_addele={character.arrow_addele}
+                    arrow_addsize={character.arrow_addsize}
+                    magic_addele={character.magic_addele}
+                    magic_addrace={character.magic_addrace}
+                    magic_addsize={character.magic_addsize}
+                    magic_atk_ele={character.magic_atk_ele}
+                    critaddrace={character.critaddrace}
+                    expaddrace={character.expaddrace}
+                    ignore_mdef={character.ignore_mdef}
+                    ignore_def={character.ignore_def}
+                    subele={character.subele}
+                    subrace={character.subrace}
+                    subrace2={character.subrace2}
+                    subsize={character.subsize}
+                    reseff={character.reseff}
+                  />
+                ),
+              },
+            ]}
           />
         </div>
       </div>
