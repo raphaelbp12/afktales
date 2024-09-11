@@ -10,6 +10,7 @@ import PageWrapper from "@/components/commonComponents/PageWrapper";
 import GetBasicItemsButton from "../Inventory/GetBasicItemsButton";
 import EquipAllButton from "../Inventory/EquipAllButton";
 import EquipmentList from "../Character/EquipmentList";
+import AttributeList from "../Character/AttributeList";
 
 type CharacterProps = {
   characterId: number;
@@ -46,17 +47,18 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
   return (
     <PageWrapper overflowAuto>
       <div className="flex md:flex-row gap-5 w-4/5">
-        <div className="flex-1">
+        <div className="flex flex-col flex-1 gap-4">
           <Link href="/game" className="flex text-white items-center gap-2">
             <FaArrowLeft /> Voltar
           </Link>
-          <div className="mt-4">
+          <div>
             Id: {characterId} Name: {character?.name}
           </div>
           <EquipmentList
             equipedItemIndexes={character.equip_index}
             inventory={character.inventory}
           />
+          <AttributeList param_bonus={character.param_bonus} />
         </div>
 
         <div className="flex flex-1 flex-col">

@@ -882,4 +882,18 @@ describe("PlayerAttributes", () => {
     expect(char.getInvSlotInEquipPos(equip_pos.EQP_ACC_L)).toStrictEqual([13]);
     expect(char.getInvSlotInEquipPos(equip_pos.EQP_ACC_R)).toStrictEqual([11]);
   });
+
+  it("calculateItemBonuses Diabolus Manteau Slipper", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemDiabolusManteau = itemDB.getItemByNameid(2537);
+    const itemSlipper = itemDB.getItemByNameid(2415);
+    const itemDiabolusManteauSlot =
+      playerAttributes.addItem(itemDiabolusManteau);
+    const itemSlipperSlot = playerAttributes.addItem(itemSlipper);
+
+    playerAttributes.equipItem(itemSlipperSlot);
+    playerAttributes.equipItem(itemDiabolusManteauSlot);
+    expect(playerAttributes.param_bonus["SP_LUK"]).toBe(3);
+  });
 });

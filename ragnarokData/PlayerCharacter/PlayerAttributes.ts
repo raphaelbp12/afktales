@@ -10,6 +10,7 @@ import { Race, Race2 } from "../map_race_id2mask";
 import { persistent_status } from "./persistentStatus";
 import { equip_pos, item_types, ItemData } from "../ItemDB/types";
 import { Inventory } from "./Inventory";
+import { BonusHelpers } from "../BonusHelpers";
 
 export class PlayerAttributes {
   id: number;
@@ -97,7 +98,7 @@ export class PlayerAttributes {
   inventory: Inventory;
   base_status: StatusData;
   battle_status: StatusData;
-  param_bonus: { [key: string]: number };
+  param_bonus!: { [key: string]: number };
   param_equip: { [key: string]: number };
   subele: number[];
   subrace: number[];
@@ -237,6 +238,7 @@ export class PlayerAttributes {
     this.persistent_status = new persistent_status();
     this.id = id ?? 1;
     this.name = name ?? "test";
+    this.resetValues();
     this.persistent_status.id = this.id;
     this.persistent_status.name = this.name;
     // Initialize single value properties
@@ -508,15 +510,6 @@ export class PlayerAttributes {
       ematk: 0,
     };
 
-    this.param_bonus = {
-      SP_STR: 0,
-      SP_AGI: 0,
-      SP_VIT: 0,
-      SP_INT: 0,
-      SP_DEX: 0,
-      SP_LUK: 0,
-    };
-
     this.param_equip = {
       SP_STR: 0,
       SP_AGI: 0,
@@ -587,6 +580,17 @@ export class PlayerAttributes {
     };
   }
 
+  private resetValues(): void {
+    this.param_bonus = {
+      SP_STR: 0,
+      SP_AGI: 0,
+      SP_VIT: 0,
+      SP_INT: 0,
+      SP_DEX: 0,
+      SP_LUK: 0,
+    };
+  }
+
   // Method to update the character's name
   updateName(newName: string): void {
     this.name = newName;
@@ -614,6 +618,44 @@ export class PlayerAttributes {
     }
 
     return slots;
+  }
+
+  public calculateItemBonuses(): void {
+    let newBonuses: Bonuses = {};
+    const equippedItems = [];
+
+    for (let i = 0; i < equip_index.EQI_MAX; i++) {
+      const item = this.inventory.getItemInSlot(this.equip_index[i]);
+      if (item) {
+        equippedItems.push(item);
+      }
+    }
+
+    equippedItems.forEach((item) => {
+      if (item.Bonuses) {
+        Object.keys(item.Bonuses).forEach((key) => {
+          const typedKey = key as keyof Bonuses;
+          if (newBonuses[typedKey]) {
+            newBonuses = {
+              ...newBonuses,
+              [typedKey]: {
+                ...newBonuses[typedKey],
+                ...item.Bonuses![typedKey],
+              },
+            };
+          } else {
+            newBonuses = {
+              ...newBonuses,
+              [typedKey]: item.Bonuses![typedKey],
+            };
+          }
+        });
+      }
+    });
+
+    this.itemBonuses = newBonuses;
+    this.resetValues();
+    BonusHelpers.processBonuses(newBonuses, this);
   }
 
   public addItem(itemData: ItemData, amount: number = 1): number {
@@ -683,6 +725,7 @@ export class PlayerAttributes {
 
     const invItem = this.inventory.getItemInSlot(inventorySlot);
     invItem?.equip(pos);
+    this.calculateItemBonuses();
   }
 
   public unequipItemPos(pos: equip_pos): void {
