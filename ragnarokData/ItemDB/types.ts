@@ -243,6 +243,10 @@ export class ItemData {
     return this.EquipPosWhenEquipped ?? equip_pos.EQP_NONE;
   }
 
+  public isEquipped(): boolean {
+    return this.getEquipPosIfEquipped() !== equip_pos.EQP_NONE;
+  }
+
   public toPersistentItem(): item_persistent {
     return {
       id: this.Id,

@@ -116,37 +116,47 @@ const ItemPanel: React.FC<ItemPanelProps> = ({
         {characterId && (
           <>
             <div>
-              <button
-                onClick={() => handleTakeItem()}
-                className="mt-4 px-4 py-2 bg-orange-500 text-white rounded-md"
-              >
-                Pegar
-              </button>
+              {!isPlayerInventory && (
+                <button
+                  onClick={() => handleTakeItem()}
+                  className="mt-4 px-4 py-2 bg-orange-500 text-white rounded-md"
+                >
+                  Pegar
+                </button>
+              )}
             </div>
-            <div>
-              <button
-                onClick={() => handleStoreItem()}
-                className="mt-4 px-4 py-2 bg-purple-500 text-white rounded-md"
-              >
-                Armazenar
-              </button>
-            </div>
-            <div>
-              <button
-                onClick={() => handleEquip()}
-                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
-              >
-                Equipar
-              </button>
-            </div>
-            <div>
-              <button
-                onClick={() => handleUnequip()}
-                className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
-              >
-                Desequipar
-              </button>
-            </div>
+            {isPlayerInventory && (
+              <>
+                <div>
+                  <button
+                    onClick={() => handleStoreItem()}
+                    className="mt-4 px-4 py-2 bg-purple-500 text-white rounded-md"
+                  >
+                    Armazenar
+                  </button>
+                </div>
+                {item.isEquip() &&
+                  (item.isEquipped() ? (
+                    <div>
+                      <button
+                        onClick={() => handleUnequip()}
+                        className="mt-4 px-4 py-2 bg-red-500 text-white rounded-md"
+                      >
+                        Desequipar
+                      </button>
+                    </div>
+                  ) : (
+                    <div>
+                      <button
+                        onClick={() => handleEquip()}
+                        className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-md"
+                      >
+                        Equipar
+                      </button>
+                    </div>
+                  ))}
+              </>
+            )}
           </>
         )}
       </div>
