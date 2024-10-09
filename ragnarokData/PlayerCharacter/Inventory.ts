@@ -162,7 +162,14 @@ export class Inventory {
     }
 
     this.items[emptySlot] = itemCopy;
-    this.items[emptySlot].Amount = amount;
+    if (!itemCopy.isEquip()) {
+      this.items[emptySlot].Amount = amount;
+    } else {
+      this.items[emptySlot].Amount = 1;
+      if (amount - 1 > 0) {
+        this.addItem(itemCopy, amount - 1);
+      }
+    }
     return emptySlot;
   }
 
