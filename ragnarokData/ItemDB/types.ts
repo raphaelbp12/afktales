@@ -147,7 +147,7 @@ export class ItemData {
 
     return `${this.Name}${
       this.Slots && this.Slots > 0 ? ` [${this.Slots}]` : ""
-    }${stringToAppend !== "" ? ` - ${stringToAppend}` : ""}`;
+    }${stringToAppend !== "" ? ` -${stringToAppend}` : ""}`;
   }
 
   public copy(): ItemData {
