@@ -1,17 +1,24 @@
 // Inventory.ts
 import { ItemDB } from "../ItemDB/ItemDB";
-import { equip_pos, item_persistent, ItemData } from "../ItemDB/types";
+import {
+  equip_pos,
+  item_persistent,
+  item_types,
+  ItemData,
+} from "../ItemDB/types";
 
 export class Inventory {
   private items: ItemData[];
+  private itemDB: ItemDB;
 
   constructor(length: number, persistentItems?: item_persistent[]) {
     this.items = Array.from({ length }, () => new ItemData());
+    this.itemDB = new ItemDB();
 
     if (persistentItems) {
-      const itemDB = new ItemDB();
       persistentItems.forEach((itemPersistent) => {
-        const item = itemDB.getItemByNameid(itemPersistent.nameid);
+        const item = this.itemDB.getItemByNameid(itemPersistent.nameid);
+        item.addItemDB(this.itemDB);
         const newItem = new ItemData(item, itemPersistent);
         const emptySlot = this.getNextEmptySlot();
         if (emptySlot === -1) {
@@ -39,8 +46,17 @@ export class Inventory {
     return item;
   }
 
+  public searchByGuid(guid: string): ItemData | undefined {
+    const item = this.items.find((item) => item.guid === guid);
+    return item;
+  }
+
   public getNextEmptySlot(): number {
     return this.items.findIndex((item) => item.nameid === 0);
+  }
+
+  public getSlotByGuid(guid: string): number {
+    return this.items.findIndex((item) => item.guid === guid);
   }
 
   public getItemInSlot(slot: number): ItemData | undefined {
@@ -67,8 +83,68 @@ export class Inventory {
     return items;
   }
 
+  public getCardsInEquip(equipGuid: string): ItemData[] {
+    const item = this.searchByGuid(equipGuid);
+    if (!item) {
+      return [];
+    }
+    const cardIds = item.Cards ?? [];
+    return (
+      cardIds?.map((cardId) => {
+        const card = this.itemDB.getItemByNameid(cardId);
+        return card;
+      }) ?? []
+    );
+  }
+
+  // pc_can_insert_card
+  public canInsertCard(cardInvSlot: number): boolean {
+    const cardItem = this.getItemInSlot(cardInvSlot);
+    if (!cardItem) return false;
+    if (!cardItem.Amount || cardItem.Amount <= 0) return false;
+    if (cardItem.Type !== item_types.IT_CARD) return false;
+    return true;
+  }
+
+  // pc_can_insert_card_into
+  public canInsertCardInto(cardInvSlot: number, equipInvSlot: number): boolean {
+    if (!this.canInsertCard(cardInvSlot)) return false;
+
+    const cardItem = this.getItemInSlot(cardInvSlot);
+    const equipItem = this.getItemInSlot(equipInvSlot);
+
+    if (!cardItem) return false;
+    if (!equipItem) return false;
+
+    if (
+      equipItem.Type !== item_types.IT_WEAPON &&
+      equipItem.Type !== item_types.IT_ARMOR
+    )
+      return false;
+    if (((equipItem.Loc as equip_pos) & (cardItem.Loc as equip_pos)) === 0)
+      return false;
+    if (
+      equipItem.Type === item_types.IT_WEAPON &&
+      cardItem.Loc === equip_pos.EQP_SHIELD
+    )
+      return false;
+
+    const cardSlots = equipItem.Cards?.filter((card) => card === 0).length;
+    if (!cardSlots || cardSlots <= 0) return false;
+
+    return true;
+  }
+
+  public filterEquipsToReceiveCard(cardSlot: number): ItemData[] {
+    return this.items.filter((_, itemSlot) => {
+      if (!this.canInsertCardInto(cardSlot, itemSlot)) return false;
+      return true;
+    });
+  }
+
   public addItem(item: ItemData, amount: number): number {
     const itemCopy = item.copy();
+    itemCopy.addItemDB(this.itemDB);
     if (!itemCopy.isEquip()) {
       const existingItem = this.searchByNameId(itemCopy.nameid);
       if (existingItem) {
@@ -117,6 +193,7 @@ export class Inventory {
     if (!item) {
       throw new Error(`No item found in slot ${slotIndex}`);
     }
+    item.addItemDB(this.itemDB);
 
     // Add item to target inventory
     targetInventory.addItem(item, item.Amount ?? 1);

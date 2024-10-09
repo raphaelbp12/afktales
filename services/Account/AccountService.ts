@@ -161,4 +161,23 @@ export class AccountService {
     const acc = Account.deserialize(data);
     this.account = acc;
   }
+
+  public insertCardIntoEquipment(
+    playerIndex: number,
+    cardInvSlot: number,
+    equipInvSlot: number
+  ): Promise<void> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      const result = player.insertCard(cardInvSlot, equipInvSlot);
+      if (!result) {
+        return Promise.reject(
+          new Error("Failed to insert card into equipment")
+        );
+      }
+      return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
 }

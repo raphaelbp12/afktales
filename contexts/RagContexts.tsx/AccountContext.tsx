@@ -49,6 +49,11 @@ interface AccountContextValue {
   nextAutoSaveInSeconds: number;
   reloadCharacters: () => Promise<void>;
   reloadStorage: () => Promise<void>;
+  insertCardIntoEquipment: (
+    playerIndex: number,
+    cardInvSlot: number,
+    equipInvSlot: number
+  ) => Promise<void>;
 }
 
 const AccountContext = createContext<AccountContextValue | undefined>(
@@ -268,6 +273,22 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
     localStorage.removeItem(`account_${saveName}`);
   }, []);
 
+  const insertCardIntoEquipment = useCallback(
+    async (playerIndex: number, cardInvSlot: number, equipInvSlot: number) => {
+      try {
+        await accountService.insertCardIntoEquipment(
+          playerIndex,
+          cardInvSlot,
+          equipInvSlot
+        );
+        await loadCharacters(); // Reload characters to update the state
+      } catch (err) {
+        console.error("Failed to insert card into equipment:", err);
+      }
+    },
+    [accountService, loadCharacters]
+  );
+
   // Auto-save mechanism
   useEffect(() => {
     if (!firstLoad) {
@@ -318,6 +339,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
         loadAccountFromLocalStorage,
         deleteSaveFromLocalStorage,
         nextAutoSaveInSeconds,
+        insertCardIntoEquipment,
       }}
     >
       {children}

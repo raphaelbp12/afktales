@@ -824,47 +824,10 @@ export class PlayerAttributes {
     return 2;
   }
 
-  // pc_can_insert_card
-  public canInsertCard(cardInvSlot: number): boolean {
-    const cardItem = this.inventory.getItemInSlot(cardInvSlot);
-    if (!cardItem) return false;
-    if (!cardItem.Amount || cardItem.Amount <= 0) return false;
-    if (cardItem.Type !== item_types.IT_CARD) return false;
-    return true;
-  }
-
-  // pc_can_insert_card_into
-  public canInsertCardInto(cardInvSlot: number, equipInvSlot: number): boolean {
-    if (!this.canInsertCard(cardInvSlot)) return false;
-
-    const cardItem = this.inventory.getItemInSlot(cardInvSlot);
-    const equipItem = this.inventory.getItemInSlot(equipInvSlot);
-
-    if (!cardItem) return false;
-    if (!equipItem) return false;
-
-    if (
-      equipItem.Type !== item_types.IT_WEAPON &&
-      equipItem.Type !== item_types.IT_ARMOR
-    )
-      return false;
-    if (((equipItem.Loc as equip_pos) & (cardItem.Loc as equip_pos)) === 0)
-      return false;
-    if (
-      equipItem.Type === item_types.IT_WEAPON &&
-      cardItem.Loc === equip_pos.EQP_SHIELD
-    )
-      return false;
-
-    const cardSlots = equipItem.Cards?.filter((card) => card === 0).length;
-    if (!cardSlots || cardSlots <= 0) return false;
-
-    return true;
-  }
-
   // pc_insert_card
   public insertCard(cardInvSlot: number, equipInvSlot: number): boolean {
-    if (!this.canInsertCardInto(cardInvSlot, equipInvSlot)) return false;
+    if (!this.inventory.canInsertCardInto(cardInvSlot, equipInvSlot))
+      return false;
 
     const cardItem = this.inventory.getItemInSlot(cardInvSlot);
     const equipItem = this.inventory.getItemInSlot(equipInvSlot);

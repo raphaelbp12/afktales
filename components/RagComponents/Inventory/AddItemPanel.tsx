@@ -26,8 +26,8 @@ const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
     }
   };
 
-  const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const nameid = event.target.value;
+  const handleChange = (value: ItemData[keyof ItemData] | null) => {
+    const nameid = value as string;
     const item = itemDB.getItemByNameid(parseInt(nameid));
     console.log(item);
     setSelectedItem(item);
@@ -40,9 +40,10 @@ const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
         <ItemDropdownSelector
           id={"item"}
           label={"Item"}
-          selectedItemId={selectedItem?.nameid || null}
+          selectedItemValue={selectedItem?.nameid || null}
           items={itemDB.getFilteredItems((item) => true)}
           onChange={handleChange}
+          optionValueKey={"nameid"}
         />
         <div className="flex gap-2">
           <button

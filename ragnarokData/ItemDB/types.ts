@@ -1,9 +1,13 @@
 import { tryParseWeaponType, weapon_type } from "./weapon_type";
 import { Job, Trade, Nouse, Bonuses } from "../types";
+import { ItemDB } from "./ItemDB";
 
 // item_data in itemdb.h
 export class ItemData {
+  itemDB?: ItemDB;
+
   nameid: number;
+  guid: string;
   Id: number;
   AegisName: string;
   Name: string;
@@ -57,7 +61,9 @@ export class ItemData {
 
   constructor(data?: Partial<ItemData>, persistentData?: item_persistent) {
     // Assign default values or provided values
+    this.itemDB = data?.itemDB;
     this.nameid = data?.Id ?? 0;
+    this.guid = data ? generateGUID() : "";
     this.Id = data?.Id ?? 0;
     this.AegisName = data?.AegisName ?? "";
     this.Name = data?.Name ?? "";
@@ -120,14 +126,36 @@ export class ItemData {
     }
   }
 
+  public addItemDB(itemDB: ItemDB): void {
+    if (this.itemDB) {
+      console.log(`ItemDB already set for this item. ${this.getName()}`);
+      return;
+    }
+    this.itemDB = itemDB;
+  }
+
   public getName(): string {
-    return `${this.Name} ${
-      this.Slots && this.Slots > 0 ? `[${this.Slots}]` : ""
-    }`;
+    let stringToAppend: string = "";
+    if (this.itemDB && this.Cards && this.Cards.length > 0) {
+      this.Cards.forEach((cardId) => {
+        const card = this.itemDB!.getItemByNameid(cardId);
+        if (card && card.Name !== "") {
+          stringToAppend += ` [${card.Name}]`;
+        }
+      });
+    }
+
+    return `${this.Name}${
+      this.Slots && this.Slots > 0 ? ` [${this.Slots}]` : ""
+    }${stringToAppend !== "" ? ` - ${stringToAppend}` : ""}`;
   }
 
   public copy(): ItemData {
     return new ItemData(this);
+  }
+
+  public isCard(): boolean {
+    return this.Type === item_types.IT_CARD;
   }
 
   public isEquip(): boolean {
@@ -251,6 +279,7 @@ export class ItemData {
     return {
       id: this.Id,
       nameid: this.nameid,
+      guid: this.guid,
       amount: this.Amount ?? 1,
       equip: this.EquipPosWhenEquipped ?? equip_pos.EQP_NONE,
       identify: "",
@@ -271,6 +300,7 @@ export class ItemData {
 export class item_persistent {
   id: number;
   nameid: number;
+  guid: string;
   amount: number;
   equip: equip_pos;
   identify: string;
@@ -287,6 +317,7 @@ export class item_persistent {
   constructor() {
     this.id = 0;
     this.nameid = 0;
+    this.guid = "";
     this.amount = 0;
     this.equip = equip_pos.EQP_NONE;
     this.identify = "";
@@ -415,4 +446,12 @@ export function itemTypeStringToEnum(
   } else {
     return null;
   }
+}
+
+function generateGUID(): string {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+    const r = (Math.random() * 16) | 0,
+      v = c === "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
 }

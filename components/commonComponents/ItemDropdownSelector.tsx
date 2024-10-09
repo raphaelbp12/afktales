@@ -1,24 +1,25 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import Image from "next/image";
 import ItemSpriteImage from "./ItemSpriteImage";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
 
 interface ItemDropdownSelectorProps {
   id: string;
   label: string;
-  selectedItemId: number | null;
+  selectedItemValue: ItemData[keyof ItemData] | null;
   items: ItemData[];
-  onChange: (event: React.ChangeEvent<HTMLSelectElement>) => void;
+  onChange: (value: ItemData[keyof ItemData] | null) => void;
+  optionValueKey?: keyof ItemData;
 }
 
 const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
   id,
   label,
-  selectedItemId,
+  selectedItemValue,
   items,
   onChange,
+  optionValueKey = "nameid", // Default to 'nameid' if not provided
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
@@ -26,20 +27,18 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
   const inputRef = useRef<HTMLInputElement>(null);
   const [openAbove, setOpenAbove] = useState(false);
 
+  // Filter items based on the search term
   const filteredOptions = items.filter((item) =>
     item.Name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const handleOptionClick = (optionValue: string | number) => {
-    const event = {
-      target: {
-        value: optionValue,
-      },
-    } as React.ChangeEvent<HTMLSelectElement>;
-    onChange(event);
+  // Handle option selection
+  const handleOptionClick = (optionValue: ItemData[keyof ItemData] | null) => {
+    onChange(optionValue);
     setIsOpen(false);
   };
 
+  // Close the dropdown when clicking outside
   const handleClickOutside = (event: MouseEvent) => {
     if (
       dropdownRef.current &&
@@ -49,6 +48,7 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
     }
   };
 
+  // Toggle dropdown visibility
   const handleToggleDropdown = () => {
     if (dropdownRef.current) {
       const rect = dropdownRef.current.getBoundingClientRect();
@@ -57,18 +57,21 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
     setIsOpen(!isOpen);
   };
 
+  // Close dropdown on 'Escape' key press
   const handleKeyDown = (event: KeyboardEvent) => {
     if (event.key === "Escape") {
       setIsOpen(false);
     }
   };
 
+  // Focus on input when dropdown opens
   useEffect(() => {
     if (isOpen && inputRef.current) {
       inputRef.current.focus();
     }
   }, [isOpen]);
 
+  // Add event listeners for clicks and key presses
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     document.addEventListener("keydown", handleKeyDown);
@@ -78,7 +81,10 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
     };
   }, []);
 
-  const selectedOption = items.find((item) => item.nameid === selectedItemId);
+  // Find the selected option based on the selectedItemValue and optionValueKey
+  const selectedOption = items.find(
+    (item) => item[optionValueKey] === selectedItemValue
+  );
 
   return (
     <div
@@ -96,7 +102,7 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
         {selectedOption?.nameid && (
           <ItemSpriteImage itemId={selectedOption.nameid} />
         )}
-        {selectedOption?.Name || "Clique para selecionar..."}
+        {selectedOption?.getName() || "Clique para selecionar..."}
       </div>
       {isOpen && (
         <div
@@ -115,8 +121,8 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
           />
           <div
             className="flex items-center p-2 hover:bg-gray-600 cursor-pointer"
-            onClick={() => handleOptionClick("")}
-            onTouchEnd={() => handleOptionClick("")} // For mobile touch support
+            onClick={() => handleOptionClick(null)}
+            onTouchEnd={() => handleOptionClick(null)} // For mobile touch support
           >
             Vazio
           </div>
@@ -124,8 +130,8 @@ const ItemDropdownSelector: React.FC<ItemDropdownSelectorProps> = ({
             <div
               key={index}
               className="flex items-center p-2 hover:bg-gray-600 cursor-pointer"
-              onClick={() => handleOptionClick(option.nameid)}
-              onTouchEnd={() => handleOptionClick(option.nameid)} // For mobile touch support
+              onClick={() => handleOptionClick(option[optionValueKey])}
+              onTouchEnd={() => handleOptionClick(option[optionValueKey])} // For mobile touch support
             >
               {option.nameid && <ItemSpriteImage itemId={option.nameid} />}
               {option.getName()}
