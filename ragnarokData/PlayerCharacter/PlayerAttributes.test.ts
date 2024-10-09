@@ -862,6 +862,31 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.param_bonus["SP_LUK"]).toBe(3);
   });
 
+  it("insert raydric card to muffler - add another muffler and check if it has cards", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemMuffler = itemDB.getItemByNameid(2504);
+    const itemRaydricCard = itemDB.getItemByNameid(4133);
+    const itemMufflerSlot = playerAttributes.addItem(itemMuffler);
+    const itemRaydricCardSlot = playerAttributes.addItem(itemRaydricCard, 10);
+
+    playerAttributes.insertCard(itemRaydricCardSlot, itemMufflerSlot);
+
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemMufflerSlot)
+        ?.getCardItems()[0].nameid
+    ).not.toBe(0);
+
+    const itemMufflerSlot2 = playerAttributes.addItem(itemMuffler);
+
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemMufflerSlot2)
+        ?.getCardItems()[0]
+    ).toBe(undefined);
+  });
+
   it("equip 3 gloves + insert 4 drops card into knife equip knife", () => {
     const playerAttributes = new PlayerAttributes("test", 1, {});
 

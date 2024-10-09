@@ -18,7 +18,8 @@ export class ItemDB {
   }
 
   public getItemByNameid(nameid: number): ItemData {
-    return this.itemsDict[nameid];
+    const item = this.itemsDict[nameid];
+    return item.copy();
   }
 
   public getFilteredItems(filter: (item: ItemData) => boolean): ItemData[] {
