@@ -4,6 +4,7 @@ import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttributes";
 
 interface BattleInfoTabProps {
+  bstBAtk: number;
   weapon_atk: number[];
   weapon_atk_rate: number[];
   arrow_addrace: number[];
@@ -27,6 +28,7 @@ interface BattleInfoTabProps {
 const BattleInfoTab: React.FC<BattleInfoTabProps> = (props) => {
   return (
     <div className="flex flex-1 flex-col gap-4">
+      <div>Base Status Atk: {props.bstBAtk}</div>
       <div>Weapon Atk: {props.weapon_atk.join(", ")}</div>
       <div>Weapon Atk Rate: {props.weapon_atk_rate.join(", ")}</div>
       <div>Arrow Addrace: {props.arrow_addrace.join(", ")}</div>

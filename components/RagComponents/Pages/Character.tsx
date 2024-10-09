@@ -77,6 +77,7 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
                 label: "Info de Batalha",
                 content: (
                   <BattleInfoTab
+                    bstBAtk={character.base_status.batk}
                     weapon_atk={character.weapon_atk}
                     weapon_atk_rate={character.weapon_atk_rate}
                     arrow_addrace={character.arrow_addrace}

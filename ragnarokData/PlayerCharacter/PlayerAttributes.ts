@@ -96,7 +96,7 @@ export class PlayerAttributes {
   itemBonuses: Bonuses;
   persistent_status: persistent_status;
   inventory: Inventory;
-  base_status: StatusData;
+  base_status!: StatusData;
   battle_status: StatusData;
   param_bonus!: { [key: string]: number };
   param_equip: { [key: string]: number };
@@ -277,7 +277,6 @@ export class PlayerAttributes {
     this.equip_index = Array(equip_index.EQI_MAX).fill(-1);
     this.inventory = new Inventory(MAX_INVENTORY);
     // Initialize base_status
-    this.base_status = initializeStatusData();
     this.battle_status = initializeStatusData();
 
     // Initialize arrays with distinct objects
@@ -577,6 +576,7 @@ export class PlayerAttributes {
   }
 
   private resetValues(): void {
+    this.base_status = initializeStatusData();
     this.itemBonuses = {};
     this.subele = Array(ELE_MAX).fill(0);
     this.subrace = Array(Race.RC_MAX).fill(0);
