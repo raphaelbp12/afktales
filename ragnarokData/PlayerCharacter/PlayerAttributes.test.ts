@@ -861,4 +861,78 @@ describe("PlayerAttributes", () => {
     playerAttributes.equipItem(itemDiabolusManteauSlot);
     expect(playerAttributes.param_bonus["SP_LUK"]).toBe(3);
   });
+
+  it("equip 3 gloves + insert 4 drops card into knife equip knife", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemKnife = itemDB.getItemByNameid(1202);
+    const itemDropsCard = itemDB.getItemByNameid(4004);
+    const itemGlove = itemDB.getItemByNameid(2604);
+    playerAttributes.addItem(itemDB.getItemByNameid(503));
+    playerAttributes.addItem(itemDB.getItemByNameid(504));
+    playerAttributes.addItem(itemDB.getItemByNameid(505));
+    playerAttributes.addItem(itemDB.getItemByNameid(506));
+    playerAttributes.addItem(itemDB.getItemByNameid(507));
+    const itemKnifeSlot = playerAttributes.addItem(itemKnife);
+    const itemGloveSlot = playerAttributes.addItem(itemGlove);
+    const itemGloveSlot2 = playerAttributes.addItem(itemGlove);
+    const itemGloveSlot3 = playerAttributes.addItem(itemGlove);
+    const itemDropsCardSlot = playerAttributes.addItem(itemDropsCard, 4);
+
+    playerAttributes.equipItem(itemGloveSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemGloveSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ACC_R);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_ACC_R)
+    ).toStrictEqual([itemGloveSlot]);
+
+    playerAttributes.equipItem(itemGloveSlot2);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemGloveSlot2)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ACC_L);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_ACC_L)
+    ).toStrictEqual([itemGloveSlot2]);
+
+    expect(playerAttributes.param_bonus["SP_DEX"]).toBe(4);
+
+    playerAttributes.equipItem(itemGloveSlot3);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemGloveSlot3)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ACC_L);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_ACC_L)
+    ).toStrictEqual([itemGloveSlot3]);
+
+    expect(playerAttributes.param_bonus["SP_DEX"]).toBe(4);
+
+    playerAttributes.equipItem(itemKnifeSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemKnifeSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_HAND_R);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_R)
+    ).toStrictEqual([itemKnifeSlot]);
+
+    playerAttributes.insertCard(itemDropsCardSlot, itemKnifeSlot);
+
+    playerAttributes.insertCard(itemDropsCardSlot, itemKnifeSlot);
+
+    playerAttributes.insertCard(itemDropsCardSlot, itemKnifeSlot);
+
+    playerAttributes.insertCard(itemDropsCardSlot, itemKnifeSlot);
+
+    playerAttributes.unequipItem(itemKnifeSlot);
+
+    expect(playerAttributes.param_bonus["SP_DEX"]).toBe(4);
+  });
 });

@@ -112,7 +112,7 @@ export class ItemData {
     this.OnUnequipScript = data?.OnUnequipScript;
     this.OnRentalStartScript = data?.OnRentalStartScript;
     this.OnRentalEndScript = data?.OnRentalEndScript;
-    this.Bonuses = data?.Bonuses;
+    this.Bonuses = { ...data?.Bonuses };
     this.Cards = data?.Cards ?? Array(this.Slots).fill(0);
 
     if (persistentData) {
@@ -132,6 +132,16 @@ export class ItemData {
       return;
     }
     this.itemDB = itemDB;
+  }
+
+  public getCardItems(): ItemData[] {
+    if (!this.itemDB || !this.Cards) {
+      return [];
+    }
+
+    return this.Cards.filter((cardId) => cardId !== 0).map((cardId) => {
+      return this.itemDB!.getItemByNameid(cardId);
+    });
   }
 
   public getName(): string {

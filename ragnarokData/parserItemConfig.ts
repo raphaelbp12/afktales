@@ -120,7 +120,7 @@ export function parseItem(itemString: string): ItemData {
 
   // Parse and aggregate bonuses if the item has a script
   if (item.Script) {
-    item.Bonuses = parseBonuses(item.Script);
+    item.Bonuses = { ...parseBonuses(item.Script) };
   }
 
   return item as ItemData;

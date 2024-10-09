@@ -1,5 +1,5 @@
 // PlayerAttributes.ts
-import { Bonuses, s_add_drop } from "@/ragnarokData/types";
+import { Bonuses, BonusType, s_add_drop } from "@/ragnarokData/types";
 import { WeaponData, initializeWeaponData } from "../WeaponData"; // Import the WeaponData interface and initialization function
 import { ELE_MAX, MAX_INVENTORY, MAX_PC_BONUS } from "../constants";
 import { weapon_type } from "../ItemDB/weapon_type";
@@ -581,6 +581,7 @@ export class PlayerAttributes {
   }
 
   private resetValues(): void {
+    this.itemBonuses = {};
     this.param_bonus = {
       SP_STR: 0,
       SP_AGI: 0,
@@ -621,8 +622,10 @@ export class PlayerAttributes {
   }
 
   public calculateItemBonuses(): void {
+    this.resetValues();
     let newBonuses: Bonuses = {};
-    const equippedItems = [];
+    const equippedItems: ItemData[] = [];
+    const equippedCards: ItemData[] = [];
 
     for (let i = 0; i < equip_index.EQI_MAX; i++) {
       const item = this.inventory.getItemInSlot(this.equip_index[i]);
@@ -632,29 +635,45 @@ export class PlayerAttributes {
     }
 
     equippedItems.forEach((item) => {
-      if (item.Bonuses) {
-        Object.keys(item.Bonuses).forEach((key) => {
+      const equipCards = item.getCardItems();
+      equippedCards.push(...equipCards);
+    });
+
+    equippedItems.concat(...equippedCards).forEach((item) => {
+      const itemCopy = item.copy();
+      if (itemCopy.Bonuses) {
+        Object.keys(itemCopy.Bonuses).forEach((key) => {
           const typedKey = key as keyof Bonuses;
           if (newBonuses[typedKey]) {
-            newBonuses = {
-              ...newBonuses,
-              [typedKey]: {
-                ...newBonuses[typedKey],
-                ...item.Bonuses![typedKey],
-              },
+            const bonusesToBeAdded: BonusType | undefined = {
+              ...itemCopy.Bonuses![typedKey],
             };
+            const currentBonuses: BonusType = newBonuses[typedKey];
+
+            if (!bonusesToBeAdded) return;
+
+            Object.keys(bonusesToBeAdded).forEach((bonusKey) => {
+              const typedBonusKey = bonusKey as keyof Bonuses;
+              if (currentBonuses[typedBonusKey]) {
+                newBonuses[typedKey]![typedBonusKey] = [
+                  ...newBonuses[typedKey]![typedBonusKey],
+                  ...bonusesToBeAdded[typedBonusKey],
+                ];
+              } else {
+                newBonuses[typedKey]![typedBonusKey] =
+                  bonusesToBeAdded[typedBonusKey];
+              }
+            });
           } else {
             newBonuses = {
               ...newBonuses,
-              [typedKey]: item.Bonuses![typedKey],
+              [typedKey]: { ...itemCopy.Bonuses![typedKey] },
             };
           }
         });
       }
     });
-
     this.itemBonuses = newBonuses;
-    this.resetValues();
     BonusHelpers.processBonuses(newBonuses, this);
   }
 
@@ -763,6 +782,7 @@ export class PlayerAttributes {
     item.unequip();
     // TODO
     // Check for combos. (MUST be done before status->calc_pc()!)
+    this.calculateItemBonuses();
   }
 
   public calcWeaponType(): number {
@@ -841,6 +861,7 @@ export class PlayerAttributes {
 
     this.inventory.removeAmountFromItemInSlot(cardInvSlot, 1);
     equipItem.Cards[nextSlot] = cardItem.nameid;
+    this.calculateItemBonuses();
 
     return true;
   }

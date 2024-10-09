@@ -51,13 +51,14 @@ export interface Nouse {
 }
 
 export type BonusArgs = (string | number | boolean)[];
+export type BonusType = { [key: string]: BonusArgs[] };
 
 export interface Bonuses {
-  bonus?: { [key: string]: BonusArgs[] };
-  bonus2?: { [key: string]: BonusArgs[] };
-  bonus3?: { [key: string]: BonusArgs[] };
-  bonus4?: { [key: string]: BonusArgs[] };
-  bonus5?: { [key: string]: BonusArgs[] };
+  bonus?: BonusType;
+  bonus2?: BonusType;
+  bonus3?: BonusType;
+  bonus4?: BonusType;
+  bonus5?: BonusType;
 }
 
 export interface s_add_drop {

@@ -117,7 +117,7 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
             } else {
               newBonuses = {
                 ...newBonuses,
-                [typedKey]: item.Bonuses![typedKey],
+                [typedKey]: { ...item.Bonuses![typedKey] },
               };
             }
           });
