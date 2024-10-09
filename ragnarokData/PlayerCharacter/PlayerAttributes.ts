@@ -100,10 +100,10 @@ export class PlayerAttributes {
   battle_status: StatusData;
   param_bonus!: { [key: string]: number };
   param_equip: { [key: string]: number };
-  subele: number[];
-  subrace: number[];
-  subrace2: number[];
-  subsize: number[];
+  subele!: number[];
+  subrace!: number[];
+  subrace2!: number[];
+  subsize!: number[];
   reseff: number[];
   weapon_coma_ele: number[];
   weapon_coma_race: number[];
@@ -283,10 +283,6 @@ export class PlayerAttributes {
     // Initialize arrays with distinct objects
     this.ignore_mdef = Array(Race.RC_MAX).fill(0);
     this.ignore_def = Array(Race.RC_MAX).fill(0);
-    this.subele = Array(ELE_MAX).fill(0);
-    this.subrace = Array(Race.RC_MAX).fill(0);
-    this.subrace2 = Array(Race2.RC2_MAX).fill(0);
-    this.subsize = Array(3).fill(0);
     this.reseff = Array(sc_type.SC_COMMON_MAX - sc_type.SC_COMMON_MIN + 1).fill(
       0
     );
@@ -582,6 +578,10 @@ export class PlayerAttributes {
 
   private resetValues(): void {
     this.itemBonuses = {};
+    this.subele = Array(ELE_MAX).fill(0);
+    this.subrace = Array(Race.RC_MAX).fill(0);
+    this.subrace2 = Array(Race2.RC2_MAX).fill(0);
+    this.subsize = Array(3).fill(0);
     this.param_bonus = {
       SP_STR: 0,
       SP_AGI: 0,
