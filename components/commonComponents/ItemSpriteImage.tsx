@@ -3,9 +3,15 @@ import SpriteImage from "./SpriteImage";
 
 type ItemSpriteImageProps = {
   itemId: number;
+  width?: number;
+  height?: number;
 };
 
-const ItemSpriteImage: React.FC<ItemSpriteImageProps> = ({ itemId }) => {
+const ItemSpriteImage: React.FC<ItemSpriteImageProps> = ({
+  itemId,
+  width,
+  height,
+}) => {
   const spriteSheetPath = "/images/sprite_sheet.png"; // Update this path
   const itemSize = 24; // Size of each item in the sprite sheet
   const columns = 179; // Number of columns in the sprite sheet (update accordingly)
@@ -16,6 +22,8 @@ const ItemSpriteImage: React.FC<ItemSpriteImageProps> = ({ itemId }) => {
       spriteSheet={spriteSheetPath}
       itemSize={itemSize}
       columns={columns}
+      width={width}
+      height={height}
     />
   );
 };
