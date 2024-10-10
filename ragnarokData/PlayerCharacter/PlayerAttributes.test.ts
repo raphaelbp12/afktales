@@ -960,4 +960,41 @@ describe("PlayerAttributes", () => {
 
     expect(playerAttributes.param_bonus["SP_DEX"]).toBe(4);
   });
+
+  it("equip a branch with 2 andre cards", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemBranch = itemDB.getItemByNameid(13150);
+    const itemAndreCard = itemDB.getItemByNameid(4043);
+    playerAttributes.addItem(itemDB.getItemByNameid(503));
+    playerAttributes.addItem(itemDB.getItemByNameid(504));
+    playerAttributes.addItem(itemDB.getItemByNameid(505));
+    playerAttributes.addItem(itemDB.getItemByNameid(506));
+    playerAttributes.addItem(itemDB.getItemByNameid(507));
+    const itemBranchSlot = playerAttributes.addItem(itemBranch);
+    const itemAndreCardSlot = playerAttributes.addItem(itemAndreCard, 4);
+
+    playerAttributes.equipItem(itemBranchSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemBranchSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ARMS);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_R)
+    ).toStrictEqual([itemBranchSlot]);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemBranchSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ARMS);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_L)
+    ).toStrictEqual([itemBranchSlot]);
+
+    playerAttributes.insertCard(itemAndreCardSlot, itemBranchSlot);
+    playerAttributes.insertCard(itemAndreCardSlot, itemBranchSlot);
+
+    expect(playerAttributes.base_status.batk).toBe(40);
+  });
 });

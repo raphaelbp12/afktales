@@ -630,7 +630,12 @@ export class PlayerAttributes {
     for (let i = 0; i < equip_index.EQI_MAX; i++) {
       const item = this.inventory.getItemInSlot(this.equip_index[i]);
       if (item) {
-        equippedItems.push(item);
+        const itemFound = equippedItems.find((equippedItem) => {
+          return equippedItem.guid === item.guid;
+        });
+        if (!itemFound) {
+          equippedItems.push(item);
+        }
       }
     }
 
