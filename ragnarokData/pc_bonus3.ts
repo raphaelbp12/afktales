@@ -9,6 +9,16 @@ export function pc_bonus3(
   type3: number,
   val: number
 ) {
+  if (typeof type3 !== "number") {
+    throw new Error(`pc_bonus3: Invalid type3 value ${type3} - type: ${type}`);
+  }
+  if (typeof type2 !== "number") {
+    throw new Error(`pc_bonus3: Invalid type2 value ${type2} - type: ${type}`);
+  }
+  if (typeof val !== "number") {
+    throw new Error(`pc_bonus3: Invalid val value ${val} - type: ${type}`);
+  }
+
   switch (type) {
     case bonusTypeToStatusPointType.bAddMonsterDropItem:
       BonusHelpers.handleAddMonsterDropItem(

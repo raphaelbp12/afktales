@@ -1,6 +1,6 @@
 import { ItemDB } from "../ItemDB/ItemDB";
 import { equip_pos } from "../ItemDB/types";
-import { deserializePersistentStatus } from "./persistentStatus";
+import { Race } from "../map_race_id2mask";
 import { PlayerAttributes } from "./PlayerAttributes";
 
 describe("PlayerAttributes", () => {
@@ -996,5 +996,130 @@ describe("PlayerAttributes", () => {
     playerAttributes.insertCard(itemAndreCardSlot, itemBranchSlot);
 
     expect(playerAttributes.base_status.batk).toBe(40);
+  });
+
+  it("equip a +0 Tae Goo Lyeon and check for bCastrate and bDelayrate", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemTaeGoo = itemDB.getItemByNameid(1181);
+    const itemTaeGooSlot = playerAttributes.addItem(itemTaeGoo);
+
+    playerAttributes.equipItem(itemTaeGooSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemTaeGooSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ARMS);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_R)
+    ).toStrictEqual([itemTaeGooSlot]);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_L)
+    ).toStrictEqual([itemTaeGooSlot]);
+
+    expect(itemTaeGoo.getRefineLevel()).toBe(0);
+    expect(playerAttributes.castrate).toBe(0);
+    expect(playerAttributes.delayrate).toBe(0);
+  });
+
+  it("equip a +10 Tae Goo Lyeon and check for bCastrate and bDelayrate", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemTaeGoo = itemDB.getItemByNameid(1181);
+    itemTaeGoo.setRefineLevel(10);
+
+    const itemTaeGooSlot = playerAttributes.addItem(itemTaeGoo);
+
+    playerAttributes.equipItem(itemTaeGooSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemTaeGooSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ARMS);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_R)
+    ).toStrictEqual([itemTaeGooSlot]);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_L)
+    ).toStrictEqual([itemTaeGooSlot]);
+
+    expect(itemTaeGoo.getRefineLevel()).toBe(10);
+    expect(playerAttributes.castrate).toBe(-20);
+    expect(playerAttributes.delayrate).toBe(-20);
+  });
+
+  it("equip a +0 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemGloriousBloodyRoar = itemDB.getItemByNameid(1281);
+
+    const itemGloriousBloodyRoarSlot = playerAttributes.addItem(
+      itemGloriousBloodyRoar
+    );
+
+    playerAttributes.equipItem(itemGloriousBloodyRoarSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemGloriousBloodyRoarSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ARMS);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_R)
+    ).toStrictEqual([itemGloriousBloodyRoarSlot]);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_L)
+    ).toStrictEqual([itemGloriousBloodyRoarSlot]);
+
+    expect(itemGloriousBloodyRoar.getRefineLevel()).toBe(0);
+    expect(playerAttributes.bonus.unbreakable_equip).toBe(equip_pos.EQP_WEAPON);
+    expect(playerAttributes.right_weapon.addrace[Race.RC_DEMIHUMAN]).toBe(70);
+    expect(playerAttributes.ignore_def[Race.RC_DEMIHUMAN]).toBe(20);
+
+    expect(playerAttributes.right_weapon.addrace[Race.RC_PLAYER]).toBe(70);
+    expect(playerAttributes.ignore_def[Race.RC_PLAYER]).toBe(20);
+  });
+
+  it("equip a +10 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemGloriousBloodyRoar = itemDB.getItemByNameid(1281);
+    itemGloriousBloodyRoar.setRefineLevel(10);
+
+    const itemGloriousBloodyRoarSlot = playerAttributes.addItem(
+      itemGloriousBloodyRoar
+    );
+
+    playerAttributes.equipItem(itemGloriousBloodyRoarSlot);
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemGloriousBloodyRoarSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_ARMS);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_R)
+    ).toStrictEqual([itemGloriousBloodyRoarSlot]);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HAND_L)
+    ).toStrictEqual([itemGloriousBloodyRoarSlot]);
+
+    expect(itemGloriousBloodyRoar.getRefineLevel()).toBe(10);
+    expect(playerAttributes.bonus.unbreakable_equip).toBe(equip_pos.EQP_WEAPON);
+    expect(playerAttributes.ignore_def[Race.RC_DEMIHUMAN]).toBe(25);
+    expect(playerAttributes.ignore_def[Race.RC_PLAYER]).toBe(25);
+
+    expect(playerAttributes.right_weapon.addrace[Race.RC_DEMIHUMAN]).toBe(106);
+    expect(playerAttributes.right_weapon.addrace[Race.RC_PLAYER]).toBe(106);
+  });
+
+  it("equip a +0 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+
+    const itemGloriousBloodyRoar = itemDB.getItemByNameid(1281);
+    itemGloriousBloodyRoar.setRefineLevel(10);
+
+    const itemGloriousBloodyRoar2 = itemDB.getItemByNameid(1281);
+
+    expect(itemGloriousBloodyRoar.getRefineLevel()).toBe(10);
+    expect(itemGloriousBloodyRoar2.getRefineLevel()).toBe(0);
   });
 });

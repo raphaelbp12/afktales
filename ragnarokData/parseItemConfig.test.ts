@@ -215,6 +215,52 @@ bonus bMdef,5;`);
       "EQP_HEAD_MID",
     ]);
   });
+
+  it("should parse an Tae Goo Lyeon string into an object", () => {
+    const itemString = `
+      Id: 1181
+	AegisName: "Tae_Goo_Lyeon"
+	Name: "Tae Goo Lyeon"
+	Type: "IT_WEAPON"
+	Buy: 20
+	Weight: 2000
+	Atk: 250
+	Range: 1
+	Slots: 2
+	Job: {
+		Swordsman: true
+		Knight: true
+		Crusader: true
+	}
+	Upper: "ITEMUPPER_UPPER"
+	Loc: "EQP_ARMS"
+	WeaponLv: 4
+	EquipLv: 90
+	Subtype: "W_2HSWORD"
+	Script: <"
+		bonus bFlee2,10;
+		if(JobLevel>=70) autobonus "{ bonus bBaseAtk,50; }",10,10000,BF_WEAPON,"{ specialeffect(EF_POTION_BERSERK, AREA, playerattached()); }";
+		if(getrefine()>8) {
+			bonus bCastrate,-20;
+			bonus bDelayrate,-20;
+		}
+
+	">`;
+    const result = parseItem(itemString);
+    expect(result.Id).toBe(1181);
+    expect(result.Name).toBe("Tae Goo Lyeon");
+    expect(result.Type).toBe("IT_WEAPON");
+    expect(result.Buy).toBe(20);
+    expect(result.Script).toBe(
+      `bonus bFlee2,10;
+if(JobLevel>=70) autobonus "{ bonus bBaseAtk,50; }",10,10000,BF_WEAPON,"{ specialeffect(EF_POTION_BERSERK, AREA, playerattached()); }";
+if(getrefine()>8) {
+bonus bCastrate,-20;
+bonus bDelayrate,-20;
+}`
+    );
+    expect(result.Loc).toStrictEqual("EQP_ARMS");
+  });
 });
 
 describe("parseJob", () => {
@@ -265,6 +311,72 @@ describe("parseBonuses", () => {
           ["Ele_Fire", "20"],
           ["Ele_Dark", "20"],
           ["Ele_Undead", "20"],
+        ],
+      },
+    };
+    const result = parseBonuses(script);
+    expect(result).toEqual(expectedBonuses);
+  });
+
+  it("should parse readparam bonuses", () => {
+    const script = `
+		bonus bAspdRate,100;
+		bonus bHPrecovRate,-100;
+		bonus2 bHPLossRate,50,5000;
+		bonus bDex,-readparam(bDex);
+	`;
+    const expectedBonuses = {
+      bonus: {
+        SP_ASPD_RATE: [["100"]],
+        SP_HP_RECOV_RATE: [["-100"]],
+        SP_DEX: [["-readparam(bDex)"]],
+      },
+      bonus2: {
+        SP_HP_LOSS_RATE: [["50", "5000"]],
+      },
+    };
+    const result = parseBonuses(script);
+    expect(result).toEqual(expectedBonuses);
+  });
+
+  it("should parse Glorious Guitar script", () => {
+    const script = `
+		bonus2 bAddRace,RC_DemiPlayer,95;
+		bonus2 bIgnoreDefRate,RC_DemiPlayer,20;
+		bonus bUnbreakableWeapon,0;
+		if(getrefine()>5) {
+			bonus2 bAddRace,RC_DemiPlayer,(getrefine()-4)*(getrefine()-4);
+			bonus2 bIgnoreDefRate,RC_DemiPlayer,5;
+		}
+		if(getrefine()>8) bonus4 bAutoSpellOnSkill,CG_ARROWVULCAN,CG_TAROTCARD,5,100;
+	`;
+    const expectedBonuses = {
+      bonus: {
+        SP_UNBREAKABLE_WEAPON: [["0"]],
+      },
+      bonus2: {
+        SP_ADDRACE: [
+          ["RC_DemiPlayer", "95"],
+          [
+            "RC_DemiPlayer",
+            "(getrefine()-4)*(getrefine()-4)",
+            "condition: getrefine()>5",
+          ],
+        ],
+        SP_IGNORE_DEF_RATE: [
+          ["RC_DemiPlayer", "20"],
+          ["RC_DemiPlayer", "5", "condition: getrefine()>5"],
+        ],
+      },
+      bonus4: {
+        SP_AUTOSPELL_ONSKILL: [
+          [
+            "CG_ARROWVULCAN",
+            "CG_TAROTCARD",
+            "5",
+            "100",
+            "condition: getrefine()>8",
+          ],
         ],
       },
     };

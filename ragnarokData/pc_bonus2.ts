@@ -112,6 +112,13 @@ export function pc_bonus2(
   type2: number,
   val: number
 ): PlayerAttributes {
+  if (typeof type2 !== "number") {
+    throw new Error(`pc_bonus2: Invalid type2 value ${type2} - type: ${type}`);
+  }
+  if (typeof val !== "number") {
+    throw new Error(`pc_bonus2: Invalid val value ${val} - type: ${type}`);
+  }
+
   switch (type) {
     case bonusTypeToStatusPointType.bAddEle:
       if (

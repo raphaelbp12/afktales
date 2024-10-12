@@ -19,45 +19,52 @@ export class BonusHelpers {
       Object.keys(bonusValues).forEach((statusTypeKey) => {
         const statusArray: BonusArgs[] = bonusValues[statusTypeKey];
         statusArray.forEach((bonusArray) => {
-          if (bonusType === "bonus") {
-            pc_bonus(
-              playerAttributes,
-              statusTypeKey as string,
-              parseValueWithRagEnums(bonusArray[0] as number)
-            );
-          } else if (bonusType.startsWith("bonus2")) {
-            pc_bonus2(
-              playerAttributes,
-              statusTypeKey as string,
-              parseValueWithRagEnums(bonusArray[0] as number),
-              parseValueWithRagEnums(bonusArray[1] as number)
-            );
-          } else if (bonusType.startsWith("bonus3")) {
-            pc_bonus3(
-              playerAttributes,
-              statusTypeKey as string,
-              bonusArray[0] as number,
-              bonusArray[1] as number,
-              bonusArray[2] as number
-            );
-          } else if (bonusType.startsWith("bonus4")) {
-            pc_bonus4(
-              playerAttributes,
-              statusTypeKey as string,
-              bonusArray[0] as number,
-              bonusArray[1] as number,
-              bonusArray[2] as number,
-              bonusArray[3] as number
-            );
-          } else if (bonusType.startsWith("bonus5")) {
-            pc_bonus5(
-              playerAttributes,
-              statusTypeKey as string,
-              bonusArray[0] as number,
-              bonusArray[1] as number,
-              bonusArray[2] as number,
-              bonusArray[3] as number,
-              bonusArray[4] as number
+          try {
+            if (bonusType === "bonus") {
+              pc_bonus(
+                playerAttributes,
+                statusTypeKey as string,
+                parseValueWithRagEnums(bonusArray[0] as number)
+              );
+            } else if (bonusType.startsWith("bonus2")) {
+              pc_bonus2(
+                playerAttributes,
+                statusTypeKey as string,
+                parseValueWithRagEnums(bonusArray[0] as number),
+                parseValueWithRagEnums(bonusArray[1] as number)
+              );
+            } else if (bonusType.startsWith("bonus3")) {
+              pc_bonus3(
+                playerAttributes,
+                statusTypeKey as string,
+                parseValueWithRagEnums(bonusArray[0] as string),
+                parseValueWithRagEnums(bonusArray[1] as number),
+                parseValueWithRagEnums(bonusArray[2] as number)
+              );
+            } else if (bonusType.startsWith("bonus4")) {
+              pc_bonus4(
+                playerAttributes,
+                statusTypeKey as string,
+                parseValueWithRagEnums(bonusArray[0] as string),
+                parseValueWithRagEnums(bonusArray[1] as number),
+                parseValueWithRagEnums(bonusArray[2] as number),
+                parseValueWithRagEnums(bonusArray[3] as number)
+              );
+            } else if (bonusType.startsWith("bonus5")) {
+              pc_bonus5(
+                playerAttributes,
+                statusTypeKey as string,
+                parseValueWithRagEnums(bonusArray[0] as string),
+                parseValueWithRagEnums(bonusArray[1] as number),
+                parseValueWithRagEnums(bonusArray[2] as number),
+                parseValueWithRagEnums(bonusArray[3] as number),
+                parseValueWithRagEnums(bonusArray[4] as number)
+              );
+            }
+          } catch (error) {
+            console.error(
+              `Error processing bonus: ${bonusType} ${statusTypeKey}`,
+              error
             );
           }
         });

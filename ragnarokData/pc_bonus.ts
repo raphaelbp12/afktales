@@ -14,6 +14,10 @@ export function pc_bonus(
 ): PlayerAttributes {
   const bst = playerAttributes.base_status;
 
+  if (typeof val !== "number") {
+    throw new Error(`pc_bonus: Invalid val value ${val} - type: ${type}`);
+  }
+
   switch (type) {
     case bonusTypeToStatusPointType.bStr:
     case bonusTypeToStatusPointType.bAgi:

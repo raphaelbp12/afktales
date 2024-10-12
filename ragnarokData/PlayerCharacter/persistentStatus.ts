@@ -18,6 +18,11 @@ export class persistent_status {
 
   inventory: item_persistent[];
 
+  base_exp: number;
+  job_exp: number;
+  base_level: number;
+  job_level: number;
+
   constructor() {
     this.id = 0;
     this.name = "";
@@ -34,6 +39,11 @@ export class persistent_status {
     this.luk = 0;
 
     this.inventory = [];
+
+    this.base_exp = 0;
+    this.job_exp = 0;
+    this.base_level = 1;
+    this.job_level = 1;
   }
 }
 
@@ -57,6 +67,11 @@ export function deserializePersistentStatus(
   status.luk = parsedData.luk;
 
   status.inventory = parsedData.inventory;
+
+  status.base_exp = parsedData.base_exp;
+  status.job_exp = parsedData.job_exp;
+  status.base_level = parsedData.base_level;
+  status.job_level = parsedData.job_level;
 
   return status;
 }

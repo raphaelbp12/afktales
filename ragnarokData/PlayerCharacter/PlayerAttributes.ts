@@ -1,5 +1,10 @@
 // PlayerAttributes.ts
-import { Bonuses, BonusType, s_add_drop } from "@/ragnarokData/types";
+import {
+  BonusArgs,
+  Bonuses,
+  BonusType,
+  s_add_drop,
+} from "@/ragnarokData/types";
 import { WeaponData, initializeWeaponData } from "../WeaponData"; // Import the WeaponData interface and initialization function
 import { ELE_MAX, MAX_INVENTORY, MAX_PC_BONUS } from "../constants";
 import { weapon_type } from "../ItemDB/weapon_type";
@@ -8,9 +13,10 @@ import { AddEffect } from "../AutoTriggerFlag";
 import { sc_type } from "../sc_type";
 import { Race, Race2 } from "../map_race_id2mask";
 import { persistent_status } from "./persistentStatus";
-import { equip_pos, item_types, ItemData } from "../ItemDB/types";
+import { equip_pos, ItemData } from "../ItemDB/types";
 import { Inventory } from "./Inventory";
 import { BonusHelpers } from "../BonusHelpers";
+import { Parser, Value } from "expr-eval";
 
 export class PlayerAttributes {
   id: number;
@@ -621,6 +627,183 @@ export class PlayerAttributes {
     return slots;
   }
 
+  private filterBonusesByConditions(bonuses: Bonuses): Bonuses {
+    const filteredBonuses: Bonuses = {};
+
+    Object.entries(bonuses).forEach(([bonusType, bonusValues]) => {
+      const filteredBonusValues: BonusType = {};
+
+      Object.keys(bonusValues).forEach((statusTypeKey) => {
+        const statusArray: BonusArgs[] = bonusValues[statusTypeKey];
+
+        const filteredStatus = statusArray.filter((bonusArray) => {
+          // Check if there's a condition
+          const conditionIndex = bonusArray.findIndex(
+            (arg) => typeof arg === "string" && arg.startsWith("condition:")
+          );
+
+          if (conditionIndex !== -1) {
+            const conditionStr = (bonusArray[conditionIndex] as string)
+              .replace("condition:", "")
+              .trim();
+
+            const conditionMet = conditionStr === "true";
+
+            if (!conditionMet) {
+              return false; // Exclude this bonus
+            } else {
+              // Remove the condition from the arguments for processing
+              bonusArray.splice(conditionIndex, 1);
+            }
+          }
+          return true; // Include this bonus
+        });
+
+        if (filteredStatus.length > 0) {
+          filteredBonusValues[statusTypeKey] = filteredStatus;
+        }
+      });
+
+      if (Object.keys(filteredBonusValues).length > 0) {
+        filteredBonuses[bonusType as keyof Bonuses] = filteredBonusValues;
+      }
+    });
+
+    return filteredBonuses;
+  }
+
+  private readParam(param: Value): number {
+    if (typeof param !== "string") {
+      console.warn(`readParam expected a string but got ${typeof param}`);
+      return 0;
+    }
+
+    switch (param) {
+      case "bStr":
+      case "SP_STR":
+        return (
+          this.base_status.str +
+          this.param_bonus.SP_STR +
+          this.param_equip.SP_STR
+        );
+      case "bAgi":
+      case "SP_AGI":
+        return (
+          this.base_status.agi +
+          this.param_bonus.SP_AGI +
+          this.param_equip.SP_AGI
+        );
+      case "bVit":
+      case "SP_VIT":
+        return (
+          this.base_status.vit +
+          this.param_bonus.SP_VIT +
+          this.param_equip.SP_VIT
+        );
+      case "bInt":
+      case "SP_INT":
+        return (
+          this.base_status.int_ +
+          this.param_bonus.SP_INT +
+          this.param_equip.SP_INT
+        );
+      case "bDex":
+      case "SP_DEX":
+        return (
+          this.base_status.dex +
+          this.param_bonus.SP_DEX +
+          this.param_equip.SP_DEX
+        );
+      case "bLuk":
+      case "SP_LUK":
+        return (
+          this.base_status.luk +
+          this.param_bonus.SP_LUK +
+          this.param_equip.SP_LUK
+        );
+      default:
+        console.warn(`Unknown parameter: ${param}`);
+        return 0;
+    }
+  }
+
+  private evaluateExpression(
+    expression: string,
+    item: ItemData
+  ): number | boolean | string {
+    const parser = new Parser();
+
+    // Define variables and functions available in the expression
+    const variables: { [key: string]: number } = {
+      JobLevel: this.persistent_status.job_level,
+      BaseLevel: this.persistent_status.base_level,
+    };
+
+    const functions: { [key: string]: Value } = {
+      getrefine: () => item.getRefineLevel(),
+      readparam: (...args: Value[]) => this.readParam(args[0]),
+      // Add any other necessary functions
+    };
+
+    try {
+      // Parse the expression
+      const expr = parser.parse(expression);
+
+      // Evaluate the expression with the provided variables and functions
+      const result = expr.evaluate({ ...variables, ...functions });
+
+      return result;
+    } catch (error) {
+      // console.error(`Error evaluating expression: ${expression}`, error);
+      return expression; // Return the original expression if evaluation fails
+    }
+  }
+
+  private evaluateBonusExpressions(bonuses: Bonuses, item: ItemData): Bonuses {
+    const evaluatedBonuses: Bonuses = {};
+
+    Object.entries(bonuses).forEach(([bonusType, bonusValues]) => {
+      const evaluatedBonusValues: BonusType = {};
+
+      Object.keys(bonusValues).forEach((statusTypeKey) => {
+        const statusArray: BonusArgs[] = bonusValues[statusTypeKey];
+
+        const evaluatedStatus = statusArray.map((bonusArray) => {
+          // Evaluate each argument in bonusArray
+          const evaluatedBonusArray: BonusArgs = bonusArray.map((arg) => {
+            if (typeof arg === "string") {
+              // Check if it's a condition
+              if (arg.startsWith("condition:")) {
+                // Evaluate the condition
+                const conditionStr = arg.replace("condition:", "").trim();
+                const conditionResult = this.evaluateExpression(
+                  conditionStr,
+                  item
+                )
+                  ? "true"
+                  : "false";
+                return `condition:${conditionResult}`;
+              } else {
+                // Evaluate the expression
+                const evaluatedArg = this.evaluateExpression(arg, item);
+                return evaluatedArg;
+              }
+            } else {
+              return arg;
+            }
+          });
+          return evaluatedBonusArray;
+        });
+
+        evaluatedBonusValues[statusTypeKey] = evaluatedStatus;
+      });
+
+      evaluatedBonuses[bonusType as keyof Bonuses] = evaluatedBonusValues;
+    });
+
+    return evaluatedBonuses;
+  }
+
   public calculateItemBonuses(): void {
     this.resetValues();
     let newBonuses: Bonuses = {};
@@ -644,14 +827,25 @@ export class PlayerAttributes {
       equippedCards.push(...equipCards);
     });
 
-    equippedItems.concat(...equippedCards).forEach((item) => {
+    equippedItems.concat(equippedCards).forEach((item) => {
       const itemCopy = item.copy();
       if (itemCopy.Bonuses) {
-        Object.keys(itemCopy.Bonuses).forEach((key) => {
+        // **First, evaluate expressions in bonus arguments and conditions**
+        const evaluatedBonuses = this.evaluateBonusExpressions(
+          itemCopy.Bonuses,
+          itemCopy
+        );
+
+        // **Then, filter bonuses based on evaluated conditions**
+        const filteredBonuses =
+          this.filterBonusesByConditions(evaluatedBonuses);
+
+        // **Merge the filtered bonuses into newBonuses**
+        Object.keys(filteredBonuses).forEach((key) => {
           const typedKey = key as keyof Bonuses;
           if (newBonuses[typedKey]) {
             const bonusesToBeAdded: BonusType | undefined = {
-              ...itemCopy.Bonuses![typedKey],
+              ...filteredBonuses![typedKey],
             };
             const currentBonuses: BonusType = newBonuses[typedKey];
 
@@ -672,12 +866,13 @@ export class PlayerAttributes {
           } else {
             newBonuses = {
               ...newBonuses,
-              [typedKey]: { ...itemCopy.Bonuses![typedKey] },
+              [typedKey]: { ...filteredBonuses![typedKey] },
             };
           }
         });
       }
     });
+
     this.itemBonuses = newBonuses;
     BonusHelpers.processBonuses(newBonuses, this);
   }

@@ -11,6 +11,22 @@ export function pc_bonus5(
   type5: number,
   val: number
 ) {
+  if (typeof type5 !== "number") {
+    throw new Error(`pc_bonus5: Invalid type5 value ${type5} - type: ${type}`);
+  }
+  if (typeof type4 !== "number") {
+    throw new Error(`pc_bonus5: Invalid type4 value ${type4} - type: ${type}`);
+  }
+  if (typeof type3 !== "number") {
+    throw new Error(`pc_bonus5: Invalid type3 value ${type3} - type: ${type}`);
+  }
+  if (typeof type2 !== "number") {
+    throw new Error(`pc_bonus5: Invalid type2 value ${type2} - type: ${type}`);
+  }
+  if (typeof val !== "number") {
+    throw new Error(`pc_bonus5: Invalid val value ${val} - type: ${type}`);
+  }
+
   switch (type) {
     case bonusTypeToStatusPointType.bAutoSpell:
       BonusHelpers.handleAutoSpell(

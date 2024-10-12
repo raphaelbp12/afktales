@@ -27,7 +27,7 @@ export class ItemData {
   Loc?: equip_pos | string | number | (string | number)[];
   WeaponLv?: number;
   EquipLv?: number | [number, number];
-  Refine?: boolean;
+  private Refine?: boolean;
   Grade?: boolean;
   DisableOptions?: boolean;
   Subtype?: string | weapon_type;
@@ -57,7 +57,7 @@ export class ItemData {
   Options?: item_option[];
   EquipPosWhenEquipped?: equip_pos;
   Cards?: number[];
-  RefineLevel?: number;
+  private RefineLevel?: number;
 
   constructor(data?: Partial<ItemData>, persistentData?: item_persistent) {
     // Assign default values or provided values
@@ -86,7 +86,7 @@ export class ItemData {
     this.EquipPosWhenEquipped = equip_pos.EQP_NONE;
     this.WeaponLv = data?.WeaponLv;
     this.EquipLv = data?.EquipLv;
-    this.Refine = data?.Refine;
+    this.Refine = !data || !data?.isRefinable ? undefined : data?.isRefinable();
     this.Grade = data?.Grade;
     this.DisableOptions = data?.DisableOptions;
     this.Subtype = data?.Subtype
@@ -114,6 +114,8 @@ export class ItemData {
     this.OnRentalEndScript = data?.OnRentalEndScript;
     this.Bonuses = { ...data?.Bonuses };
     this.Cards = data?.Cards ? [...data.Cards] : Array(this.Slots).fill(0);
+    this.RefineLevel =
+      !data || !data?.getRefineLevel ? 0 : data?.getRefineLevel();
 
     if (persistentData) {
       this.nameid = persistentData.nameid;
@@ -124,6 +126,23 @@ export class ItemData {
       this.Cards = persistentData.card;
       this.RefineLevel = persistentData.refine;
     }
+  }
+
+  public isRefinable(): boolean {
+    if (this.Refine === undefined) {
+      return true;
+    }
+    return this.Refine;
+  }
+
+  public setRefineLevel(refineLevel: number): void {
+    if (this.isRefinable()) {
+      this.RefineLevel = refineLevel;
+    }
+  }
+
+  public getRefineLevel(): number {
+    return this.RefineLevel ?? 0;
   }
 
   public addItemDB(itemDB: ItemDB): void {
@@ -161,7 +180,13 @@ export class ItemData {
   }
 
   public copy(): ItemData {
-    return new ItemData(this);
+    const copy = new ItemData(this);
+    // Deep copy arrays to prevent mutations affecting the original
+    copy.Cards = this.Cards ? [...this.Cards] : [];
+    copy.Options = this.Options ? [...this.Options] : [];
+    copy.Bonuses = this.Bonuses ? { ...this.Bonuses } : {};
+
+    return copy;
   }
 
   public isCard(): boolean {
