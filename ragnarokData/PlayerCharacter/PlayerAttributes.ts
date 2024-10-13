@@ -17,10 +17,19 @@ import { equip_pos, ItemData } from "../ItemDB/types";
 import { Inventory } from "./Inventory";
 import { BonusHelpers } from "../BonusHelpers";
 import { Parser, Value } from "expr-eval";
+import {
+  ClassesEnum,
+  ClassesEnumString,
+  MAPID_BASEMASK,
+  MAPID_UPPERMASK,
+  pc_mapid2jobid,
+} from "./ClassesEnum";
+import { parseValueWithRagEnums } from "../utils";
 
 export class PlayerAttributes {
   id: number;
   name: string;
+  job: ClassesEnum;
   has_shield: boolean;
   weapontype: weapon_type;
   weapontype1: weapon_type;
@@ -244,6 +253,7 @@ export class PlayerAttributes {
     this.persistent_status = new persistent_status();
     this.id = id ?? 1;
     this.name = name ?? "test";
+    this.job = ClassesEnum.MAPID_NOVICE;
     this.resetValues();
     this.persistent_status.id = this.id;
     this.persistent_status.name = this.name;
@@ -727,16 +737,24 @@ export class PlayerAttributes {
     }
   }
 
-  private evaluateExpression(
+  public evaluateExpression(
     expression: string,
-    item: ItemData
+    item: ItemData,
+    isCondition: boolean
   ): number | boolean | string {
     const parser = new Parser();
 
+    // Preprocess the expression to replace identifiers with numeric values
+    const processedExpression = this.preprocessExpression(expression);
+
     // Define variables and functions available in the expression
-    const variables: { [key: string]: number } = {
+    const variables: { [key: string]: Value } = {
       JobLevel: this.persistent_status.job_level,
       BaseLevel: this.persistent_status.base_level,
+      BaseJob: pc_mapid2jobid(this.job & MAPID_UPPERMASK),
+      BaseClass: pc_mapid2jobid(this.job & MAPID_BASEMASK),
+      Class: this.job, // Use the numeric job ID
+      // Add other variables if necessary
     };
 
     const functions: { [key: string]: Value } = {
@@ -746,17 +764,63 @@ export class PlayerAttributes {
     };
 
     try {
-      // Parse the expression
-      const expr = parser.parse(expression);
+      // Parse the processed expression
+      const expr = parser.parse(processedExpression);
 
       // Evaluate the expression with the provided variables and functions
       const result = expr.evaluate({ ...variables, ...functions });
 
       return result;
     } catch (error) {
-      // console.error(`Error evaluating expression: ${expression}`, error);
+      if (isCondition) {
+        return false;
+      }
+      console.error(`Error evaluating expression: ${expression}`, error);
       return expression; // Return the original expression if evaluation fails
     }
+  }
+
+  private preprocessExpression(expression: string): string {
+    // Regular expression to match identifiers (variables and constants)
+    const identifierRegex = /\b[A-Za-z_][A-Za-z0-9_]*\b/g;
+
+    // Set of known variables to exclude from replacement
+    const knownVariables = new Set([
+      "JobLevel",
+      "BaseLevel",
+      "Class",
+      "BaseClass",
+      "BaseJob",
+      "and",
+      "or",
+      "not",
+      // Add other variable names that should not be replaced
+    ]);
+
+    let processedExpression = expression
+      .replace(/&&/g, " and ")
+      .replace(/\|\|/g, " or ");
+
+    // Replace identifiers with their numeric values
+    processedExpression = processedExpression.replace(
+      identifierRegex,
+      (match) => {
+        if (knownVariables.has(match)) {
+          return match; // Keep known variables as they are
+        }
+
+        // Try to parse the identifier using parseValueWithRagEnums
+        const parsedValue = parseValueWithRagEnums(match);
+        if (typeof parsedValue === "number") {
+          return parsedValue.toString();
+        } else {
+          console.warn(`Unknown identifier in expression: ${match}`);
+          return parsedValue;
+        }
+      }
+    );
+
+    return processedExpression;
   }
 
   private evaluateBonusExpressions(bonuses: Bonuses, item: ItemData): Bonuses {
@@ -778,14 +842,15 @@ export class PlayerAttributes {
                 const conditionStr = arg.replace("condition:", "").trim();
                 const conditionResult = this.evaluateExpression(
                   conditionStr,
-                  item
+                  item,
+                  true
                 )
                   ? "true"
                   : "false";
                 return `condition:${conditionResult}`;
               } else {
                 // Evaluate the expression
-                const evaluatedArg = this.evaluateExpression(arg, item);
+                const evaluatedArg = this.evaluateExpression(arg, item, false);
                 return evaluatedArg;
               }
             } else {

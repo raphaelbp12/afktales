@@ -5,6 +5,7 @@ import { effectStringToEnum } from "./AutoTriggerFlag";
 import { skillStringToEnum } from "./SkillsEnum";
 import { parseConfig } from "./parserItemConfig";
 import { item_db } from "@/ragnarokData/ItemDB/item_db";
+import { classStringToEnum } from "./PlayerCharacter/ClassesEnum";
 
 export function capValue(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
@@ -95,6 +96,11 @@ export function parseValueWithRagEnums(value: number | string): number {
       return Race2.RC2_TURTLE;
 
     default:
+      const classEnum = classStringToEnum(value as string);
+      if (classEnum !== null) {
+        return classEnum;
+      }
+
       const effect = effectStringToEnum(value as string);
       if (effect !== null) {
         return effect;

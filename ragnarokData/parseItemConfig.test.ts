@@ -462,4 +462,70 @@ describe("parseBonuses", () => {
     const result = parseBonuses(script);
     expect(result).toEqual(expectedBonuses);
   });
+
+  it("should parse bonuses with operators in the conditions correctly; check classes; evaluate class", () => {
+    const script = `
+		bonus bCritical,20+getrefine();
+		bonus bAspdRate,5;
+		if((Class==Job_Whitesmith)||(Class==Job_Creator)) bonus3 bAutoSpell,BS_HAMMERFALL,3,30;
+	`;
+    const expectedBonuses = {
+      bonus: {
+        SP_CRITICAL: [["20+getrefine()"]],
+        SP_ASPD_RATE: [["5"]],
+      },
+      bonus3: {
+        SP_AUTOSPELL: [
+          [
+            "BS_HAMMERFALL",
+            "3",
+            "30",
+            "condition: (Class==Job_Whitesmith)||(Class==Job_Creator)",
+          ],
+        ],
+      },
+    };
+    const result = parseBonuses(script);
+    expect(result).toEqual(expectedBonuses);
+  });
+
+  it("should parse bonuses with else if and operators", () => {
+    const script = `
+		if(BaseClass==Job_Swordman||BaseClass==Job_Merchant||BaseClass==Job_Thief||(BaseJob==Job_Taekwon&&Class!=Job_Soul_Linker)) bonus bStr,1;
+		else if(BaseClass==Job_Mage||BaseClass==Job_Acolyte||Class==Job_Ninja||Class==Job_Soul_Linker) bonus bInt,1;
+		else if(BaseClass==Job_Archer||BaseClass==Job_Gunslinger) bonus bDex,1;
+		else if(BaseJob==Job_Novice||BaseJob==Job_SuperNovice) {
+			bonus bMaxHP,80;
+			bonus bMaxSP,30;
+		}
+
+	`;
+    const expectedBonuses = {
+      bonus: {
+        SP_STR: [
+          [
+            "1",
+            "condition: BaseClass==Job_Swordman||BaseClass==Job_Merchant||BaseClass==Job_Thief||(BaseJob==Job_Taekwon&&Class!=Job_Soul_Linker)",
+          ],
+        ],
+        SP_INT: [
+          [
+            "1",
+            "condition: BaseClass==Job_Mage||BaseClass==Job_Acolyte||Class==Job_Ninja||Class==Job_Soul_Linker",
+          ],
+        ],
+        SP_DEX: [
+          ["1", "condition: BaseClass==Job_Archer||BaseClass==Job_Gunslinger"],
+        ],
+        SP_MAXHP: [
+          ["80", "condition: BaseJob==Job_Novice||BaseJob==Job_SuperNovice"],
+        ],
+        SP_MAXSP: [
+          ["30", "condition: BaseJob==Job_Novice||BaseJob==Job_SuperNovice"],
+        ],
+      },
+    };
+    const result = parseBonuses(script);
+    expect(result).toEqual(expectedBonuses);
+  });
 });

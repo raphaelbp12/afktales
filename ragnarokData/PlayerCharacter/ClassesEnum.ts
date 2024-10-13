@@ -1,0 +1,358 @@
+export const JOBL_2_1 = 0x0100;
+export const JOBL_2_2 = 0x0200;
+export const JOBL_2 = 0x0300; // JOBL_2_1 | JOBL_2_2
+export const JOBL_UPPER = 0x1000;
+export const JOBL_BABY = 0x2000;
+export const JOBL_THIRD = 0x4000;
+
+export const MAPID_BASEMASK = 0x00ff;
+export const MAPID_UPPERMASK = 0x0fff;
+export const MAPID_THIRDMASK = JOBL_THIRD | MAPID_UPPERMASK;
+
+export function pc_mapid2jobid(classId: number): number {
+  if (ClassesEnumString[classId] !== undefined) {
+    return classId;
+  } else {
+    return -1; // Return -1 if no matching JobID
+  }
+}
+
+export enum Sex {
+  FEMALE = 0,
+  MALE = 1,
+}
+
+export enum ClassesEnum {
+  //Novice And 1-1 Jobs
+  MAPID_NOVICE = 0,
+  MAPID_SWORDMAN,
+  MAPID_MAGE,
+  MAPID_ARCHER,
+  MAPID_ACOLYTE,
+  MAPID_MERCHANT,
+  MAPID_THIEF,
+  MAPID_TAEKWON,
+  MAPID_WEDDING,
+  MAPID_GUNSLINGER,
+  MAPID_NINJA,
+  MAPID_XMAS,
+  MAPID_SUMMER,
+  MAPID_GANGSI,
+  MAPID_SUMMONER,
+  MAPID_1_1_MAX,
+
+  //2-1 Jobs
+  MAPID_SUPER_NOVICE = JOBL_2_1 | MAPID_NOVICE,
+  MAPID_KNIGHT = JOBL_2_1 | MAPID_SWORDMAN,
+  MAPID_WIZARD = JOBL_2_1 | MAPID_MAGE,
+  MAPID_HUNTER = JOBL_2_1 | MAPID_ARCHER,
+  MAPID_PRIEST = JOBL_2_1 | MAPID_ACOLYTE,
+  MAPID_BLACKSMITH = JOBL_2_1 | MAPID_MERCHANT,
+  MAPID_ASSASSIN = JOBL_2_1 | MAPID_THIEF,
+  MAPID_STAR_GLADIATOR = JOBL_2_1 | MAPID_TAEKWON,
+  //                   = JOBL_2_1 | MAPID_WEDDING,
+  MAPID_REBELLION = JOBL_2_1 | MAPID_GUNSLINGER,
+  MAPID_KAGEROUOBORO = JOBL_2_1 | MAPID_NINJA,
+  //                   = JOBL_2_1 | MAPID_XMAS,
+  //                   = JOBL_2_1 | MAPID_SUMMER,
+  MAPID_DEATH_KNIGHT = JOBL_2_1 | MAPID_GANGSI,
+  //                   = JOBL_2_1 | MAPID_SUMMONER,
+
+  //2-2 Jobs
+  //                   = JOBL_2_1 | MAPID_NOVICE,
+  MAPID_CRUSADER = JOBL_2_2 | MAPID_SWORDMAN,
+  MAPID_SAGE = JOBL_2_2 | MAPID_MAGE,
+  MAPID_BARDDANCER = JOBL_2_2 | MAPID_ARCHER,
+  MAPID_MONK = JOBL_2_2 | MAPID_ACOLYTE,
+  MAPID_ALCHEMIST = JOBL_2_2 | MAPID_MERCHANT,
+  MAPID_ROGUE = JOBL_2_2 | MAPID_THIEF,
+  MAPID_SOUL_LINKER = JOBL_2_2 | MAPID_TAEKWON,
+  //                   = JOBL_2_2 | MAPID_WEDDING,
+  //                   = JOBL_2_2 | MAPID_GUNSLINGER,
+  //                   = JOBL_2_2 | MAPID_NINJA,
+  //                   = JOBL_2_2 | MAPID_XMAS,
+  //                   = JOBL_2_2 | MAPID_SUMMER,
+  MAPID_DARK_COLLECTOR = JOBL_2_2 | MAPID_GANGSI,
+  //                   = JOBL_2_2 | MAPID_SUMMONER,
+
+  //Trans Novice And Trans 1-1 Jobs
+  MAPID_NOVICE_HIGH = JOBL_UPPER | MAPID_NOVICE,
+  MAPID_SWORDMAN_HIGH = JOBL_UPPER | MAPID_SWORDMAN,
+  MAPID_MAGE_HIGH = JOBL_UPPER | MAPID_MAGE,
+  MAPID_ARCHER_HIGH = JOBL_UPPER | MAPID_ARCHER,
+  MAPID_ACOLYTE_HIGH = JOBL_UPPER | MAPID_ACOLYTE,
+  MAPID_MERCHANT_HIGH = JOBL_UPPER | MAPID_MERCHANT,
+  MAPID_THIEF_HIGH = JOBL_UPPER | MAPID_THIEF,
+  //                  = JOBL_UPPER | MAPID_TAEKWON,
+  //                  = JOBL_UPPER | MAPID_WEDDING,
+  //                  = JOBL_UPPER | MAPID_GUNSLINGER,
+  //                  = JOBL_UPPER | MAPID_NINJA,
+  //                  = JOBL_UPPER | MAPID_XMAS,
+  //                  = JOBL_UPPER | MAPID_SUMMER,
+  //                  = JOBL_UPPER | MAPID_GANGSI,
+  //                  = JOBL_UPPER | MAPID_SUMMONER,
+
+  //Trans 2-1 Jobs
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_NOVICE,
+  MAPID_LORD_KNIGHT = JOBL_UPPER | JOBL_2_1 | MAPID_SWORDMAN,
+  MAPID_HIGH_WIZARD = JOBL_UPPER | JOBL_2_1 | MAPID_MAGE,
+  MAPID_SNIPER = JOBL_UPPER | JOBL_2_1 | MAPID_ARCHER,
+  MAPID_HIGH_PRIEST = JOBL_UPPER | JOBL_2_1 | MAPID_ACOLYTE,
+  MAPID_WHITESMITH = JOBL_UPPER | JOBL_2_1 | MAPID_MERCHANT,
+  MAPID_ASSASSIN_CROSS = JOBL_UPPER | JOBL_2_1 | MAPID_THIEF,
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_TAEKWON,
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_WEDDING,
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_GUNSLINGER,
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_NINJA,
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_XMAS,
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_SUMMER,
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_GANGSI,
+  //                   = JOBL_UPPER | JOBL_2_1 | MAPID_SUMMONER,
+
+  //Trans 2-2 Jobs
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_NOVICE,
+  MAPID_PALADIN = JOBL_UPPER | JOBL_2_2 | MAPID_SWORDMAN,
+  MAPID_PROFESSOR = JOBL_UPPER | JOBL_2_2 | MAPID_MAGE,
+  MAPID_CLOWNGYPSY = JOBL_UPPER | JOBL_2_2 | MAPID_ARCHER,
+  MAPID_CHAMPION = JOBL_UPPER | JOBL_2_2 | MAPID_ACOLYTE,
+  MAPID_CREATOR = JOBL_UPPER | JOBL_2_2 | MAPID_MERCHANT,
+  MAPID_STALKER = JOBL_UPPER | JOBL_2_2 | MAPID_THIEF,
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_TAEKWON,
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_WEDDING,
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_GUNSLINGER,
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_NINJA,
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_XMAS,
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_SUMMER,
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_GANGSI,
+  //               = JOBL_UPPER | JOBL_2_2 | MAPID_SUMMONER,
+
+  //Baby Novice And Baby 1-1 Jobs
+  MAPID_BABY = JOBL_BABY | MAPID_NOVICE,
+  MAPID_BABY_SWORDMAN = JOBL_BABY | MAPID_SWORDMAN,
+  MAPID_BABY_MAGE = JOBL_BABY | MAPID_MAGE,
+  MAPID_BABY_ARCHER = JOBL_BABY | MAPID_ARCHER,
+  MAPID_BABY_ACOLYTE = JOBL_BABY | MAPID_ACOLYTE,
+  MAPID_BABY_MERCHANT = JOBL_BABY | MAPID_MERCHANT,
+  MAPID_BABY_THIEF = JOBL_BABY | MAPID_THIEF,
+  MAPID_BABY_TAEKWON = JOBL_BABY | MAPID_TAEKWON,
+  //                  = JOBL_BABY | MAPID_WEDDING,
+  MAPID_BABY_GUNSLINGER = JOBL_BABY | MAPID_GUNSLINGER,
+  MAPID_BABY_NINJA = JOBL_BABY | MAPID_NINJA,
+  //                  = JOBL_BABY | MAPID_XMAS,
+  //                  = JOBL_BABY | MAPID_SUMMER,
+  //                  = JOBL_BABY | MAPID_GANGSI,
+  MAPID_BABY_SUMMONER = JOBL_BABY | MAPID_SUMMONER,
+
+  //Baby 2-1 Jobs
+  MAPID_SUPER_BABY = JOBL_BABY | JOBL_2_1 | MAPID_NOVICE,
+  MAPID_BABY_KNIGHT = JOBL_BABY | JOBL_2_1 | MAPID_SWORDMAN,
+  MAPID_BABY_WIZARD = JOBL_BABY | JOBL_2_1 | MAPID_MAGE,
+  MAPID_BABY_HUNTER = JOBL_BABY | JOBL_2_1 | MAPID_ARCHER,
+  MAPID_BABY_PRIEST = JOBL_BABY | JOBL_2_1 | MAPID_ACOLYTE,
+  MAPID_BABY_BLACKSMITH = JOBL_BABY | JOBL_2_1 | MAPID_MERCHANT,
+  MAPID_BABY_ASSASSIN = JOBL_BABY | JOBL_2_1 | MAPID_THIEF,
+  MAPID_BABY_STAR_GLADIATOR = JOBL_BABY | JOBL_2_1 | MAPID_TAEKWON,
+  //                    = JOBL_BABY | JOBL_2_1 | MAPID_WEDDING,
+  MAPID_BABY_REBELLION = JOBL_BABY | JOBL_2_1 | MAPID_GUNSLINGER,
+  MAPID_BABY_KAGEROUOBORO = JOBL_BABY | JOBL_2_1 | MAPID_NINJA,
+  //                    = JOBL_BABY | JOBL_2_1 | MAPID_XMAS,
+  //                    = JOBL_BABY | JOBL_2_1 | MAPID_SUMMER,
+  //                    = JOBL_BABY | JOBL_2_1 | MAPID_GANGSI,
+  //                    = JOBL_BABY | JOBL_2_1 | MAPID_SUMMONER,
+
+  //Baby 2-2 Jobs
+  //                    = JOBL_BABY | JOBL_2_2 | MAPID_NOVICE,
+  MAPID_BABY_CRUSADER = JOBL_BABY | JOBL_2_2 | MAPID_SWORDMAN,
+  MAPID_BABY_SAGE = JOBL_BABY | JOBL_2_2 | MAPID_MAGE,
+  MAPID_BABY_BARDDANCER = JOBL_BABY | JOBL_2_2 | MAPID_ARCHER,
+  MAPID_BABY_MONK = JOBL_BABY | JOBL_2_2 | MAPID_ACOLYTE,
+  MAPID_BABY_ALCHEMIST = JOBL_BABY | JOBL_2_2 | MAPID_MERCHANT,
+  MAPID_BABY_ROGUE = JOBL_BABY | JOBL_2_2 | MAPID_THIEF,
+  MAPID_BABY_SOUL_LINKER = JOBL_BABY | JOBL_2_2 | MAPID_TAEKWON,
+  //                    = JOBL_BABY | JOBL_2_2 | MAPID_WEDDING,
+  //                    = JOBL_BABY | JOBL_2_2 | MAPID_GUNSLINGER,
+  //                    = JOBL_BABY | JOBL_2_2 | MAPID_NINJA,
+  //                    = JOBL_BABY | JOBL_2_2 | MAPID_XMAS,
+  //                    = JOBL_BABY | JOBL_2_2 | MAPID_SUMMER,
+  //                    = JOBL_BABY | JOBL_2_2 | MAPID_GANGSI,
+  //                    = JOBL_BABY | JOBL_2_2 | MAPID_SUMMONER,
+
+  //3-1 Jobs
+  MAPID_SUPER_NOVICE_E = JOBL_THIRD | JOBL_2_1 | MAPID_NOVICE,
+  MAPID_RUNE_KNIGHT = JOBL_THIRD | JOBL_2_1 | MAPID_SWORDMAN,
+  MAPID_WARLOCK = JOBL_THIRD | JOBL_2_1 | MAPID_MAGE,
+  MAPID_RANGER = JOBL_THIRD | JOBL_2_1 | MAPID_ARCHER,
+  MAPID_ARCH_BISHOP = JOBL_THIRD | JOBL_2_1 | MAPID_ACOLYTE,
+  MAPID_MECHANIC = JOBL_THIRD | JOBL_2_1 | MAPID_MERCHANT,
+  MAPID_GUILLOTINE_CROSS = JOBL_THIRD | JOBL_2_1 | MAPID_THIEF,
+  MAPID_STAR_EMPEROR = JOBL_THIRD | JOBL_2_1 | MAPID_TAEKWON,
+  //                     = JOBL_THIRD | JOBL_2_1 | MAPID_WEDDING,
+  //                     = JOBL_THIRD | JOBL_2_1 | MAPID_GUNSLINGER,
+  //                     = JOBL_THIRD | JOBL_2_1 | MAPID_NINJA,
+  //                     = JOBL_THIRD | JOBL_2_1 | MAPID_XMAS,
+  //                     = JOBL_THIRD | JOBL_2_1 | MAPID_SUMMER,
+  //                     = JOBL_THIRD | JOBL_2_1 | MAPID_GANGSI,
+  //                     = JOBL_THIRD | JOBL_2_1 | MAPID_SUMMONER,
+
+  //3-2 Jobs
+  //                     = JOBL_THIRD | JOBL_2_2 | MAPID_NOVICE,
+  MAPID_ROYAL_GUARD = JOBL_THIRD | JOBL_2_2 | MAPID_SWORDMAN,
+  MAPID_SORCERER = JOBL_THIRD | JOBL_2_2 | MAPID_MAGE,
+  MAPID_MINSTRELWANDERER = JOBL_THIRD | JOBL_2_2 | MAPID_ARCHER,
+  MAPID_SURA = JOBL_THIRD | JOBL_2_2 | MAPID_ACOLYTE,
+  MAPID_GENETIC = JOBL_THIRD | JOBL_2_2 | MAPID_MERCHANT,
+  MAPID_SHADOW_CHASER = JOBL_THIRD | JOBL_2_2 | MAPID_THIEF,
+  MAPID_SOUL_REAPER = JOBL_THIRD | JOBL_2_2 | MAPID_TAEKWON,
+  //                     = JOBL_THIRD | JOBL_2_2 | MAPID_WEDDING,
+  //                     = JOBL_THIRD | JOBL_2_2 | MAPID_GUNSLINGER,
+  //                     = JOBL_THIRD | JOBL_2_2 | MAPID_NINJA,
+  //                     = JOBL_THIRD | JOBL_2_2 | MAPID_XMAS,
+  //                     = JOBL_THIRD | JOBL_2_2 | MAPID_SUMMER,
+  //                     = JOBL_THIRD | JOBL_2_2 | MAPID_GANGSI,
+  //                     = JOBL_THIRD | JOBL_2_2 | MAPID_SUMMONER,
+
+  //Trans 3-1 Jobs
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_NOVICE,
+  MAPID_RUNE_KNIGHT_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_SWORDMAN,
+  MAPID_WARLOCK_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_MAGE,
+  MAPID_RANGER_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_ARCHER,
+  MAPID_ARCH_BISHOP_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_ACOLYTE,
+  MAPID_MECHANIC_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_MERCHANT,
+  MAPID_GUILLOTINE_CROSS_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_THIEF,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_TAEKWON,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_WEDDING,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_GUNSLINGER,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_NINJA,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_XMAS,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_SUMMER,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_GANGSI,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_1 | MAPID_SUMMONER,
+
+  //Trans 3-2 Jobs
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_NOVICE,
+  MAPID_ROYAL_GUARD_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_SWORDMAN,
+  MAPID_SORCERER_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_MAGE,
+  MAPID_MINSTRELWANDERER_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_ARCHER,
+  MAPID_SURA_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_ACOLYTE,
+  MAPID_GENETIC_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_MERCHANT,
+  MAPID_SHADOW_CHASER_T = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_THIEF,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_TAEKWON,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_WEDDING,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_GUNSLINGER,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_NINJA,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_XMAS,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_SUMMER,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_GANGSI,
+  //                       = JOBL_THIRD | JOBL_UPPER | JOBL_2_2 | MAPID_SUMMONER,
+
+  //Baby 3-1 Jobs
+  MAPID_SUPER_BABY_E = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_NOVICE,
+  MAPID_BABY_RUNE = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_SWORDMAN,
+  MAPID_BABY_WARLOCK = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_MAGE,
+  MAPID_BABY_RANGER = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_ARCHER,
+  MAPID_BABY_BISHOP = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_ACOLYTE,
+  MAPID_BABY_MECHANIC = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_MERCHANT,
+  MAPID_BABY_CROSS = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_THIEF,
+  MAPID_BABY_STAR_EMPEROR = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_TAEKWON,
+  //                  = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_WEDDING,
+  //                  = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_GUNSLINGER,
+  //                  = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_NINJA,
+  //                  = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_XMAS,
+  //                  = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_SUMMER,
+  //                  = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_GANGSI,
+  //                  = JOBL_THIRD | JOBL_BABY | JOBL_2_1 | MAPID_SUMMONER,
+
+  //Baby 3-2 Jobs
+  //                          = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_NOVICE,
+  MAPID_BABY_GUARD = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_SWORDMAN,
+  MAPID_BABY_SORCERER = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_MAGE,
+  MAPID_BABY_MINSTRELWANDERER = JOBL_THIRD |
+    JOBL_BABY |
+    JOBL_2_2 |
+    MAPID_ARCHER,
+  MAPID_BABY_SURA = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_ACOLYTE,
+  MAPID_BABY_GENETIC = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_MERCHANT,
+  MAPID_BABY_CHASER = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_THIEF,
+  MAPID_BABY_SOUL_REAPER = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_TAEKWON,
+  //                          = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_WEDDING,
+  //                          = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_GUNSLINGER,
+  //                          = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_NINJA,
+  //                          = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_XMAS,
+  //                          = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_SUMMER,
+  //                          = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_GANGSI,
+  //                          = JOBL_THIRD | JOBL_BABY | JOBL_2_2 | MAPID_SUMMONER,
+}
+
+export enum ClassesEnumString {
+  Job_Novice = ClassesEnum.MAPID_NOVICE,
+  Job_Swordman = ClassesEnum.MAPID_SWORDMAN,
+  Job_Mage = ClassesEnum.MAPID_MAGE,
+  Job_Archer = ClassesEnum.MAPID_ARCHER,
+  Job_Acolyte = ClassesEnum.MAPID_ACOLYTE,
+  Job_Merchant = ClassesEnum.MAPID_MERCHANT,
+  Job_Thief = ClassesEnum.MAPID_THIEF,
+  Job_Taekwon = ClassesEnum.MAPID_TAEKWON,
+  Job_Wedding = ClassesEnum.MAPID_WEDDING,
+  Job_Gunslinger = ClassesEnum.MAPID_GUNSLINGER,
+  Job_Ninja = ClassesEnum.MAPID_NINJA,
+  Job_Xmas = ClassesEnum.MAPID_XMAS,
+  Job_Summer = ClassesEnum.MAPID_SUMMER,
+  Job_Gangsi = ClassesEnum.MAPID_GANGSI,
+  Job_Summoner = ClassesEnum.MAPID_SUMMONER,
+  Job_1_1_Max = ClassesEnum.MAPID_1_1_MAX,
+
+  Job_Super_Novice = ClassesEnum.MAPID_SUPER_NOVICE,
+  Job_Knight = ClassesEnum.MAPID_KNIGHT,
+  Job_Wizard = ClassesEnum.MAPID_WIZARD,
+  Job_Hunter = ClassesEnum.MAPID_HUNTER,
+  Job_Priest = ClassesEnum.MAPID_PRIEST,
+  Job_Blacksmith = ClassesEnum.MAPID_BLACKSMITH,
+  Job_Assassin = ClassesEnum.MAPID_ASSASSIN,
+  Job_Star_Gladiator = ClassesEnum.MAPID_STAR_GLADIATOR,
+  Job_Rebellion = ClassesEnum.MAPID_REBELLION,
+  Job_Kagerou_Oborou = ClassesEnum.MAPID_KAGEROUOBORO,
+  Job_Death_Knight = ClassesEnum.MAPID_DEATH_KNIGHT,
+
+  Job_Crusader = ClassesEnum.MAPID_CRUSADER,
+  Job_Sage = ClassesEnum.MAPID_SAGE,
+  Job_Bard_Dancer = ClassesEnum.MAPID_BARDDANCER,
+  Job_Monk = ClassesEnum.MAPID_MONK,
+  Job_Alchemist = ClassesEnum.MAPID_ALCHEMIST,
+  Job_Rogue = ClassesEnum.MAPID_ROGUE,
+  Job_Soul_Linker = ClassesEnum.MAPID_SOUL_LINKER,
+  Job_Dark_Collector = ClassesEnum.MAPID_DARK_COLLECTOR,
+
+  Job_Novice_High = ClassesEnum.MAPID_NOVICE_HIGH,
+  Job_Swordman_High = ClassesEnum.MAPID_SWORDMAN_HIGH,
+  Job_Mage_High = ClassesEnum.MAPID_MAGE_HIGH,
+  Job_Archer_High = ClassesEnum.MAPID_ARCHER_HIGH,
+  Job_Acolyte_High = ClassesEnum.MAPID_ACOLYTE_HIGH,
+  Job_Merchant_High = ClassesEnum.MAPID_MERCHANT_HIGH,
+  Job_Thief_High = ClassesEnum.MAPID_THIEF_HIGH,
+
+  Job_Lord_Knight = ClassesEnum.MAPID_LORD_KNIGHT,
+  Job_High_Wizard = ClassesEnum.MAPID_HIGH_WIZARD,
+  Job_Sniper = ClassesEnum.MAPID_SNIPER,
+  Job_High_Priest = ClassesEnum.MAPID_HIGH_PRIEST,
+  Job_Whitesmith = ClassesEnum.MAPID_WHITESMITH,
+  Job_Assassin_Cross = ClassesEnum.MAPID_ASSASSIN_CROSS,
+
+  Job_Paladin = ClassesEnum.MAPID_PALADIN,
+  Job_Professor = ClassesEnum.MAPID_PROFESSOR,
+  Job_Clow_Gypsy = ClassesEnum.MAPID_CLOWNGYPSY,
+  Job_Champion = ClassesEnum.MAPID_CHAMPION,
+  Job_Creator = ClassesEnum.MAPID_CREATOR,
+  Job_Stalker = ClassesEnum.MAPID_STALKER,
+}
+
+export function classStringToEnum(classString: string): number | null {
+  if (
+    typeof classString === "string" &&
+    isNaN(Number(classString)) && // Ensures that the string is not a numeric value
+    classString in ClassesEnumString
+  ) {
+    return ClassesEnumString[classString as keyof typeof ClassesEnumString];
+  } else {
+    return null;
+  }
+}

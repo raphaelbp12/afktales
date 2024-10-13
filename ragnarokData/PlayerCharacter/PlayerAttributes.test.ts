@@ -1,6 +1,11 @@
 import { ItemDB } from "../ItemDB/ItemDB";
 import { equip_pos } from "../ItemDB/types";
 import { Race } from "../map_race_id2mask";
+import {
+  ClassesEnum,
+  ClassesEnumString,
+  classStringToEnum,
+} from "./ClassesEnum";
 import { PlayerAttributes } from "./PlayerAttributes";
 
 describe("PlayerAttributes", () => {
@@ -1121,5 +1126,77 @@ describe("PlayerAttributes", () => {
 
     expect(itemGloriousBloodyRoar.getRefineLevel()).toBe(10);
     expect(itemGloriousBloodyRoar2.getRefineLevel()).toBe(0);
+  });
+
+  it("equip a Sigrun's Wings as a Knight", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+    playerAttributes.job = ClassesEnum.MAPID_KNIGHT;
+
+    const itemSigrunsWings = itemDB.getItemByNameid(5592);
+
+    const itemSigrunsWingsSlot = playerAttributes.addItem(itemSigrunsWings);
+
+    playerAttributes.equipItem(itemSigrunsWingsSlot);
+
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemSigrunsWingsSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_HEAD_MID);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HEAD_MID)
+    ).toStrictEqual([itemSigrunsWingsSlot]);
+
+    expect(playerAttributes.param_bonus["SP_INT"]).toBe(0);
+    expect(playerAttributes.param_bonus["SP_DEX"]).toBe(0);
+    expect(playerAttributes.param_bonus["SP_STR"]).toBe(1);
+  });
+
+  it("equip a Sigrun's Wings as a Soul Linker", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+    playerAttributes.job = ClassesEnum.MAPID_SOUL_LINKER;
+
+    const itemSigrunsWings = itemDB.getItemByNameid(5592);
+
+    const itemSigrunsWingsSlot = playerAttributes.addItem(itemSigrunsWings);
+
+    playerAttributes.equipItem(itemSigrunsWingsSlot);
+
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemSigrunsWingsSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_HEAD_MID);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HEAD_MID)
+    ).toStrictEqual([itemSigrunsWingsSlot]);
+
+    expect(playerAttributes.param_bonus["SP_INT"]).toBe(1);
+    expect(playerAttributes.param_bonus["SP_DEX"]).toBe(0);
+    expect(playerAttributes.param_bonus["SP_STR"]).toBe(0);
+  });
+
+  it("equip a Sigrun's Wings as a Sniper", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+    playerAttributes.job = ClassesEnum.MAPID_SNIPER;
+
+    const itemSigrunsWings = itemDB.getItemByNameid(5592);
+
+    const itemSigrunsWingsSlot = playerAttributes.addItem(itemSigrunsWings);
+
+    playerAttributes.equipItem(itemSigrunsWingsSlot);
+
+    expect(
+      playerAttributes.inventory
+        .getItemInSlot(itemSigrunsWingsSlot)
+        ?.getEquipPosIfEquipped()
+    ).toBe(equip_pos.EQP_HEAD_MID);
+    expect(
+      playerAttributes.getInvSlotInEquipPos(equip_pos.EQP_HEAD_MID)
+    ).toStrictEqual([itemSigrunsWingsSlot]);
+
+    expect(playerAttributes.param_bonus["SP_INT"]).toBe(0);
+    expect(playerAttributes.param_bonus["SP_DEX"]).toBe(1);
+    expect(playerAttributes.param_bonus["SP_STR"]).toBe(0);
   });
 });
