@@ -27,7 +27,7 @@ export class ItemData {
   Loc?: equip_pos | string | number | (string | number)[];
   WeaponLv?: number;
   EquipLv?: number | [number, number];
-  private Refine?: boolean;
+  Refine?: boolean;
   Grade?: boolean;
   DisableOptions?: boolean;
   Subtype?: string | weapon_type;
@@ -86,7 +86,7 @@ export class ItemData {
     this.EquipPosWhenEquipped = equip_pos.EQP_NONE;
     this.WeaponLv = data?.WeaponLv;
     this.EquipLv = data?.EquipLv;
-    this.Refine = !data || !data?.isRefinable ? undefined : data?.isRefinable();
+    this.Refine = data?.Refine;
     this.Grade = data?.Grade;
     this.DisableOptions = data?.DisableOptions;
     this.Subtype = data?.Subtype
@@ -129,6 +129,23 @@ export class ItemData {
   }
 
   public isRefinable(): boolean {
+    if (!this.isEquip()) {
+      return false;
+    }
+    if (!this.GetRefine()) {
+      return false;
+    }
+
+    if (
+      this.Type !== item_types.IT_WEAPON &&
+      this.Type !== item_types.IT_ARMOR
+    ) {
+      return false;
+    }
+    return true;
+  }
+
+  public GetRefine(): boolean {
     if (this.Refine === undefined) {
       return true;
     }
@@ -174,9 +191,11 @@ export class ItemData {
       });
     }
 
-    return `${this.Name}${
-      this.Slots && this.Slots > 0 ? ` [${this.Slots}]` : ""
-    }${stringToAppend !== "" ? ` -${stringToAppend}` : ""}`;
+    return `${this.getRefineLevel() > 0 ? `+${this.getRefineLevel()} ` : ""}${
+      this.Name
+    }${this.Slots && this.Slots > 0 ? ` [${this.Slots}]` : ""}${
+      stringToAppend !== "" ? ` -${stringToAppend}` : ""
+    }`;
   }
 
   public copy(): ItemData {

@@ -118,6 +118,34 @@ describe("parseConfig", () => {
 });
 
 describe("parseItem", () => {
+  it("should parse Glove string correctly", () => {
+    const itemString = `
+      Id: 2604
+	AegisName: "Glove"
+	Name: "Glove"
+	Type: "IT_ARMOR"
+	Buy: 30000
+	Weight: 100
+	Job: {
+		All: true
+		Novice: false
+	}
+	Loc: "EQP_ACC"
+	EquipLv: 20
+	Refine: false
+	Script: <" bonus bDex,2; ">`;
+    const result = parseItem(itemString);
+    expect(result.Id).toBe(2604);
+    expect(result.Name).toBe("Glove");
+    expect(result.Type).toBe("IT_ARMOR");
+    expect(result.Buy).toBe(30000);
+    expect(result.EquipLv).toBe(20);
+    expect(result.Refine).toBe(false);
+    expect(result.Job?.All).toBe(true);
+    expect(result.Job?.Novice).toBe(false);
+    expect(result.Script).toBe(`bonus bDex,2;`);
+  });
+
   it("should parse an item string into an object", () => {
     const itemString = `
       Id: 2115

@@ -8,8 +8,8 @@ export class ItemDB {
     [key: number]: ItemData;
   };
   private itemsDictAegisNameKey: Record<string, number>;
-  constructor() {
-    const configString = item_db;
+  constructor(overrideConfig?: string) {
+    const configString = overrideConfig ?? item_db;
     const parsedData = parseConfig(configString);
 
     this.itemList = parsedData.itemsList;

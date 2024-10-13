@@ -6,6 +6,7 @@ import { useItemDB } from "@/contexts/RagContexts.tsx/ItemDBContext";
 import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 import ItemDropdownSelector from "@/components/commonComponents/ItemDropdownSelector";
 import InventoryListItem from "./InventoryListItem";
+import DropdownSelector from "@/components/commonComponents/DropdownSelector";
 
 interface ItemPanelProps {
   item: ItemData;
@@ -22,6 +23,7 @@ const ItemPanel: React.FC<ItemPanelProps> = ({
 }) => {
   const itemDB = useItemDB();
   const {
+    setRefineLevelToItem,
     addItemToStorage,
     moveItemFromStorageToPlayer,
     moveItemFromPlayerToStorage,
@@ -90,6 +92,20 @@ const ItemPanel: React.FC<ItemPanelProps> = ({
     }
   };
 
+  const handleSetRefineLevel = async (
+    event: React.ChangeEvent<HTMLSelectElement>
+  ) => {
+    if (!isPlayerInventory) return;
+    if (!characterId) return;
+    const value = event.target.value;
+    try {
+      await setRefineLevelToItem(characterId, item.guid, parseInt(value));
+      console.log("Refine level set!");
+    } catch (error) {
+      console.error("Failed to set refine level:", error);
+    }
+  };
+
   // Access character inventory
   const character = characterId !== undefined ? characters[characterId] : null;
 
@@ -127,6 +143,18 @@ const ItemPanel: React.FC<ItemPanelProps> = ({
               .map((cardItem, index) => (
                 <InventoryListItem key={index} item={cardItem} />
               ))}
+          {item.isRefinable() && item.isEquip() && (
+            <DropdownSelector
+              id="refineLevelSelect"
+              label="Refinar"
+              value={item.getRefineLevel()}
+              options={Array.apply(null, Array(11)).map((_, index) => ({
+                value: index,
+                label: `+${index.toString()}`,
+              }))}
+              onChange={handleSetRefineLevel}
+            />
+          )}
         </div>
         <div>
           <div className="flex gap-2">

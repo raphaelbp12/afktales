@@ -142,6 +142,14 @@ export class Inventory {
     });
   }
 
+  public setRefineLevelToItem(guid: string, refineLevel: number): boolean {
+    const item = this.searchByGuid(guid);
+    if (!item) return false;
+    if (!item.GetRefine()) return false;
+    item.setRefineLevel(refineLevel);
+    return true;
+  }
+
   public addItem(item: ItemData, amount: number): number {
     const itemCopy = item.copy();
     itemCopy.addItemDB(this.itemDB);

@@ -49,4 +49,9 @@ describe("ItemData", () => {
     const itemRing = itemDB.getItemByNameid(2601);
     expect(itemRing.isTwoHanded()).toBe(false);
   });
+
+  it("GetRefine Ring", () => {
+    const itemRing = itemDB.getItemByNameid(2601);
+    expect(itemRing.GetRefine()).toBe(false);
+  });
 });

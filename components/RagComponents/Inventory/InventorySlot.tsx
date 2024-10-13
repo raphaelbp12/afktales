@@ -24,6 +24,11 @@ const InventorySlot: React.FC<InventorySlotProps> = ({ item, onClick }) => {
       onClick={item?.AegisName ? onClick : () => {}}
     >
       {item ? <ItemSpriteImage itemId={item.nameid} /> : null}
+      {item && item.getRefineLevel() > 0 && (
+        <div className="absolute top-0 right-0 text-xxs text-white bg-black bg-opacity-50 px-0.5 rounded">
+          +{item.getRefineLevel()}
+        </div>
+      )}
       {item && item.Amount && item.Amount > 1 && (
         <div className="absolute bottom-0 right-0 text-xs text-white bg-black bg-opacity-50 px-0.5 rounded">
           {item.Amount}

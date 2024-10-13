@@ -110,6 +110,23 @@ export class AccountService {
     }
   }
 
+  setRefineLevelToItem(
+    playerIndex: number,
+    guid: string,
+    refineLevel: number
+  ): Promise<boolean> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      const succeeded = player.inventory.setRefineLevelToItem(
+        guid,
+        refineLevel
+      );
+      return Promise.resolve(succeeded);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
   addItemToPlayerInventory(
     playerIndex: number,
     item: ItemData,

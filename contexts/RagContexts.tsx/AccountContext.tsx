@@ -26,6 +26,11 @@ interface AccountContextValue {
     value: any
   ) => Promise<void>;
   addItemToStorage: (item: ItemData, amount?: number) => void;
+  setRefineLevelToItem: (
+    playerIndex: number,
+    guid: string,
+    refineLevel: number
+  ) => Promise<boolean>;
   addItemToPlayerInventory: (
     playerIndex: number,
     item: ItemData,
@@ -158,6 +163,24 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
       loadStorage();
     },
     [accountService, loadStorage]
+  );
+
+  const setRefineLevelToItem = useCallback(
+    async (playerIndex: number, guid: string, refineLevel: number) => {
+      try {
+        const succeeded = await accountService.setRefineLevelToItem(
+          playerIndex,
+          guid,
+          refineLevel
+        );
+        loadCharacters();
+        return Promise.resolve(succeeded);
+      } catch (err) {
+        console.error("Failed to set RefineLevel to item", err);
+        return Promise.reject(err);
+      }
+    },
+    [accountService, loadCharacters]
   );
 
   const addItemToPlayerInventory = useCallback(
@@ -326,6 +349,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
         deleteCharacter,
         updateCharacter,
         addItemToStorage,
+        setRefineLevelToItem,
         addItemToPlayerInventory,
         moveItemFromStorageToPlayer,
         moveItemFromPlayerToStorage,
