@@ -69,4 +69,35 @@ describe("parseRagConfigFiles", () => {
     expect(configObject.Creator.JobExpGroup).toBe("TranscendedSecondClasses");
     expect(configObject.Creator.BaseExpGroup).toBe("TranscendedClasses");
   });
+
+  it("parses item_db.conf file", () => {
+    const configContent = fs.readFileSync(
+      "RagConfigFiles/item_db.conf",
+      "utf8"
+    );
+    const configObject = parse(configContent) as any;
+    expect(configObject).toBeTruthy();
+
+    expect(configObject.item_db.length).toBe(7311);
+
+    const itemRedPotion = configObject.item_db[0];
+    expect(itemRedPotion.AegisName).toBe("Red_Potion");
+    expect(itemRedPotion.Id).toBe(501);
+    expect(itemRedPotion.Script).toBe(" itemheal rand(45,65),0; ");
+
+    const itemTaeGoo = configObject.item_db.find(
+      (item: any) => item.Id === 1181
+    );
+    expect(itemTaeGoo.AegisName).toBe("Tae_Goo_Lyeon");
+    expect(itemTaeGoo.Id).toBe(1181);
+  });
+
+  it("parses item_combo_db.conf file", () => {
+    const configContent = fs.readFileSync(
+      "RagConfigFiles/item_combo_db.conf",
+      "utf8"
+    );
+    const configObject = parse(configContent) as any;
+    expect(configObject).toBeTruthy();
+  });
 });

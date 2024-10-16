@@ -23,12 +23,34 @@ Definition
     }
 
 Value
-  = Object
+  = ParenthesizedValue
+  / ParenthesizedList
+  / Object
   / Array
   / StringLiteral
   / NumberLiteral
-  / ParenthesizedValue
+  / BooleanLiteral
   / Identifier
+
+ParenthesizedValue
+  = "(" _ val:Value _ ")" { return val; }
+
+ParenthesizedList
+  = "(" _ elements:ValueListWithOptionalTrailingComma? _ ")" {
+      return elements || [];
+    }
+
+ValueListWithOptionalTrailingComma
+  = head:Value tail:(ValueSeparator Value)* trailingComma:ValueSeparator? {
+      var values = [head];
+      for (var i = 0; i < tail.length; i++) {
+        values.push(tail[i][1]);
+      }
+      return values;
+    }
+
+ValueSeparator
+  = _ "," _
 
 Object
   = "{" _ properties:PropertyList? _ "}" {
@@ -45,36 +67,55 @@ Property
       return { key: key, value: value };
     }
 
-ParenthesizedValue
-  = "(" _ val:Value _ ")" { return val; }
-
 Array
-  = "[" _ elements:ArrayElements? _ "]" {
+  = "[" _ elements:ArrayElementsWithOptionalTrailingComma? _ "]" {
       return elements || [];
     }
 
-ArrayElements
-  = head:ArrayElement tail:(_ "," _ ArrayElement)* {
-      return [head].concat(tail.map(function(x) { return x[3]; }));
+ArrayElementsWithOptionalTrailingComma
+  = head:Value tail:(ValueSeparator Value)* trailingComma:ValueSeparator? {
+      var values = [head];
+      for (var i = 0; i < tail.length; i++) {
+        values.push(tail[i][1]);
+      }
+      return values;
     }
 
-ArrayElement
-  = Value
-
 StringLiteral
-  = '"' chars:StringChars '"' {
+  = '"' chars:DoubleQuotedStringContent '"' {
+      return chars.join('');
+    }
+  / '<"' chars:MultilineStringChars '">' {
       return chars;
     }
 
-StringChars
-  = chars:([^"\\] / EscapeSequence)* {
-      return chars.join('');
-    }
+DoubleQuotedStringContent
+  = chars:(
+      [^"\\]     // Any character except double quote or backslash
+    / EscapeSequence
+    / "\\" .    // Backslash followed by any character
+    )*
+
+MultilineStringChars
+  = chars:$((!('">') [^]))* { return chars; }
 
 EscapeSequence
   = "\\" char:[\\'"bfnrt] {
-      var map = { '\\': '\\', '"': '"', "'": "'", 'b': '\b', 'f': '\f', 'n': '\n', 'r': '\r', 't': '\t' };
+      var map = { 
+        '\\': '\\',
+        '"': '"',
+        "'": "'",
+        'b': '\b',
+        'f': '\f',
+        'n': '\n',
+        'r': '\r',
+        't': '\t'
+      };
       return map[char];
+    }
+  / "\\" char:. {
+      // For any other escaped character, return the character as is
+      return char;
     }
 
 NumberLiteral
@@ -82,9 +123,13 @@ NumberLiteral
       return parseFloat(text());
     }
 
+BooleanLiteral
+  = "true" { return true; }
+  / "false" { return false; }
+
 Identifier
-  = first:[a-zA-Z_] rest:[a-zA-Z0-9_]* {
-      return first + rest.join('');
+  = id:$([a-zA-Z_][a-zA-Z0-9_]*) {
+      return id;
     }
 
 _  // Whitespace and comments
