@@ -12,6 +12,7 @@ import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttribute
 import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import { AccountService } from "@/services/Account/AccountService";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
+import { ClassesEnum } from "@/ragnarokData/PlayerCharacter/ClassesEnum";
 
 interface AccountContextValue {
   characters: PlayerAttributes[];
@@ -31,6 +32,7 @@ interface AccountContextValue {
     guid: string,
     refineLevel: number
   ) => Promise<boolean>;
+  setJobClass: (playerIndex: number, newJob: ClassesEnum) => Promise<void>;
   addItemToPlayerInventory: (
     playerIndex: number,
     item: ItemData,
@@ -177,6 +179,20 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
         return Promise.resolve(succeeded);
       } catch (err) {
         console.error("Failed to set RefineLevel to item", err);
+        return Promise.reject(err);
+      }
+    },
+    [accountService, loadCharacters]
+  );
+
+  const setJobClass = useCallback(
+    async (playerIndex: number, newJob: ClassesEnum) => {
+      try {
+        await accountService.setJobClass(playerIndex, newJob);
+        loadCharacters();
+        return Promise.resolve();
+      } catch (err) {
+        console.error("Failed to set JobClass to player", err);
         return Promise.reject(err);
       }
     },
@@ -350,6 +366,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
         updateCharacter,
         addItemToStorage,
         setRefineLevelToItem,
+        setJobClass,
         addItemToPlayerInventory,
         moveItemFromStorageToPlayer,
         moveItemFromPlayerToStorage,

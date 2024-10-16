@@ -737,6 +737,10 @@ export class PlayerAttributes {
     }
   }
 
+  public setJobClass(newJob: ClassesEnum): void {
+    this.job = newJob;
+  }
+
   public evaluateExpression(
     expression: string,
     item: ItemData,

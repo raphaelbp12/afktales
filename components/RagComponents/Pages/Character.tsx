@@ -7,11 +7,11 @@ import Link from "next/link";
 import { FaArrowLeft } from "react-icons/fa";
 import PageWrapper from "@/components/commonComponents/PageWrapper";
 import EquipmentList from "../Character/EquipmentList";
-import AttributeList from "../Character/AttributeList";
 import Tabs from "@/components/commonComponents/Tabs";
 import InventoryTab from "./Tabs/InventoryTab";
 import AddItemTab from "./Tabs/AddItemTab";
 import BattleInfoTab from "./Tabs/BattleInfoTab";
+import SetupCharacterPanel from "../Character/SetupCharacterPanel";
 
 type CharacterProps = {
   characterId: number;
@@ -59,7 +59,10 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
             equipedItemIndexes={character.equip_index}
             inventory={character.inventory}
           />
-          <AttributeList param_bonus={character.param_bonus} />
+          <SetupCharacterPanel
+            param_bonus={character.param_bonus}
+            characterId={characterId}
+          />
         </div>
 
         <div className="flex flex-1 flex-col">

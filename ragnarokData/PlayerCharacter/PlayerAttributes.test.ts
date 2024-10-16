@@ -1199,4 +1199,11 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.param_bonus["SP_DEX"]).toBe(1);
     expect(playerAttributes.param_bonus["SP_STR"]).toBe(0);
   });
+
+  it("set job class to knight", () => {
+    const playerAttributes = new PlayerAttributes("test", 1, {});
+    playerAttributes.setJobClass(ClassesEnum.MAPID_KNIGHT);
+
+    expect(playerAttributes.job).toBe(ClassesEnum.MAPID_KNIGHT);
+  });
 });

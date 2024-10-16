@@ -3,6 +3,7 @@ import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttribute
 import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import { Account } from "@/ragnarokData/Account/Account";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
+import { ClassesEnum } from "@/ragnarokData/PlayerCharacter/ClassesEnum";
 
 export class AccountService {
   private account: Account;
@@ -122,6 +123,16 @@ export class AccountService {
         refineLevel
       );
       return Promise.resolve(succeeded);
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  setJobClass(playerIndex: number, newJob: ClassesEnum): Promise<void> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      player.setJobClass(newJob);
+      return Promise.resolve();
     } catch (error) {
       return Promise.reject(error);
     }
