@@ -12,9 +12,14 @@ const GetBasicItemsButton: React.FC<GetBasicItemsButtonProps> = ({
   characterId,
 }) => {
   const { addItemToStorage, addItemToPlayerInventory } = useAccountService();
-  const itemDB = useItemDB();
+  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
 
   const handleGetBasicItems = () => {
+    if (!itemDB) {
+      alert("ItemDB not loaded!");
+      return;
+    }
+
     const basicItems = [
       { nameid: 504, amount: 100 },
       { nameid: 2102, amount: 1 },
@@ -60,7 +65,7 @@ const GetBasicItemsButton: React.FC<GetBasicItemsButtonProps> = ({
       onClick={() => handleGetBasicItems()}
       className="my-4 px-4 py-2 bg-blue-500 text-white rounded-md"
     >
-      Itens Básicos
+      {loadingItemDB ? "Loading" : "Itens Básicos"}
     </button>
   );
 };

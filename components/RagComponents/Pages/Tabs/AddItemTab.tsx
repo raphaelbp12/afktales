@@ -54,7 +54,7 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
   isPlayerTab,
   characterId,
 }) => {
-  const itemDB = useItemDB();
+  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
   const { addItemToStorage, addItemToPlayerInventory } = useAccountService();
   const [selectedItem, setSelectedItem] = useState<ItemData | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<item_types | null>(null);
@@ -72,6 +72,10 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
   }, [selectedFilter]);
 
   const handleAddItem = (amount: number = 1) => {
+    if (!itemDB) {
+      alert("ItemDB not loaded!");
+      return;
+    }
     if (!selectedItem) {
       alert("Please select an item!");
       return;
@@ -90,6 +94,10 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
   };
 
   const handleChange = (value: ItemData[keyof ItemData] | null) => {
+    if (!itemDB) {
+      alert("ItemDB not loaded!");
+      return;
+    }
     const nameid = value as string;
     const item = itemDB.getItemByNameid(parseInt(nameid));
     console.log(item);
@@ -101,11 +109,23 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
     weaponType?: weapon_type | null,
     locType?: equip_pos | null
   ) => {
+    if (!itemDB) {
+      alert("ItemDB not loaded!");
+      return [];
+    }
     return itemDB
       .getFilteredItems((item) => (itemType ? item.Type === itemType : true))
       .filter((item) => (weaponType ? item.Subtype === weaponType : true))
       .filter((item) => (locType ? (item.Loc && locType) === item.Loc : true));
   };
+
+  if (loadingItemDB) {
+    return <div>Loading ItemDB...</div>;
+  }
+
+  if (!itemDB) {
+    return <div>{errorItemDB}</div>;
+  }
 
   return (
     <div className="flex flex-col items-center p-4">

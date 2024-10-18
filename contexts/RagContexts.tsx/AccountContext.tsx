@@ -70,6 +70,9 @@ const AccountContext = createContext<AccountContextValue | undefined>(
 export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const [accountService, setAccountService] = useState<AccountService | null>(
+    null
+  );
   const [firstLoad, setFirstLoad] = useState<boolean>(false);
   const [characters, setCharacters] = useState<PlayerAttributes[]>([]);
   const [storage, setStorage] = useState<Inventory | null>(null);
@@ -78,10 +81,35 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   const [nextAutoSaveInSeconds, setNextAutoSaveInSeconds] =
     useState<number>(30); // Countdown timer
 
-  const accountService = useMemo(() => new AccountService(), []);
+  useEffect(() => {
+    let isMounted = true;
+
+    async function initializeAccountService() {
+      try {
+        const service = await AccountService.create();
+        if (isMounted) {
+          setAccountService(service);
+          setLoading(false); // Loading is false after the service is initialized
+        }
+      } catch (err) {
+        if (isMounted) {
+          console.error("Failed to initialize account service", err);
+          setError("Failed to initialize account service");
+          setLoading(false);
+        }
+      }
+    }
+
+    initializeAccountService();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Load characters and storage
   const loadCharacters = useCallback(async () => {
+    if (!accountService) return;
     setLoading(true);
     setError(null);
     try {
@@ -95,6 +123,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   }, [accountService]);
 
   const loadStorage = useCallback(async () => {
+    if (!accountService) return;
     setLoading(true);
     setError(null);
     try {
@@ -109,6 +138,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const createCharacter = useCallback(
     async (name: string) => {
+      if (!accountService) return;
       setLoading(true);
       setError(null);
       try {
@@ -125,6 +155,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const deleteCharacter = useCallback(
     async (index: number) => {
+      if (!accountService) return;
       setLoading(true);
       setError(null);
       try {
@@ -141,6 +172,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const updateCharacter = useCallback(
     async (index: number, key: keyof PlayerAttributes, value: any) => {
+      if (!accountService) return;
       setLoading(true);
       setError(null);
       try {
@@ -161,6 +193,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addItemToStorage = useCallback(
     (item: ItemData, amount: number = 1) => {
+      if (!accountService) return;
       accountService.addItemToStorage(item, amount);
       loadStorage();
     },
@@ -169,6 +202,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setRefineLevelToItem = useCallback(
     async (playerIndex: number, guid: string, refineLevel: number) => {
+      if (!accountService) return false;
       try {
         const succeeded = await accountService.setRefineLevelToItem(
           playerIndex,
@@ -187,6 +221,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const setJobClass = useCallback(
     async (playerIndex: number, newJob: ClassesEnum) => {
+      if (!accountService) return;
       try {
         await accountService.setJobClass(playerIndex, newJob);
         loadCharacters();
@@ -201,6 +236,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const addItemToPlayerInventory = useCallback(
     async (playerIndex: number, item: ItemData, amount: number = 1) => {
+      if (!accountService) return;
       try {
         await accountService.addItemToPlayerInventory(
           playerIndex,
@@ -217,6 +253,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const moveItemFromStorageToPlayer = useCallback(
     async (slotIndex: number, playerIndex: number) => {
+      if (!accountService) return;
       try {
         await accountService.moveItemFromStorageToPlayer(
           slotIndex,
@@ -233,6 +270,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const moveItemFromPlayerToStorage = useCallback(
     async (playerIndex: number, slotIndex: number) => {
+      if (!accountService) return;
       try {
         await accountService.moveItemFromPlayerToStorage(
           playerIndex,
@@ -249,6 +287,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const equipItem = useCallback(
     async (playerIndex: number, inventorySlot: number) => {
+      if (!accountService) return;
       try {
         await accountService.equipItemInPlayerInventory(
           playerIndex,
@@ -264,6 +303,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const unequipItem = useCallback(
     async (playerIndex: number, inventorySlot: number) => {
+      if (!accountService) return;
       try {
         await accountService.unequipItemFromPlayer(playerIndex, inventorySlot);
         loadCharacters(); // Refresh characters to reflect the unequipped item
@@ -275,20 +315,26 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const serializeAccount = useCallback(() => {
+    if (!accountService) return "";
     return accountService.serializeAccount();
   }, [accountService]);
 
   const deserializeAccount = useCallback(
-    (data: string) => {
-      accountService.deserializeAccount(data);
+    async (data: string) => {
+      if (!accountService) return;
+      await accountService.deserializeAccount(data);
+      if (!firstLoad) {
+        setFirstLoad(true);
+      }
       loadCharacters();
       loadStorage();
     },
-    [accountService, loadCharacters, loadStorage]
+    [accountService, firstLoad, loadCharacters, loadStorage]
   );
 
   const saveAccountToLocalStorage = useCallback(
     (saveName: string) => {
+      if (!accountService) return "";
       const serializedData = accountService.serializeAccount();
       localStorage.setItem(`account_${saveName}`, serializedData);
       return serializedData;
@@ -297,12 +343,13 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   );
 
   const loadAccountFromLocalStorage = useCallback(
-    (saveName: string) => {
+    async (saveName: string) => {
       const storedData = localStorage.getItem(`account_${saveName}`);
       if (storedData) {
-        deserializeAccount(storedData);
+        await deserializeAccount(storedData);
       } else {
         console.error(`No save found with name: ${saveName}`);
+        await deserializeAccount(""); // Reset the account if no save is found
       }
     },
     [deserializeAccount]
@@ -314,6 +361,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const insertCardIntoEquipment = useCallback(
     async (playerIndex: number, cardInvSlot: number, equipInvSlot: number) => {
+      if (!accountService) return;
       try {
         await accountService.insertCardIntoEquipment(
           playerIndex,
@@ -330,20 +378,20 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   // Auto-save mechanism
   useEffect(() => {
-    if (!firstLoad) {
-      setFirstLoad(true);
+    if (accountService && !firstLoad) {
       loadAccountFromLocalStorage("autosave");
     }
+  }, [accountService, firstLoad, loadAccountFromLocalStorage]);
+
+  useEffect(() => {
     const intervalId = setInterval(() => {
       setNextAutoSaveInSeconds((prev) => (prev > 0 ? prev - 1 : 30));
       if (nextAutoSaveInSeconds === 1) {
         saveAccountToLocalStorage("autosave");
       }
     }, 1000);
-
     return () => clearInterval(intervalId); // Clean up interval on component unmount
   }, [
-    firstLoad,
     loadAccountFromLocalStorage,
     nextAutoSaveInSeconds,
     saveAccountToLocalStorage,

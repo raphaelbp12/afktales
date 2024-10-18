@@ -10,7 +10,11 @@ interface InventorySlotProps {
 }
 
 const InventorySlot: React.FC<InventorySlotProps> = ({ item, onClick }) => {
-  const itemDB = useItemDB();
+  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
+
+  if (!itemDB) {
+    return null;
+  }
 
   return (
     <div

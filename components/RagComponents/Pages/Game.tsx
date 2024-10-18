@@ -46,12 +46,14 @@ const Game: React.FC = () => {
             Create Item
           </button>
           <GetBasicItemsButton characterId={null} />
-          <InventoryGrid
-            title="Storage"
-            inventory={storage!}
-            columns={15}
-            isPlayerInventory={false}
-          />
+          {storage && (
+            <InventoryGrid
+              title="Storage"
+              inventory={storage!}
+              columns={15}
+              isPlayerInventory={false}
+            />
+          )}
         </div>
 
         <Modal

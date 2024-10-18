@@ -24,41 +24,86 @@ export class BonusHelpers {
               pc_bonus(
                 playerAttributes,
                 statusTypeKey as string,
-                parseValueWithRagEnums(bonusArray[0] as number)
+                parseValueWithRagEnums(
+                  bonusArray[0] as number,
+                  playerAttributes
+                )
               );
             } else if (bonusType.startsWith("bonus2")) {
               pc_bonus2(
                 playerAttributes,
                 statusTypeKey as string,
-                parseValueWithRagEnums(bonusArray[0] as number),
-                parseValueWithRagEnums(bonusArray[1] as number)
+                parseValueWithRagEnums(
+                  bonusArray[0] as number,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[1] as number,
+                  playerAttributes
+                )
               );
             } else if (bonusType.startsWith("bonus3")) {
               pc_bonus3(
                 playerAttributes,
                 statusTypeKey as string,
-                parseValueWithRagEnums(bonusArray[0] as string),
-                parseValueWithRagEnums(bonusArray[1] as number),
-                parseValueWithRagEnums(bonusArray[2] as number)
+                parseValueWithRagEnums(
+                  bonusArray[0] as string,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[1] as number,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[2] as number,
+                  playerAttributes
+                )
               );
             } else if (bonusType.startsWith("bonus4")) {
               pc_bonus4(
                 playerAttributes,
                 statusTypeKey as string,
-                parseValueWithRagEnums(bonusArray[0] as string),
-                parseValueWithRagEnums(bonusArray[1] as number),
-                parseValueWithRagEnums(bonusArray[2] as number),
-                parseValueWithRagEnums(bonusArray[3] as number)
+                parseValueWithRagEnums(
+                  bonusArray[0] as string,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[1] as number,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[2] as number,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[3] as number,
+                  playerAttributes
+                )
               );
             } else if (bonusType.startsWith("bonus5")) {
               pc_bonus5(
                 playerAttributes,
                 statusTypeKey as string,
-                parseValueWithRagEnums(bonusArray[0] as string),
-                parseValueWithRagEnums(bonusArray[1] as number),
-                parseValueWithRagEnums(bonusArray[2] as number),
-                parseValueWithRagEnums(bonusArray[3] as number),
-                parseValueWithRagEnums(bonusArray[4] as number)
+                parseValueWithRagEnums(
+                  bonusArray[0] as string,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[1] as number,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[2] as number,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[3] as number,
+                  playerAttributes
+                ),
+                parseValueWithRagEnums(
+                  bonusArray[4] as number,
+                  playerAttributes
+                )
               );
             }
           } catch (error) {

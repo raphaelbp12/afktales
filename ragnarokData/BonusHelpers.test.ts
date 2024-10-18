@@ -1,12 +1,29 @@
 import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { BonusHelpers } from "./BonusHelpers";
-import { Bonuses, bonusTypeToStatusPointType } from "@/ragnarokData/types";
+import { Bonuses } from "@/ragnarokData/types";
+import fs from "fs";
 
 describe("BonusHelpers", () => {
+  beforeAll(async () => {
+    global.fetch = jest.fn(() => {
+      const configContent = fs.readFileSync(
+        "./public/configs/item_db.conf",
+        "utf8"
+      );
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+        text: async () => configContent,
+        // Include other properties if needed
+      } as Response);
+    });
+  });
+
   let playerAttributes: PlayerAttributes;
 
-  beforeEach(() => {
-    playerAttributes = new PlayerAttributes("test", 1, {});
+  beforeEach(async () => {
+    playerAttributes = await PlayerAttributes.create("test", 1, {});
   });
 
   test("should process SP_HP_VANISH_RATE bonus correctly", () => {

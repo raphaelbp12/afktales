@@ -21,7 +21,7 @@ const ItemPanel: React.FC<ItemPanelProps> = ({
   characterId,
   isPlayerInventory,
 }) => {
-  const itemDB = useItemDB();
+  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
   const {
     setRefineLevelToItem,
     addItemToStorage,
@@ -36,6 +36,10 @@ const ItemPanel: React.FC<ItemPanelProps> = ({
   const [selectedItemGuid, setSelectedItemGuid] = useState<string | null>(null);
 
   const handleAddItem = (amount: number = 1) => {
+    if (!itemDB) {
+      alert("ItemDB not loaded!");
+      return;
+    }
     const newItem = itemDB.getItemByNameid(item.nameid);
     if (newItem) {
       addItemToStorage(newItem, amount);

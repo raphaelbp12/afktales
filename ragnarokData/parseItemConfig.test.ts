@@ -1,36 +1,10 @@
-import { equip_pos } from "./ItemDB/types";
-import {
-  removeComments,
-  parseConfig,
-  parseItem,
-  parseJob,
-  parseBonuses,
-} from "./parserItemConfig";
-
-describe("removeComments", () => {
-  it("should remove single-line comments", () => {
-    const configString = `// This is a comment\nkey: "value"`;
-    const result = removeComments(configString);
-    expect(result).toBe('\nkey: "value"');
-  });
-
-  it("should remove multi-line comments", () => {
-    const configString = `/* This is a comment */\nkey: "value"`;
-    const result = removeComments(configString);
-    expect(result).toBe('\nkey: "value"');
-  });
-
-  it("should remove both single-line and multi-line comments", () => {
-    const configString = `// This is a comment\nkey: "value"\n/* This is a comment */\nkey2: "value2"`;
-    const result = removeComments(configString);
-    expect(result).toBe('\nkey: "value"\n\nkey2: "value2"');
-  });
-});
+import { parseConfig } from "./ItemDB/ItemDB";
+import { equip_pos, item_types } from "./ItemDB/types";
+import { parseBonuses, parseTestScript } from "./parserItemConfig";
 
 describe("parseConfig", () => {
-  it("should parse the config string into a list and a dictionary of items", () => {
-    const configString = `
-    {
+  it("should parse the config string into a list and a dictionary of items", async () => {
+    const configString = `{
       Id: 1
       Name: "Item1"
       Type: "Type1"
@@ -42,7 +16,7 @@ describe("parseConfig", () => {
       Type: "Type2"
       Buy: 200
     },`;
-    const { itemsList, itemsDict } = parseConfig(configString);
+    const { itemsList, itemsDict } = await parseConfig(configString);
     expect(itemsList).toHaveLength(2);
     expect(itemsDict[1].Name).toBe("Item1");
     expect(itemsDict[1].Id).toBe(1);
@@ -50,7 +24,7 @@ describe("parseConfig", () => {
     expect(itemsDict[2].Id).toBe(2);
   });
 
-  it("should parse items with scripts correctly", () => {
+  it("should parse items with scripts correctly", async () => {
     const configString = `
     {
       Id: 2316
@@ -105,21 +79,20 @@ describe("parseConfig", () => {
       Script: <" getitem 5566,1; ">
     },
     `;
-    const { itemsList, itemsDict } = parseConfig(configString);
+    const { itemsList, itemsDict } = await parseConfig(configString);
     expect(itemsList).toHaveLength(4); // Updated to correct length
     expect(itemsDict[2316].Id).toBe(2316); // Additional expectation
     expect(itemsDict[501].Id).toBe(501);
-    expect(itemsDict[501].Script).toBe("itemheal rand(45,65),0;");
+    expect(itemsDict[501].Script).toBe(" itemheal rand(45,65),0; ");
     expect(itemsDict[502].Id).toBe(502);
-    expect(itemsDict[502].Script).toBe("itemheal rand(105,145),0;");
+    expect(itemsDict[502].Script).toBe(" itemheal rand(105,145),0; ");
     expect(itemsDict[16248].Id).toBe(16248);
-    expect(itemsDict[16248].Script).toBe("getitem 5566,1;");
+    expect(itemsDict[16248].Script).toBe(" getitem 5566,1; ");
   });
-});
 
-describe("parseItem", () => {
-  it("should parse Glove string correctly", () => {
+  it("should parse Glove string correctly", async () => {
     const itemString = `
+    {
       Id: 2604
 	AegisName: "Glove"
 	Name: "Glove"
@@ -133,21 +106,25 @@ describe("parseItem", () => {
 	Loc: "EQP_ACC"
 	EquipLv: 20
 	Refine: false
-	Script: <" bonus bDex,2; ">`;
-    const result = parseItem(itemString);
+	Script: <" bonus bDex,2; ">
+  },
+  `;
+    const { itemsList } = await parseConfig(itemString);
+    const result = itemsList[0];
     expect(result.Id).toBe(2604);
     expect(result.Name).toBe("Glove");
-    expect(result.Type).toBe("IT_ARMOR");
+    expect(result.Type).toBe(item_types.IT_ARMOR);
     expect(result.Buy).toBe(30000);
     expect(result.EquipLv).toBe(20);
     expect(result.Refine).toBe(false);
     expect(result.Job?.All).toBe(true);
     expect(result.Job?.Novice).toBe(false);
-    expect(result.Script).toBe(`bonus bDex,2;`);
+    expect(result.Script).toBe(` bonus bDex,2; `);
   });
 
-  it("should parse an item string into an object", () => {
+  it("should parse an item string into an object", async () => {
     const itemString = `
+    {
       Id: 2115
       AegisName: "Valkyrjas_Shield"
       Name: "Valkyrja's Shield"
@@ -169,23 +146,25 @@ describe("parseItem", () => {
         bonus2 bSubEle,Ele_Dark,20;
         bonus2 bSubEle,Ele_Undead,20;
         bonus bMdef,5;
-      ">`;
-    const result = parseItem(itemString);
+      ">
+  },
+  `;
+    const { itemsList } = await parseConfig(itemString);
+    const result = itemsList[0];
     expect(result.Id).toBe(2115);
     expect(result.Name).toBe("Valkyrja's Shield");
-    expect(result.Type).toBe("IT_ARMOR");
+    expect(result.Type).toBe(item_types.IT_ARMOR);
     expect(result.Buy).toBe(30000);
     expect(result.Job?.All).toBe(true);
     expect(result.Job?.Novice).toBe(false);
-    expect(result.Script).toBe(`bonus2 bSubEle,Ele_Water,20;
-bonus2 bSubEle,Ele_Fire,20;
-bonus2 bSubEle,Ele_Dark,20;
-bonus2 bSubEle,Ele_Undead,20;
-bonus bMdef,5;`);
+    expect(result.Script).toBe(
+      "\n        bonus2 bSubEle,Ele_Water,20;\n        bonus2 bSubEle,Ele_Fire,20;\n        bonus2 bSubEle,Ele_Dark,20;\n        bonus2 bSubEle,Ele_Undead,20;\n        bonus bMdef,5;\n      "
+    );
   });
 
-  it("should parse an item string into an object", () => {
+  it("should parse an item string into an object", async () => {
     const itemString = `
+    {
       Id: 1551
 	AegisName: "Bible"
 	Name: "Bible"
@@ -204,21 +183,25 @@ bonus bMdef,5;`);
 	WeaponLv: 3
 	EquipLv: 27
 	Subtype: "W_BOOK"
-	Script: <" bonus bInt,2; ">`;
-    const result = parseItem(itemString);
+	Script: <" bonus bInt,2; ">
+  }
+  ,`;
+    const { itemsList } = await parseConfig(itemString);
+    const result = itemsList[0];
     expect(result.Id).toBe(1551);
     expect(result.Name).toBe("Bible");
-    expect(result.Type).toBe("IT_WEAPON");
+    expect(result.Type).toBe(item_types.IT_WEAPON);
     expect(result.Buy).toBe(60000);
     expect(result.Job?.All).toBe(undefined);
     expect(result.Job?.Priest).toBe(true);
     expect(result.Job?.Sage).toBe(true);
     expect(result.Job?.Star_Gladiator).toBe(true);
-    expect(result.Script).toBe(`bonus bInt,2;`);
+    expect(result.Script).toBe(` bonus bInt,2; `);
   });
 
-  it("should parse an Munak Hat string into an object", () => {
+  it("should parse an Munak Hat string into an object", async () => {
     const itemString = `
+    {
       Id: 5167
 	AegisName: "Munak_Turban_"
 	Name: "Munak Hat"
@@ -230,22 +213,22 @@ bonus bMdef,5;`);
 	Loc: ["EQP_HEAD_LOW", "EQP_HEAD_TOP", "EQP_HEAD_MID"]
 	Refine: false
 	ViewSprite: 51
-	Script: <" bonus2 bSubRace,RC_Undead,10; ">`;
-    const result = parseItem(itemString);
+	Script: <" bonus2 bSubRace,RC_Undead,10; ">
+  },
+  `;
+    const { itemsList } = await parseConfig(itemString);
+    const result = itemsList[0];
     expect(result.Id).toBe(5167);
     expect(result.Name).toBe("Munak Hat");
-    expect(result.Type).toBe("IT_ARMOR");
+    expect(result.Type).toBe(item_types.IT_ARMOR);
     expect(result.Buy).toBe(20);
-    expect(result.Script).toBe(`bonus2 bSubRace,RC_Undead,10;`);
-    expect(result.Loc).toStrictEqual([
-      "EQP_HEAD_LOW",
-      "EQP_HEAD_TOP",
-      "EQP_HEAD_MID",
-    ]);
+    expect(result.Script).toBe(` bonus2 bSubRace,RC_Undead,10; `);
+    expect(result.Loc).toStrictEqual(equip_pos.EQP_HELM);
   });
 
-  it("should parse an Tae Goo Lyeon string into an object", () => {
+  it("should parse an Tae Goo Lyeon string into an object", async () => {
     const itemString = `
+    {
       Id: 1181
 	AegisName: "Tae_Goo_Lyeon"
 	Name: "Tae Goo Lyeon"
@@ -273,50 +256,19 @@ bonus bMdef,5;`);
 			bonus bDelayrate,-20;
 		}
 
-	">`;
-    const result = parseItem(itemString);
+	">
+  },
+  `;
+    const { itemsList } = await parseConfig(itemString);
+    const result = itemsList[0];
     expect(result.Id).toBe(1181);
     expect(result.Name).toBe("Tae Goo Lyeon");
-    expect(result.Type).toBe("IT_WEAPON");
+    expect(result.Type).toBe(item_types.IT_WEAPON);
     expect(result.Buy).toBe(20);
     expect(result.Script).toBe(
-      `bonus bFlee2,10;
-if(JobLevel>=70) autobonus "{ bonus bBaseAtk,50; }",10,10000,BF_WEAPON,"{ specialeffect(EF_POTION_BERSERK, AREA, playerattached()); }";
-if(getrefine()>8) {
-bonus bCastrate,-20;
-bonus bDelayrate,-20;
-}`
+      '\n\t\tbonus bFlee2,10;\n\t\tif(JobLevel>=70) autobonus "{ bonus bBaseAtk,50; }",10,10000,BF_WEAPON,"{ specialeffect(EF_POTION_BERSERK, AREA, playerattached()); }";\n\t\tif(getrefine()>8) {\n\t\t\tbonus bCastrate,-20;\n\t\t\tbonus bDelayrate,-20;\n\t\t}\n\n\t'
     );
-    expect(result.Loc).toStrictEqual("EQP_ARMS");
-  });
-});
-
-describe("parseJob", () => {
-  it("should parse a job string into an object", () => {
-    const jobString = `{ Novice: true Swordsman: false }`;
-    const result = parseJob(jobString);
-    expect(result.Novice).toBe(true);
-    expect(result.Swordsman).toBe(false);
-  });
-
-  it("should handle an empty job string", () => {
-    const jobString = `{}`;
-    const result = parseJob(jobString);
-    expect(result).toEqual({});
-  });
-
-  it("should handle a job string with one job", () => {
-    const jobString = `{ Novice: true }`;
-    const result = parseJob(jobString);
-    expect(result.Novice).toBe(true);
-    expect(Object.keys(result)).toHaveLength(1);
-  });
-
-  it("should handle job strings with extra spaces", () => {
-    const jobString = `{ Novice: true  Swordsman: false }`;
-    const result = parseJob(jobString);
-    expect(result.Novice).toBe(true);
-    expect(result.Swordsman).toBe(false);
+    expect(result.Loc).toStrictEqual(equip_pos.EQP_ARMS);
   });
 });
 

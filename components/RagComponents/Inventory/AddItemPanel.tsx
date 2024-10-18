@@ -8,11 +8,16 @@ import { ItemData } from "@/ragnarokData/ItemDB/types";
 interface AddItemPanelProps {}
 
 const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
-  const itemDB = useItemDB();
+  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
   const { addItemToStorage } = useAccountService();
   const [selectedItem, setSelectedItem] = useState<ItemData | null>(null);
 
   const handleAddItem = (amount: number = 1) => {
+    if (!itemDB) {
+      alert("ItemDB not loaded!");
+      return;
+    }
+
     if (!selectedItem) {
       alert("Please select an item!");
       return;
@@ -27,11 +32,24 @@ const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
   };
 
   const handleChange = (value: ItemData[keyof ItemData] | null) => {
+    if (!itemDB) {
+      alert("ItemDB not loaded!");
+      return;
+    }
+
     const nameid = value as string;
     const item = itemDB.getItemByNameid(parseInt(nameid));
     console.log(item);
     setSelectedItem(item);
   };
+
+  if (loadingItemDB) {
+    return <div>Loading ItemDB...</div>;
+  }
+
+  if (!itemDB) {
+    return <div>{errorItemDB}</div>;
+  }
 
   return (
     <div className="flex flex-col items-center p-4">

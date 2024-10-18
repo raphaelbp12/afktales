@@ -3,18 +3,21 @@ import { ELE_ALL } from "./constants";
 import { Race, Race2 } from "./map_race_id2mask";
 import { effectStringToEnum } from "./AutoTriggerFlag";
 import { skillStringToEnum } from "./SkillsEnum";
-import { parseConfig } from "./parserItemConfig";
-import { item_db } from "@/ragnarokData/ItemDB/item_db";
 import { classStringToEnum } from "./PlayerCharacter/ClassesEnum";
+import { ItemDB } from "./ItemDB/ItemDB";
+import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 
 export function capValue(value: number, min: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
-const itemsDictAegisNameKey: Record<string, number> =
-  parseConfig(item_db).itemsDictAegisNameKey;
+export function parseValueWithRagEnums(
+  value: number | string,
+  playerAttributes: PlayerAttributes
+): number {
+  const itemsDictAegisNameKey =
+    playerAttributes.inventory.itemDB.itemsDictAegisNameKey;
 
-export function parseValueWithRagEnums(value: number | string): number {
   if (typeof value === "string") {
     value = value.replaceAll('"', "");
     value = value.replaceAll("'", "");

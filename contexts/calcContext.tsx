@@ -93,7 +93,7 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
   const [itemScripts, setItemScripts] = useState<string[]>([]);
   const [bonuses, setBonuses] = useState<Bonuses>({});
   const [playerAttributes, setPlayerAttributes] = useState<PlayerAttributes>(
-    new PlayerAttributes("test", 1, {})
+    await PlayerAttributes.create("test", 1, {})
   );
 
   useEffect(() => {
@@ -125,7 +125,11 @@ export const CalcProvider: React.FC<{ children: ReactNode }> = ({
       }
     });
 
-    const updatedAttributes = new PlayerAttributes("test", 1, newBonuses);
+    const updatedAttributes = await PlayerAttributes.create(
+      "test",
+      1,
+      newBonuses
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       newBonuses,

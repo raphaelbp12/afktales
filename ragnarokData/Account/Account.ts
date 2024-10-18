@@ -10,12 +10,17 @@ import { ItemData } from "@/ragnarokData/ItemDB/types";
 const MAX_STORAGE = 1000;
 
 export class Account {
-  private characters: PlayerAttributes[];
-  private storage: Inventory;
+  public characters: PlayerAttributes[];
+  public storage!: Inventory;
 
-  constructor() {
+  private constructor() {
     this.characters = [];
-    this.storage = new Inventory(MAX_STORAGE);
+  }
+
+  public static async create(): Promise<Account> {
+    const account = new Account();
+    account.storage = await Inventory.create(MAX_STORAGE);
+    return account;
   }
 
   public getStorage(): Inventory {
@@ -33,9 +38,13 @@ export class Account {
     return this.characters;
   }
 
-  public newCharacter(name: string): PlayerAttributes {
+  public async newCharacter(name: string): Promise<PlayerAttributes> {
     console.log("Creating new character", name);
-    const newCharacter = new PlayerAttributes(name, this.characters.length, {});
+    const newCharacter = await PlayerAttributes.create(
+      name,
+      this.characters.length,
+      {}
+    );
     this.characters.push(newCharacter);
     return newCharacter;
   }
@@ -66,22 +75,36 @@ export class Account {
   }
 
   // Deserialize the account by reconstructing characters and the inventory
-  public static deserialize(serializedData: string): Account {
-    const parsedData = JSON.parse(serializedData);
-    const account = new Account();
+  public static async deserialize(serializedData: string): Promise<Account> {
+    let parsedData: any = {};
+
+    try {
+      parsedData = JSON.parse(serializedData);
+    } catch (error) {
+      console.error("Error parsing account data", error);
+      parsedData = { characters: [], storage: [] };
+    }
+    const account = await Account.create();
     const persistent_status_characters: persistent_status[] =
       parsedData.characters.map((charData: string) =>
         deserializePersistentStatus(charData)
       );
-    account.characters = persistent_status_characters.map((status) => {
-      const char = PlayerAttributes.fromPersistentStatus(
+
+    const newCharacters: PlayerAttributes[] = [];
+    for (const status of persistent_status_characters) {
+      const char = await PlayerAttributes.fromPersistentStatus(
         status,
         status.name,
         status.id
       );
-      return char;
-    });
-    account.storage = Inventory.deserialize(MAX_STORAGE, parsedData.storage);
+      newCharacters.push(char);
+    }
+    account.characters = newCharacters;
+
+    account.storage = await Inventory.deserialize(
+      MAX_STORAGE,
+      parsedData.storage
+    );
     return account;
   }
 }

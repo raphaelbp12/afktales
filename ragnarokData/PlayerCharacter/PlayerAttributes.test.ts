@@ -1,18 +1,32 @@
 import { ItemDB } from "../ItemDB/ItemDB";
 import { equip_pos } from "../ItemDB/types";
 import { Race } from "../map_race_id2mask";
-import {
-  ClassesEnum,
-  ClassesEnumString,
-  classStringToEnum,
-} from "./ClassesEnum";
+import { ClassesEnum } from "./ClassesEnum";
 import { PlayerAttributes } from "./PlayerAttributes";
+import fs from "fs";
 
 describe("PlayerAttributes", () => {
-  const itemDB = new ItemDB();
+  let itemDB: ItemDB;
+  beforeAll(async () => {
+    global.fetch = jest.fn(() => {
+      const configContent = fs.readFileSync(
+        "./public/configs/item_db.conf",
+        "utf8"
+      );
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+        text: async () => configContent,
+        // Include other properties if needed
+      } as Response);
+    });
 
-  it("add item", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+    itemDB = await ItemDB.create();
+  });
+
+  it("add item", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const item503 = itemDB.getItemByNameid(503);
     const item12014 = itemDB.getItemByNameid(12014);
@@ -31,8 +45,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.inventory.getItemInSlot(1)?.Amount).toBe(100);
   });
 
-  it("equip yellow potion", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip yellow potion", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const item503 = itemDB.getItemByNameid(503);
     const item12014 = itemDB.getItemByNameid(12014);
@@ -51,8 +65,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_NONE);
   });
 
-  it("equip knife", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip knife", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const item503 = itemDB.getItemByNameid(503);
     const item1201 = itemDB.getItemByNameid(1201);
@@ -75,8 +89,8 @@ describe("PlayerAttributes", () => {
     ).toStrictEqual([item1201Slot]);
   });
 
-  it("equip knife unequip equip Gaia_Sword", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip knife unequip equip Gaia_Sword", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const item1201 = itemDB.getItemByNameid(1201);
     const item1143 = itemDB.getItemByNameid(1143);
@@ -113,8 +127,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_WEAPON);
   });
 
-  it("equip 3 accs", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip 3 accs", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemRing = itemDB.getItemByNameid(2601);
     const itemEarring = itemDB.getItemByNameid(2602);
@@ -166,8 +180,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_NONE);
   });
 
-  it("equip knife mg guard and slayer", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip knife mg guard and slayer", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemKnife = itemDB.getItemByNameid(1202);
     const itemMainGauche = itemDB.getItemByNameid(1208);
@@ -253,8 +267,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_NONE);
   });
 
-  it("equip slayer and gakkung", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip slayer and gakkung", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGakkung = itemDB.getItemByNameid(1714);
     const itemSlayer = itemDB.getItemByNameid(1151);
@@ -287,8 +301,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_NONE);
   });
 
-  it("equip guard and gakkung", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip guard and gakkung", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGakkung = itemDB.getItemByNameid(1714);
     const itemGuard = itemDB.getItemByNameid(2102);
@@ -321,8 +335,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_NONE);
   });
 
-  it("equip gakkung guard knife", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip gakkung guard knife", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGakkung = itemDB.getItemByNameid(1714);
     const itemGuard = itemDB.getItemByNameid(2102);
@@ -376,8 +390,8 @@ describe("PlayerAttributes", () => {
     ).toStrictEqual([itemKnifeSlot]);
   });
 
-  it("equip gakkung glove", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip gakkung glove", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGakkung = itemDB.getItemByNameid(1714);
     const itemGlove = itemDB.getItemByNameid(2604);
@@ -421,8 +435,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_ARMS);
   });
 
-  it("equip gakkung guard knife", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip gakkung guard knife", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGakkung = itemDB.getItemByNameid(1714);
     const itemGuard = itemDB.getItemByNameid(2102);
@@ -491,8 +505,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_NONE);
   });
 
-  it("equip gakkung knife guard", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip gakkung knife guard", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGakkung = itemDB.getItemByNameid(1714);
     const itemGuard = itemDB.getItemByNameid(2102);
@@ -561,8 +575,8 @@ describe("PlayerAttributes", () => {
     ).toBe(equip_pos.EQP_NONE);
   });
 
-  it("equip munark_hat", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip munark_hat", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemMunak = itemDB.getItemByNameid(2264);
     playerAttributes.addItem(itemDB.getItemByNameid(503));
@@ -589,8 +603,8 @@ describe("PlayerAttributes", () => {
     ).toStrictEqual([itemMunakSlot]);
   });
 
-  it("equip munark_hat sunglasses", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip munark_hat sunglasses", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemMunak = itemDB.getItemByNameid(2264);
     const itemSunglasses = itemDB.getItemByNameid(2202);
@@ -637,8 +651,8 @@ describe("PlayerAttributes", () => {
     ).toStrictEqual([]);
   });
 
-  it("equip manteau munark_hat sunglasses ribbon", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip manteau munark_hat sunglasses ribbon", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemMunak = itemDB.getItemByNameid(2264);
     const itemManteau = itemDB.getItemByNameid(2506);
@@ -732,8 +746,8 @@ describe("PlayerAttributes", () => {
     ).toStrictEqual([itemManteauSlot]);
   });
 
-  it("insert raydric card into manteau", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("insert raydric card into manteau", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemManteau = itemDB.getItemByNameid(2506);
     const itemRaydricCard = itemDB.getItemByNameid(4133);
@@ -767,8 +781,8 @@ describe("PlayerAttributes", () => {
     ).toBe(4133);
   });
 
-  it("insert 4 andre card into knife", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("insert 4 andre card into knife", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemKnife = itemDB.getItemByNameid(1202);
     const itemAndreCard = itemDB.getItemByNameid(4043);
@@ -853,8 +867,8 @@ describe("PlayerAttributes", () => {
     ).toBe(4043);
   });
 
-  it("calculateItemBonuses Diabolus Manteau Slipper", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("calculateItemBonuses Diabolus Manteau Slipper", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemDiabolusManteau = itemDB.getItemByNameid(2537);
     const itemSlipper = itemDB.getItemByNameid(2415);
@@ -867,8 +881,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.param_bonus["SP_LUK"]).toBe(3);
   });
 
-  it("insert raydric card to muffler - add another muffler and check if it has cards", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("insert raydric card to muffler - add another muffler and check if it has cards", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemMuffler = itemDB.getItemByNameid(2504);
     const itemRaydricCard = itemDB.getItemByNameid(4133);
@@ -892,8 +906,8 @@ describe("PlayerAttributes", () => {
     ).toBe(undefined);
   });
 
-  it("equip 3 gloves + insert 4 drops card into knife equip knife", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip 3 gloves + insert 4 drops card into knife equip knife", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemKnife = itemDB.getItemByNameid(1202);
     const itemDropsCard = itemDB.getItemByNameid(4004);
@@ -966,8 +980,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.param_bonus["SP_DEX"]).toBe(4);
   });
 
-  it("equip a branch with 2 andre cards", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a branch with 2 andre cards", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemBranch = itemDB.getItemByNameid(13150);
     const itemAndreCard = itemDB.getItemByNameid(4043);
@@ -1003,8 +1017,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.base_status.batk).toBe(40);
   });
 
-  it("equip a +0 Tae Goo Lyeon and check for bCastrate and bDelayrate", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a +0 Tae Goo Lyeon and check for bCastrate and bDelayrate", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemTaeGoo = itemDB.getItemByNameid(1181);
     const itemTaeGooSlot = playerAttributes.addItem(itemTaeGoo);
@@ -1027,8 +1041,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.delayrate).toBe(0);
   });
 
-  it("equip a +10 Tae Goo Lyeon and check for bCastrate and bDelayrate", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a +10 Tae Goo Lyeon and check for bCastrate and bDelayrate", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemTaeGoo = itemDB.getItemByNameid(1181);
     itemTaeGoo.setRefineLevel(10);
@@ -1053,8 +1067,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.delayrate).toBe(-20);
   });
 
-  it("equip a +0 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a +0 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGloriousBloodyRoar = itemDB.getItemByNameid(1281);
 
@@ -1084,8 +1098,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.ignore_def[Race.RC_PLAYER]).toBe(20);
   });
 
-  it("equip a +10 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a +10 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGloriousBloodyRoar = itemDB.getItemByNameid(1281);
     itemGloriousBloodyRoar.setRefineLevel(10);
@@ -1116,8 +1130,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.right_weapon.addrace[Race.RC_PLAYER]).toBe(106);
   });
 
-  it("equip a +0 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a +0 Glorious Bloody Roar and check for bAddRace,RC_DemiPlayer and bIgnoreDefRate,RC_DemiPlayer", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
 
     const itemGloriousBloodyRoar = itemDB.getItemByNameid(1281);
     itemGloriousBloodyRoar.setRefineLevel(10);
@@ -1128,8 +1142,8 @@ describe("PlayerAttributes", () => {
     expect(itemGloriousBloodyRoar2.getRefineLevel()).toBe(0);
   });
 
-  it("equip a Sigrun's Wings as a Knight", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a Sigrun's Wings as a Knight", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
     playerAttributes.job = ClassesEnum.MAPID_KNIGHT;
 
     const itemSigrunsWings = itemDB.getItemByNameid(5592);
@@ -1152,8 +1166,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.param_bonus["SP_STR"]).toBe(1);
   });
 
-  it("equip a Sigrun's Wings as a Soul Linker", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a Sigrun's Wings as a Soul Linker", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
     playerAttributes.job = ClassesEnum.MAPID_SOUL_LINKER;
 
     const itemSigrunsWings = itemDB.getItemByNameid(5592);
@@ -1176,8 +1190,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.param_bonus["SP_STR"]).toBe(0);
   });
 
-  it("equip a Sigrun's Wings as a Sniper", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("equip a Sigrun's Wings as a Sniper", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
     playerAttributes.job = ClassesEnum.MAPID_SNIPER;
 
     const itemSigrunsWings = itemDB.getItemByNameid(5592);
@@ -1200,8 +1214,8 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.param_bonus["SP_STR"]).toBe(0);
   });
 
-  it("set job class to knight", () => {
-    const playerAttributes = new PlayerAttributes("test", 1, {});
+  it("set job class to knight", async () => {
+    const playerAttributes = await PlayerAttributes.create("test", 1, {});
     playerAttributes.setJobClass(ClassesEnum.MAPID_KNIGHT);
 
     expect(playerAttributes.job).toBe(ClassesEnum.MAPID_KNIGHT);

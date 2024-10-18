@@ -41,20 +41,24 @@ const InventoryTab: React.FC<InventoryTabProps> = ({ characterId }) => {
           items={character.inventory.getItems()}
         />
       </div>
-      <InventoryGrid
-        title="Inventário"
-        inventory={character.inventory}
-        columns={20}
-        characterId={characterId}
-        isPlayerInventory
-      />
-      <InventoryGrid
-        title="Armazém"
-        inventory={storage!}
-        columns={20}
-        characterId={characterId}
-        isPlayerInventory={false}
-      />
+      {character.inventory && (
+        <InventoryGrid
+          title="Inventário"
+          inventory={character.inventory}
+          columns={20}
+          characterId={characterId}
+          isPlayerInventory
+        />
+      )}
+      {storage && (
+        <InventoryGrid
+          title="Armazém"
+          inventory={storage!}
+          columns={20}
+          characterId={characterId}
+          isPlayerInventory={false}
+        />
+      )}
     </div>
   );
 };

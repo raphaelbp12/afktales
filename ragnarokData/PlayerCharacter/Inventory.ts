@@ -8,25 +8,33 @@ import {
 } from "../ItemDB/types";
 
 export class Inventory {
-  private items: ItemData[];
-  private itemDB: ItemDB;
+  public itemDB!: ItemDB;
+  public items: ItemData[];
 
-  constructor(length: number, persistentItems?: item_persistent[]) {
-    this.items = Array.from({ length }, () => new ItemData());
-    this.itemDB = new ItemDB();
+  private constructor() {
+    this.items = [];
+  }
 
+  public static async create(
+    length: number,
+    persistentItems?: item_persistent[]
+  ): Promise<Inventory> {
+    const inventory = new Inventory();
+    inventory.items = Array.from({ length }, () => new ItemData());
+    inventory.itemDB = await ItemDB.create();
     if (persistentItems) {
       persistentItems.forEach((itemPersistent) => {
-        const item = this.itemDB.getItemByNameid(itemPersistent.nameid);
-        item.addItemDB(this.itemDB);
+        const item = inventory.itemDB.getItemByNameid(itemPersistent.nameid);
+        item.addItemDB(inventory.itemDB);
         const newItem = new ItemData(item, itemPersistent);
-        const emptySlot = this.getNextEmptySlot();
+        const emptySlot = inventory.getNextEmptySlot();
         if (emptySlot === -1) {
           throw new Error("Inventory is full");
         }
-        this.items[emptySlot] = newItem;
+        inventory.items[emptySlot] = newItem;
       });
     }
+    return inventory;
   }
 
   public getCurrentLength(): number {
@@ -226,11 +234,11 @@ export class Inventory {
   }
 
   // Deserialize the inventory from persistent items
-  public static deserialize(
+  public static async deserialize(
     invLenght: number,
     serializedData: item_persistent[]
-  ): Inventory {
-    const inventory = new Inventory(invLenght, serializedData);
+  ): Promise<Inventory> {
+    const inventory = await Inventory.create(invLenght, serializedData);
 
     return inventory;
   }

@@ -1,20 +1,34 @@
 import { ElementEnum } from "@/data/Elements/ElementsEnum";
 import { BonusHelpers } from "./BonusHelpers";
-import { parseItem } from "./parserItemConfig";
+import { parseTestScript } from "./parserItemConfig";
 import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { Race, Race2 } from "./map_race_id2mask";
 import { Effect } from "./AutoTriggerFlag";
 import { Sizes } from "./utils";
 import { e_skill } from "./SkillsEnum";
+import fs from "fs";
 
 describe("pc_bonus2 from items", () => {
-  it("should test bonus bAddEle positive lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddEle,Ele_Ghost,15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  beforeAll(async () => {
+    global.fetch = jest.fn(() => {
+      const configContent = fs.readFileSync(
+        "./public/configs/item_db.conf",
+        "utf8"
+      );
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+        text: async () => configContent,
+        // Include other properties if needed
+      } as Response);
+    });
+  });
+
+  it("should test bonus bAddEle positive lr_flag 0", async () => {
+    const itemString = `bonus2 bAddEle,Ele_Ghost,15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -27,13 +41,10 @@ describe("pc_bonus2 from items", () => {
     );
   });
 
-  it("should test bonus bAddEle negative lr_flag 1", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddEle,Ele_Neutral,-10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddEle negative lr_flag 1", async () => {
+    const itemString = `bonus2 bAddEle,Ele_Neutral,-10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -46,13 +57,10 @@ describe("pc_bonus2 from items", () => {
     );
   });
 
-  it("should test bonus bAddEle negative lr_flag 2", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddEle,Ele_Neutral,-10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddEle negative lr_flag 2", async () => {
+    const itemString = `bonus2 bAddEle,Ele_Neutral,-10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -62,13 +70,10 @@ describe("pc_bonus2 from items", () => {
 
     expect(processedAttributes.arrow_addele[ElementEnum.Neutro]).toBe(-10);
   });
-  it("should test bonus bAddRace positive lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddRace, RC_All, 4;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddRace positive lr_flag 0", async () => {
+    const itemString = `bonus2 bAddRace, RC_All, 4;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -80,13 +85,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.right_weapon.addrace[Race.RC_NONBOSS]).toBe(4);
   });
 
-  it("should test bonus bAddRace lr_flag 1", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddRace, RC_Dragon, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddRace lr_flag 1", async () => {
+    const itemString = `bonus2 bAddRace, RC_Dragon, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -97,13 +99,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.left_weapon.addrace[Race.RC_DRAGON]).toBe(5);
   });
 
-  it("should test bonus bAddRace negative lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddRace,RC_DemiPlayer,-10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddRace negative lr_flag 0", async () => {
+    const itemString = `bonus2 bAddRace,RC_DemiPlayer,-10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -117,13 +116,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.right_weapon.addrace[Race.RC_PLAYER]).toBe(-10);
   });
 
-  it("should test bonus bAddRace negative lr_flag 2", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddRace,RC_DemiPlayer,-10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddRace negative lr_flag 2", async () => {
+    const itemString = `bonus2 bAddRace,RC_DemiPlayer,-10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -135,13 +131,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.arrow_addrace[Race.RC_PLAYER]).toBe(-10);
   });
 
-  it("should test bonus bAddSize Size_Medium lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddSize,Size_Medium,15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddSize Size_Medium lr_flag 0", async () => {
+    const itemString = `bonus2 bAddSize,Size_Medium,15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -154,13 +147,10 @@ describe("pc_bonus2 from items", () => {
     );
   });
 
-  it("should test bonus bSubEle Ele_All negative lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSubEle,Ele_All,-20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubEle Ele_All negative lr_flag 0", async () => {
+    const itemString = `bonus2 bSubEle,Ele_All,-20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -180,13 +170,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subele[ElementEnum.MortoVivo]).toBe(-20);
   });
 
-  it("should test bonus bAddEle positive lr_flag 1", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSubEle,Ele_Undead,20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddEle positive lr_flag 1", async () => {
+    const itemString = `bonus2 bSubEle,Ele_Undead,20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -197,13 +184,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subele[ElementEnum.MortoVivo]).toBe(20);
   });
 
-  it("should test bonus bAddEle negative lr_flag 2", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddEle,Ele_Neutral,-10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddEle negative lr_flag 2", async () => {
+    const itemString = `bonus2 bAddEle,Ele_Neutral,-10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -214,13 +198,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subele[ElementEnum.Neutro]).toBe(0);
   });
 
-  it("should test bonus bSubRace positive lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSubRace, RC_All, 4;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubRace positive lr_flag 0", async () => {
+    const itemString = `bonus2 bSubRace, RC_All, 4;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -232,13 +213,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subrace[Race.RC_NONBOSS]).toBe(4);
   });
 
-  it("should test bonus bSubRace lr_flag 1", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSubRace, RC_Dragon, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubRace lr_flag 1", async () => {
+    const itemString = `bonus2 bSubRace, RC_Dragon, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -249,13 +227,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subrace[Race.RC_DRAGON]).toBe(5);
   });
 
-  it("should test bonus bSubRace negative lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSubRace, RC_NonDemiPlayer, -300;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubRace negative lr_flag 0", async () => {
+    const itemString = `bonus2 bSubRace, RC_NonDemiPlayer, -300;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -274,13 +249,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subrace[Race.RC_DRAGON]).toBe(-300);
   });
 
-  it("should test bonus bSubRace negative lr_flag 2", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSubRace,RC_DemiPlayer,-10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubRace negative lr_flag 2", async () => {
+    const itemString = `bonus2 bSubRace,RC_DemiPlayer,-10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 2;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -292,13 +264,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subrace[Race.RC_PLAYER]).toBe(0);
   });
 
-  it("should test bonus bSubRace negative lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSubRace,RC_DemiPlayer,-10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubRace negative lr_flag 0", async () => {
+    const itemString = `bonus2 bSubRace,RC_DemiPlayer,-10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -310,13 +279,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subrace[Race.RC_PLAYER]).toBe(-10);
   });
 
-  it("should test bonus bAddEff Eff_Fear lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddEff, Eff_Fear, 1000;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddEff Eff_Fear lr_flag 0", async () => {
+    const itemString = `bonus2 bAddEff, Eff_Fear, 1000;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -330,16 +296,13 @@ describe("pc_bonus2 from items", () => {
     expect(effect.flag).toBe(30);
   });
 
-  it("should test bonus bAddEff Eff_Blind Eff_Stun Eff_Poison Eff_Freeze lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddEff,Eff_Blind,100;
+  it("should test bonus bAddEff Eff_Blind Eff_Stun Eff_Poison Eff_Freeze lr_flag 0", async () => {
+    const itemString = `bonus2 bAddEff,Eff_Blind,100;
 		bonus2 bAddEff,Eff_Stun,100;
 		bonus2 bAddEff,Eff_Poison,100;
-		bonus2 bAddEff,Eff_Freeze,100;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+		bonus2 bAddEff,Eff_Freeze,100;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -368,13 +331,10 @@ describe("pc_bonus2 from items", () => {
     expect(effect3.flag).toBe(30);
   });
 
-  it("should test bonus bAddEff2 Eff_Fear lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddEff2, Eff_Fear, 1000;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddEff2 Eff_Fear lr_flag 0", async () => {
+    const itemString = `bonus2 bAddEff2, Eff_Fear, 1000;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -388,16 +348,13 @@ describe("pc_bonus2 from items", () => {
     expect(effect.flag).toBe(29);
   });
 
-  it("should test bonus bAddEff2 Eff_Blind Eff_Stun Eff_Poison Eff_Freeze lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddEff2,Eff_Blind,100;
+  it("should test bonus bAddEff2 Eff_Blind Eff_Stun Eff_Poison Eff_Freeze lr_flag 0", async () => {
+    const itemString = `bonus2 bAddEff2,Eff_Blind,100;
 		bonus2 bAddEff2,Eff_Stun,100;
 		bonus2 bAddEff2,Eff_Poison,100;
-		bonus2 bAddEff2,Eff_Freeze,100;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+		bonus2 bAddEff2,Eff_Freeze,100;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -426,13 +383,10 @@ describe("pc_bonus2 from items", () => {
     expect(effect3.flag).toBe(29);
   });
 
-  it("should test bonus bResEff Eff_Fear lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bResEff,Eff_Confusion,5000;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bResEff Eff_Fear lr_flag 0", async () => {
+    const itemString = `bonus2 bResEff,Eff_Confusion,5000;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -443,17 +397,14 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.reseff[Effect.Eff_Confusion]).toBe(5000);
   });
 
-  it("should test bonus bResEff Eff_Poison Eff_Curse Eff_Silence Eff_Confusion Eff_Blind lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bResEff,Eff_Poison,5000;
+  it("should test bonus bResEff Eff_Poison Eff_Curse Eff_Silence Eff_Confusion Eff_Blind lr_flag 0", async () => {
+    const itemString = `bonus2 bResEff,Eff_Poison,5000;
 		bonus2 bResEff,Eff_Curse,5000;
 		bonus2 bResEff,Eff_Silence,5000;
 		bonus2 bResEff,Eff_Confusion,5000;
-		bonus2 bResEff,Eff_Blind,5000;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+		bonus2 bResEff,Eff_Blind,5000;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -468,13 +419,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.reseff[Effect.Eff_Blind]).toBe(5000);
   });
 
-  it("should test bonus bMagicAddEle Ele_Wind lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bMagicAddEle,Ele_Wind,5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bMagicAddEle Ele_Wind lr_flag 0", async () => {
+    const itemString = `bonus2 bMagicAddEle,Ele_Wind,5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -485,16 +433,13 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.magic_addele[ElementEnum.Vento]).toBe(5);
   });
 
-  it("should test bonus bMagicAddEle Ele_Fire Ele_Wind Ele_Water Ele_Earth lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bMagicAddEle,Ele_Fire,5;
+  it("should test bonus bMagicAddEle Ele_Fire Ele_Wind Ele_Water Ele_Earth lr_flag 0", async () => {
+    const itemString = `bonus2 bMagicAddEle,Ele_Fire,5;
 		bonus2 bMagicAddEle,Ele_Wind,5;
 		bonus2 bMagicAddEle,Ele_Water,5;
-		bonus2 bMagicAddEle,Ele_Earth,5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+		bonus2 bMagicAddEle,Ele_Earth,5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -508,13 +453,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.magic_addele[ElementEnum.Terra]).toBe(5);
   });
 
-  it("should test bonus bMagicAddRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bMagicAddRace,RC_DemiPlayer,15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bMagicAddRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bMagicAddRace,RC_DemiPlayer,15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -526,13 +468,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.magic_addrace[Race.RC_PLAYER]).toBe(15);
   });
 
-  it("should test bonus bMagicAddRace RC_All lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bMagicAddRace,RC_All,15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bMagicAddRace RC_All lr_flag 0", async () => {
+    const itemString = `bonus2 bMagicAddRace,RC_All,15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -544,13 +483,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.magic_addrace[Race.RC_NONBOSS]).toBe(15);
   });
 
-  it("should test bonus bMagicAddRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bMagicAddRace,RC_DemiPlayer,15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bMagicAddRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bMagicAddRace,RC_DemiPlayer,15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -562,13 +498,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.magic_addrace[Race.RC_PLAYER]).toBe(15);
   });
 
-  it("should test bonus bMagicAddSize Size_Medium lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bMagicAddSize,Size_Medium,15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bMagicAddSize Size_Medium lr_flag 0", async () => {
+    const itemString = `bonus2 bMagicAddSize,Size_Medium,15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -579,15 +512,12 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.magic_addsize[Sizes.Size_Medium]).toBe(15);
   });
 
-  it("should test bonus bMagicAddSize Size_Small Size_Medium Size_Large lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bMagicAddSize,Size_Small,15;
+  it("should test bonus bMagicAddSize Size_Small Size_Medium Size_Large lr_flag 0", async () => {
+    const itemString = `bonus2 bMagicAddSize,Size_Small,15;
 		bonus2 bMagicAddSize,Size_Medium,15;
-		bonus2 bMagicAddSize,Size_Large,15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+		bonus2 bMagicAddSize,Size_Large,15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -601,13 +531,10 @@ describe("pc_bonus2 from items", () => {
   });
   //*********************************************** */
 
-  it("should test bonus bMagicAtkEle Ele_Fire lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bMagicAtkEle, Ele_Fire, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bMagicAtkEle Ele_Fire lr_flag 0", async () => {
+    const itemString = `bonus2 bMagicAtkEle, Ele_Fire, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -618,13 +545,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.magic_atk_ele[ElementEnum.Fogo]).toBe(10);
   });
 
-  it("should test bonus bAddDamageClass 1916 lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddDamageClass, 1916, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddDamageClass 1916 lr_flag 0", async () => {
+    const itemString = `bonus2 bAddDamageClass, 1916, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -636,13 +560,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.right_weapon.add_dmg[0].rate).toBe(5);
   });
 
-  it("should test bonus bAddMagicDamageClass 1917 lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddMagicDamageClass, 1917, 20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddMagicDamageClass 1917 lr_flag 0", async () => {
+    const itemString = `bonus2 bAddMagicDamageClass, 1917, 20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -654,13 +575,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.add_mdmg[0].rate).toBe(20);
   });
 
-  it("should test bonus bAddDefClass 1026 lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddDefClass, 1026, -100;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddDefClass 1026 lr_flag 0", async () => {
+    const itemString = `bonus2 bAddDefClass, 1026, -100;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -672,13 +590,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.add_def[0].rate).toBe(-100);
   });
 
-  it("should test bonus bAddMdefClass 1026 lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddMdefClass, 1026, 15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddMdefClass 1026 lr_flag 0", async () => {
+    const itemString = `bonus2 bAddMdefClass, 1026, 15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -690,13 +605,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.add_mdef[0].rate).toBe(15);
   });
 
-  it("should test bonus bHPDrainRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bHPDrainRate, 10, 2;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bHPDrainRate lr_flag 0", async () => {
+    const itemString = `bonus2 bHPDrainRate, 10, 2;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -712,13 +624,10 @@ describe("pc_bonus2 from items", () => {
     );
   });
 
-  it("should test bonus bHPDrainValue lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bHPDrainValue, 50, 1;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bHPDrainValue lr_flag 0", async () => {
+    const itemString = `bonus2 bHPDrainValue, 50, 1;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -734,13 +643,10 @@ describe("pc_bonus2 from items", () => {
     ).toBe(1);
   });
 
-  it("should test bonus bSPDrainRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSPDrainRate, 5, 1;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSPDrainRate lr_flag 0", async () => {
+    const itemString = `bonus2 bSPDrainRate, 5, 1;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -756,13 +662,10 @@ describe("pc_bonus2 from items", () => {
     );
   });
 
-  it("should test bonus bSPDrainValue lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSPDrainValue, 20, 2;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSPDrainValue lr_flag 0", async () => {
+    const itemString = `bonus2 bSPDrainValue, 20, 2;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -778,13 +681,10 @@ describe("pc_bonus2 from items", () => {
     ).toBe(2);
   });
 
-  it("should test bonus bHPVanishRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bHPVanishRate, 10, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bHPVanishRate lr_flag 0", async () => {
+    const itemString = `bonus2 bHPVanishRate, 10, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -796,13 +696,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.bonus.hp_vanish_per).toBe(5);
   });
 
-  it("should test bonus bSPVanishRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSPVanishRate, 8, 3;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSPVanishRate lr_flag 0", async () => {
+    const itemString = `bonus2 bSPVanishRate, 8, 3;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -814,13 +711,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.bonus.sp_vanish_per).toBe(3);
   });
 
-  it("should test bonus bGetZenyNum lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bGetZenyNum, 100, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bGetZenyNum lr_flag 0", async () => {
+    const itemString = `bonus2 bGetZenyNum, 100, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -832,13 +726,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.bonus.get_zeny_num).toBe(100);
   });
 
-  it("should test bonus bAddGetZenyNum lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddGetZenyNum, 50, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddGetZenyNum lr_flag 0", async () => {
+    const itemString = `bonus2 bAddGetZenyNum, 50, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -850,13 +741,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.bonus.get_zeny_num).toBe(50);
   });
 
-  it("should test bonus bWeaponComaEle Ele_Fire lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bWeaponComaEle, Ele_Fire, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bWeaponComaEle Ele_Fire lr_flag 0", async () => {
+    const itemString = `bonus2 bWeaponComaEle, Ele_Fire, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -867,13 +755,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.weapon_coma_ele[ElementEnum.Fogo]).toBe(5);
   });
 
-  it("should test bonus bWeaponComaRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bWeaponComaRace, RC_DemiPlayer, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bWeaponComaRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bWeaponComaRace, RC_DemiPlayer, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -885,13 +770,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.weapon_coma_race[Race.RC_PLAYER]).toBe(10);
   });
 
-  it("should test bonus bWeaponAtk lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bWeaponAtk, 0, 15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bWeaponAtk lr_flag 0", async () => {
+    const itemString = `bonus2 bWeaponAtk, 0, 15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -902,13 +784,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.weapon_atk[0]).toBe(15);
   });
 
-  it("should test bonus bWeaponAtkRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bWeaponAtkRate, 1, 20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bWeaponAtkRate lr_flag 0", async () => {
+    const itemString = `bonus2 bWeaponAtkRate, 1, 20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -919,13 +798,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.weapon_atk_rate[1]).toBe(20);
   });
 
-  it("should test bonus bCriticalAddRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bCriticalAddRace, RC_DemiPlayer, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bCriticalAddRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bCriticalAddRace, RC_DemiPlayer, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -937,13 +813,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.critaddrace[Race.RC_PLAYER]).toBe(100);
   });
 
-  it("should test bonus bAddEffWhenHit Eff_Stun lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddEffWhenHit, Eff_Stun, 1000;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddEffWhenHit Eff_Stun lr_flag 0", async () => {
+    const itemString = `bonus2 bAddEffWhenHit, Eff_Stun, 1000;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -957,13 +830,10 @@ describe("pc_bonus2 from items", () => {
     expect(effect.flag).toBe(30);
   });
 
-  it("should test bonus bSkillAtk PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSkillAtk, "PR_MAGNUS", 30;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillAtk PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillAtk, "PR_MAGNUS", 30;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -975,14 +845,11 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillatk[0].val).toBe(30);
   });
 
-  it("should test bonus bSkillAtk PR_MAGNUS MC_MAMMONITE lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSkillAtk, "PR_MAGNUS", 30;
-		bonus2 bSkillAtk, "MC_MAMMONITE", 20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillAtk PR_MAGNUS MC_MAMMONITE lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillAtk, "PR_MAGNUS", 30;
+		bonus2 bSkillAtk, "MC_MAMMONITE", 20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -996,13 +863,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillatk[1].val).toBe(20);
   });
 
-  it("should test bonus bSkillHeal AL_HEAL lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSkillHeal,AL_HEAL,3;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillHeal AL_HEAL lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillHeal,AL_HEAL,3;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1014,14 +878,11 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillheal[0].val).toBe(3);
   });
 
-  it("should test bonus bSkillHeal AL_HEAL AM_POTIONPITCHER lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSkillHeal,AL_HEAL,3;
-		bonus2 bSkillHeal, "AM_POTIONPITCHER", 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillHeal AL_HEAL AM_POTIONPITCHER lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillHeal,AL_HEAL,3;
+		bonus2 bSkillHeal, "AM_POTIONPITCHER", 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1035,13 +896,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillheal[1].val).toBe(10);
   });
 
-  it("should test bonus bSkillHeal2 skill_id lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSkillHeal2, "AM_POTIONPITCHER", 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillHeal2 skill_id lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillHeal2, "AM_POTIONPITCHER", 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1053,15 +911,12 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillheal2[0].val).toBe(10);
   });
 
-  it("should test bonus bSkillHeal2 skill_id lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bSkillHeal2, "AM_POTIONPITCHER", 10;
+  it("should test bonus bSkillHeal2 skill_id lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillHeal2, "AM_POTIONPITCHER", 10;
 		bonus2 bSkillHeal2, "AL_HEAL", 10;
-		bonus2 bSkillHeal2, "AM_POTIONPITCHER", 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+		bonus2 bSkillHeal2, "AM_POTIONPITCHER", 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1075,13 +930,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillheal2[1].val).toBe(10);
   });
 
-  it("should test bonus bAddSkillBlow BA_MUSICALSTRIKE lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddSkillBlow, BA_MUSICALSTRIKE, 25;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddSkillBlow BA_MUSICALSTRIKE lr_flag 0", async () => {
+    const itemString = `bonus2 bAddSkillBlow, BA_MUSICALSTRIKE, 25;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1093,14 +945,11 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillblown[0].val).toBe(25);
   });
 
-  it("should test bonus bAddSkillBlow BA_MUSICALSTRIKE CG_ARROWVULCAN lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddSkillBlow,BA_MUSICALSTRIKE,2;
-		bonus2 bAddSkillBlow,CG_ARROWVULCAN,3;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddSkillBlow BA_MUSICALSTRIKE CG_ARROWVULCAN lr_flag 0", async () => {
+    const itemString = `bonus2 bAddSkillBlow,BA_MUSICALSTRIKE,2;
+		bonus2 bAddSkillBlow,CG_ARROWVULCAN,3;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1114,13 +963,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillblown[1].val).toBe(3);
   });
 
-  it("should test bonus bCastrate HW_MAGICPOWER lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bCastrate, HW_MAGICPOWER, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bCastrate HW_MAGICPOWER lr_flag 0", async () => {
+    const itemString = `bonus2 bCastrate, HW_MAGICPOWER, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1132,14 +978,11 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillcast[0].val).toBe(10);
   });
 
-  it("should test bonus bCastrate HW_MAGICPOWER PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bCastrate, HW_MAGICPOWER, -10;
-		bonus2 bCastrate,PR_MAGNUS,-25;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bCastrate HW_MAGICPOWER PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bCastrate, HW_MAGICPOWER, -10;
+		bonus2 bCastrate,PR_MAGNUS,-25;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1153,13 +996,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillcast[1].val).toBe(-25);
   });
 
-  it("should test bonus bFixedCastrate HW_MAGICPOWER lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bFixedCastrate, HW_MAGICPOWER, 15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bFixedCastrate HW_MAGICPOWER lr_flag 0", async () => {
+    const itemString = `bonus2 bFixedCastrate, HW_MAGICPOWER, 15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1173,14 +1013,11 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillfixcastrate[0].val).toBe(-15);
   });
 
-  it("should test bonus bFixedCastrate HW_MAGICPOWER PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bFixedCastrate, HW_MAGICPOWER, 15;
-		  bonus2 bFixedCastrate, PR_MAGNUS, 15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bFixedCastrate HW_MAGICPOWER PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bFixedCastrate, HW_MAGICPOWER, 15;
+		  bonus2 bFixedCastrate, PR_MAGNUS, 15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1197,13 +1034,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillfixcastrate[1].val).toBe(-15);
   });
 
-  it("should test bonus bHPLossRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bHPLossRate, 10, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bHPLossRate lr_flag 0", async () => {
+    const itemString = `bonus2 bHPLossRate, 10, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1215,13 +1049,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.hp_loss.rate).toBe(5);
   });
 
-  it("should test bonus bHPRegenRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bHPRegenRate, 20, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bHPRegenRate lr_flag 0", async () => {
+    const itemString = `bonus2 bHPRegenRate, 20, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1233,13 +1064,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.hp_regen.rate).toBe(10);
   });
 
-  it("should test bonus bAddRace2 RC2_Scaraba lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddRace2, RC2_Scaraba, 15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddRace2 RC2_Scaraba lr_flag 0", async () => {
+    const itemString = `bonus2 bAddRace2, RC2_Scaraba, 15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1252,14 +1080,11 @@ describe("pc_bonus2 from items", () => {
     );
   });
 
-  it("should test bonus bAddRace2 RC2_Scaraba RC2_Guardian lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddRace2, RC2_Scaraba, 15;
-      bonus2 bAddRace2,RC2_Guardian,40;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddRace2 RC2_Scaraba RC2_Guardian lr_flag 0", async () => {
+    const itemString = `bonus2 bAddRace2, RC2_Scaraba, 15;
+      bonus2 bAddRace2,RC2_Guardian,40;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1275,13 +1100,10 @@ describe("pc_bonus2 from items", () => {
     );
   });
 
-  it("should test bonus bSubSize Size_Large lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSubSize, Size_Large, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubSize Size_Large lr_flag 0", async () => {
+    const itemString = `bonus2 bSubSize, Size_Large, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1292,13 +1114,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subsize[Sizes.Size_Large]).toBe(10);
   });
 
-  it("should test bonus bSubRace2 RC2_Guardian lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSubRace2, RC2_Guardian, 20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubRace2 RC2_Guardian lr_flag 0", async () => {
+    const itemString = `bonus2 bSubRace2, RC2_Guardian, 20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1309,13 +1128,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subrace2[Race2.RC2_GUARDIAN]).toBe(20);
   });
 
-  it("should test bonus bAddItemHealRate item_id lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bAddItemHealRate, 501, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddItemHealRate item_id lr_flag 0", async () => {
+    const itemString = `bonus2 bAddItemHealRate, 501, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1327,13 +1143,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.itemhealrate[0].rate).toBe(10);
   });
 
-  it("should test bonus bAddItemHealRate Yellow_Potion lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		bonus2 bAddItemHealRate,Yellow_Potion,20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bAddItemHealRate Yellow_Potion lr_flag 0", async () => {
+    const itemString = `bonus2 bAddItemHealRate,Yellow_Potion,20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1345,13 +1158,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.itemhealrate[0].rate).toBe(20);
   });
 
-  it("should test bonus bExpAddRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bExpAddRace, RC_DemiPlayer, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bExpAddRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bExpAddRace, RC_DemiPlayer, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1363,13 +1173,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.expaddrace[Race.RC_PLAYER]).toBe(10);
   });
 
-  it("should test bonus bSPGainRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSPGainRace, RC_DemiPlayer, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSPGainRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bSPGainRace, RC_DemiPlayer, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1381,13 +1188,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.sp_gain_race[Race.RC_PLAYER]).toBe(5);
   });
 
-  it("should test bonus bSPLossRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSPLossRate, 10, 2;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSPLossRate lr_flag 0", async () => {
+    const itemString = `bonus2 bSPLossRate, 10, 2;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1399,13 +1203,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.sp_loss.rate).toBe(2);
   });
 
-  it("should test bonus bSPRegenRate lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSPRegenRate, 15, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSPRegenRate lr_flag 0", async () => {
+    const itemString = `bonus2 bSPRegenRate, 15, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1417,13 +1218,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.sp_regen.rate).toBe(5);
   });
 
-  it("should test bonus bHPDrainValueRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bHPDrainValueRace, RC_DemiPlayer, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bHPDrainValueRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bHPDrainValueRace, RC_DemiPlayer, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1439,13 +1237,10 @@ describe("pc_bonus2 from items", () => {
     ).toBe(5);
   });
 
-  it("should test bonus bSPDrainValueRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSPDrainValueRace, RC_DemiPlayer, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSPDrainValueRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bSPDrainValueRace, RC_DemiPlayer, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1461,13 +1256,10 @@ describe("pc_bonus2 from items", () => {
     ).toBe(10);
   });
 
-  it("should test bonus bIgnoreMdefRate RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bIgnoreMdefRate, RC_DemiPlayer, 15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bIgnoreMdefRate RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bIgnoreMdefRate, RC_DemiPlayer, 15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1479,13 +1271,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.ignore_mdef[Race.RC_PLAYER]).toBe(15);
   });
 
-  it("should test bonus bIgnoreDefRate RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bIgnoreDefRate, RC_DemiPlayer, 20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bIgnoreDefRate RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bIgnoreDefRate, RC_DemiPlayer, 20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1497,13 +1286,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.ignore_def[Race.RC_PLAYER]).toBe(20);
   });
 
-  it("should test bonus bSPGainRaceAttack RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSPGainRaceAttack, RC_DemiPlayer, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSPGainRaceAttack RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bSPGainRaceAttack, RC_DemiPlayer, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1515,13 +1301,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.sp_gain_race_attack[Race.RC_PLAYER]).toBe(10);
   });
 
-  it("should test bonus bHPGainRaceAttack RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bHPGainRaceAttack, RC_DemiPlayer, 15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bHPGainRaceAttack RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bHPGainRaceAttack, RC_DemiPlayer, 15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1533,13 +1316,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.hp_gain_race_attack[Race.RC_PLAYER]).toBe(15);
   });
 
-  it("should test bonus bSkillUseSPrate PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSkillUseSPrate, PR_MAGNUS, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillUseSPrate PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillUseSPrate, PR_MAGNUS, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1551,14 +1331,11 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillusesprate[0].val).toBe(5);
   });
 
-  it("should test bonus bSkillUseSPrate PR_MAGNUS HW_MAGICPOWER lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSkillUseSPrate, PR_MAGNUS, 5;
-		  bonus2 bSkillUseSPrate, HW_MAGICPOWER, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillUseSPrate PR_MAGNUS HW_MAGICPOWER lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillUseSPrate, PR_MAGNUS, 5;
+		  bonus2 bSkillUseSPrate, HW_MAGICPOWER, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1574,13 +1351,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillusesprate[1].val).toBe(5);
   });
 
-  it("should test bonus bSkillCooldown PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSkillCooldown, PR_MAGNUS, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillCooldown PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillCooldown, PR_MAGNUS, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1592,13 +1366,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillcooldown[0].val).toBe(10);
   });
 
-  it("should test bonus bSkillFixedCast PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSkillFixedCast, PR_MAGNUS, 15;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillFixedCast PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillFixedCast, PR_MAGNUS, 15;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1610,13 +1381,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillfixcast[0].val).toBe(15);
   });
 
-  it("should test bonus bSkillVariableCast PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSkillVariableCast, PR_MAGNUS, 20;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillVariableCast PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillVariableCast, PR_MAGNUS, 20;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1628,13 +1396,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillvarcast[0].val).toBe(20);
   });
 
-  it("should test bonus bSkillUseSP PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSkillUseSP, PR_MAGNUS, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSkillUseSP PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bSkillUseSP, PR_MAGNUS, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1646,13 +1411,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.skillusesp[0].val).toBe(5);
   });
 
-  it("should test bonus bSubSkill PR_MAGNUS lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bSubSkill, PR_MAGNUS, 10;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bSubSkill PR_MAGNUS lr_flag 0", async () => {
+    const itemString = `bonus2 bSubSkill, PR_MAGNUS, 10;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1664,13 +1426,10 @@ describe("pc_bonus2 from items", () => {
     expect(processedAttributes.subskill[0].val).toBe(10);
   });
 
-  it("should test bonus bDropAddRace RC_DemiPlayer lr_flag 0", () => {
-    const itemString = `
-    Script: <"
-		  bonus2 bDropAddRace, RC_DemiPlayer, 5;
-    ">`;
-    const item = parseItem(itemString);
-    const attributes = new PlayerAttributes("test", 1, item.Bonuses!);
+  it("should test bonus bDropAddRace RC_DemiPlayer lr_flag 0", async () => {
+    const itemString = `bonus2 bDropAddRace, RC_DemiPlayer, 5;`;
+    const item = parseTestScript(itemString);
+    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(

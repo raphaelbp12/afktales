@@ -3,165 +3,46 @@
 import { ItemData } from "./ItemDB/types";
 import { Job, Bonuses, bonusTypeToStatusPointType } from "./types";
 
-// Function to remove comments from the config string
-export function removeComments(configString: string): string {
-  const noSingleLineComments = configString.replace(/\/\/.*$/gm, "");
-  const noMultiLineComments = noSingleLineComments.replace(
-    /\/\*[\s\S]*?\*\//g,
-    ""
-  );
-  return noMultiLineComments;
-}
-
-// Function to parse the config string into a list of item objects and a dictionary
-export function parseConfig(configString: string): {
+export function parseConfigFromConf(configObject: any): {
   itemsList: ItemData[];
   itemsDict: { [key: number]: ItemData };
   itemsDictAegisNameKey: Record<string, number>;
 } {
-  const cleanConfig = removeComments(configString);
+  if (!configObject.item_db) {
+    throw new Error("Invalid item_db.conf format");
+  }
+
   const itemsList: ItemData[] = [];
   const itemsDict: { [key: number]: ItemData } = {};
   const itemsDictAegisNameKey: Record<string, number> = {};
 
-  let match;
-  const itemRegex = /{([^{}]*({[^{}]*}[^{}]*)*)},?/gs;
-
-  while ((match = itemRegex.exec(cleanConfig)) !== null) {
-    const itemString = match[1];
-    const partialItem = parseItem(itemString);
-    const item: ItemData = new ItemData(partialItem);
+  configObject.item_db.forEach((itemFromConf: any) => {
+    const item: ItemData = parseItemFromConf(itemFromConf);
     itemsList.push(item);
     itemsDict[item.Id] = item;
     itemsDictAegisNameKey[item.AegisName] = item.Id;
-  }
+  });
 
   return { itemsList, itemsDict, itemsDictAegisNameKey };
 }
 
-export function parseItem(itemString: string): ItemData {
+export function parseItemFromConf(itemFromConf: any): ItemData {
   const item: Partial<ItemData> = {};
-  const lines = itemString.split("\n");
-  let currentKey: keyof ItemData | null = null;
-  let currentValue: string | null = null;
-  let nestedObjectDepth = 0;
-  let nestedObjectKey: keyof ItemData | null = null;
-  let nestedObjectValue = "";
-  let inScript = false;
 
-  lines.forEach((line) => {
-    line = line.trim();
-    if (line === "") return;
-
-    if (inScript) {
-      currentValue += "\n" + line;
-      if (line.endsWith('">')) {
-        inScript = false;
-        item[currentKey as keyof ItemData] = parseValue(
-          currentValue as string,
-          currentKey as keyof ItemData
-        );
-        currentKey = null;
-        currentValue = null;
-      }
-      return;
-    }
-
-    if (nestedObjectKey) {
-      nestedObjectValue += line + " ";
-      nestedObjectDepth +=
-        (line.match(/{/g) || []).length - (line.match(/}/g) || []).length;
-      if (nestedObjectDepth === 0) {
-        item[nestedObjectKey] = parseValue(
-          nestedObjectValue.trim(),
-          nestedObjectKey
-        );
-        nestedObjectKey = null;
-        nestedObjectValue = "";
-        currentKey = null;
-        currentValue = null;
-      }
-      return;
-    }
-
-    const fieldMatch = line.match(/^(\w+):\s*(.*)$/);
-    if (fieldMatch) {
-      if (currentKey && currentValue !== null) {
-        (item as any)[currentKey] = parseValue(currentValue.trim(), currentKey);
-      }
-      currentKey = fieldMatch[1] as keyof ItemData;
-      currentValue = fieldMatch[2];
-      if (currentValue.startsWith('<"') && !currentValue.endsWith('">')) {
-        inScript = true;
-      }
-      nestedObjectDepth =
-        (currentValue.match(/{/g) || []).length -
-        (currentValue.match(/}/g) || []).length;
-      if (nestedObjectDepth > 0) {
-        nestedObjectKey = currentKey;
-        nestedObjectValue = currentValue + " ";
-      } else if (nestedObjectDepth === 0 && currentValue.endsWith('">')) {
-        // Handle single-line script
-        item[currentKey] = parseValue(currentValue.trim(), currentKey);
-        currentKey = null;
-        currentValue = null;
-      }
-    } else if (currentKey && currentValue !== null) {
-      currentValue += " " + line;
-      nestedObjectDepth +=
-        (line.match(/{/g) || []).length - (line.match(/}/g) || []).length;
-      if (nestedObjectDepth === 0) {
-        item[currentKey] = parseValue(currentValue.trim(), currentKey);
-        currentKey = null;
-        currentValue = null;
-      }
-    }
+  Object.keys(itemFromConf).forEach((key) => {
+    item[key as keyof ItemData] = itemFromConf[key];
   });
 
-  if (currentKey && currentValue !== null) {
-    (item as any)[currentKey] = parseValue(
-      (currentValue as string).trim(),
-      currentKey
-    );
-  }
-
-  // Parse and aggregate bonuses if the item has a script
   if (item.Script) {
     item.Bonuses = { ...parseBonuses(item.Script) };
   }
 
-  return item as ItemData;
+  return new ItemData(item);
 }
 
-function parseValue(value: string, key: keyof ItemData): any {
-  if (value.startsWith('"') && value.endsWith('"')) {
-    return value.slice(1, -1);
-  } else if (value.startsWith("{") && value.endsWith("}")) {
-    return parseJob(value);
-  } else if (value.startsWith("[") && value.endsWith("]")) {
-    return JSON.parse(value);
-  } else if (value.startsWith('<"') && value.endsWith('">')) {
-    return value.slice(2, -2).trim();
-  } else if (!isNaN(Number(value))) {
-    return Number(value);
-  } else if (value === "true" || value === "false") {
-    return value === "true";
-  } else {
-    return value;
-  }
-}
-
-export function parseJob(jobString: string): Job {
-  const job: Job = {};
-  const cleanJobString = jobString.slice(1, -1).trim();
-  const jobFieldRegex = /(\w+):\s*(true|false)\s*/g;
-  let match;
-
-  while ((match = jobFieldRegex.exec(cleanJobString)) !== null) {
-    job[match[1] as keyof Job] = match[2] === "true";
-  }
-
-  return job;
+export function parseTestScript(script: string): ItemData {
+  const item = new ItemData({ Script: script });
+  return parseItemFromConf(item);
 }
 
 // Enhanced parsing functions

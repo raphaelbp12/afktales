@@ -1,5 +1,4 @@
-import { MAX_INVENTORY } from "../constants";
-import { item_persistent, item_option } from "../ItemDB/types";
+import { item_persistent } from "../ItemDB/types";
 
 export class persistent_status {
   id: number;
@@ -22,6 +21,7 @@ export class persistent_status {
   job_exp: number;
   base_level: number;
   job_level: number;
+  job: number;
 
   constructor() {
     this.id = 0;
@@ -44,6 +44,7 @@ export class persistent_status {
     this.job_exp = 0;
     this.base_level = 1;
     this.job_level = 1;
+    this.job = 0;
   }
 }
 
@@ -72,6 +73,8 @@ export function deserializePersistentStatus(
   status.job_exp = parsedData.job_exp;
   status.base_level = parsedData.base_level;
   status.job_level = parsedData.job_level;
+
+  status.job = parsedData.job;
 
   return status;
 }

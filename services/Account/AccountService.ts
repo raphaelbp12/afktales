@@ -6,10 +6,14 @@ import { ItemData } from "@/ragnarokData/ItemDB/types";
 import { ClassesEnum } from "@/ragnarokData/PlayerCharacter/ClassesEnum";
 
 export class AccountService {
-  private account: Account;
+  public account!: Account;
 
-  constructor() {
-    this.account = new Account();
+  private constructor() {}
+
+  public static async create(): Promise<AccountService> {
+    const accountService = new AccountService();
+    accountService.account = await Account.create();
+    return accountService;
   }
 
   // Fetch all characters
@@ -33,9 +37,9 @@ export class AccountService {
   }
 
   // Create a new character
-  createCharacter(name: string): Promise<PlayerAttributes> {
+  async createCharacter(name: string): Promise<PlayerAttributes> {
     try {
-      const newCharacter = this.account.newCharacter(name);
+      const newCharacter = await this.account.newCharacter(name);
       return Promise.resolve(newCharacter);
     } catch (error) {
       return Promise.reject(error);
@@ -185,8 +189,8 @@ export class AccountService {
   }
 
   // Deserialize the account data from a string
-  deserializeAccount(data: string): void {
-    const acc = Account.deserialize(data);
+  async deserializeAccount(data: string): Promise<void> {
+    const acc = await Account.deserialize(data);
     this.account = acc;
   }
 

@@ -110,7 +110,7 @@ export class PlayerAttributes {
   equip_index: number[];
   itemBonuses: Bonuses;
   persistent_status: persistent_status;
-  inventory: Inventory;
+  inventory!: Inventory;
   base_status!: StatusData;
   battle_status: StatusData;
   param_bonus!: { [key: string]: number };
@@ -249,7 +249,7 @@ export class PlayerAttributes {
     };
   };
 
-  constructor(name?: string, id?: number, bonuses?: Bonuses) {
+  private constructor(name?: string, id?: number, bonuses?: Bonuses) {
     this.persistent_status = new persistent_status();
     this.id = id ?? 1;
     this.name = name ?? "test";
@@ -291,7 +291,6 @@ export class PlayerAttributes {
 
     this.equip_pos = initEquipPos();
     this.equip_index = Array(equip_index.EQI_MAX).fill(-1);
-    this.inventory = new Inventory(MAX_INVENTORY);
     // Initialize base_status
     this.battle_status = initializeStatusData();
 
@@ -591,6 +590,16 @@ export class PlayerAttributes {
     };
   }
 
+  public static async create(
+    name?: string,
+    id?: number,
+    bonuses?: Bonuses
+  ): Promise<PlayerAttributes> {
+    const player = new PlayerAttributes(name, id, bonuses);
+    player.inventory = await Inventory.create(MAX_INVENTORY);
+    return player;
+  }
+
   private resetValues(): void {
     this.base_status = initializeStatusData();
     this.itemBonuses = {};
@@ -739,6 +748,7 @@ export class PlayerAttributes {
 
   public setJobClass(newJob: ClassesEnum): void {
     this.job = newJob;
+    this.persistent_status.job = newJob;
   }
 
   public evaluateExpression(
@@ -814,7 +824,7 @@ export class PlayerAttributes {
         }
 
         // Try to parse the identifier using parseValueWithRagEnums
-        const parsedValue = parseValueWithRagEnums(match);
+        const parsedValue = parseValueWithRagEnums(match, this);
         if (typeof parsedValue === "number") {
           return parsedValue.toString();
         } else {
@@ -1136,18 +1146,23 @@ export class PlayerAttributes {
   }
 
   // This method constructs PlayerAttributes from a persistent_status object
-  public static fromPersistentStatus(
+  public static async fromPersistentStatus(
     status: persistent_status,
     name: string,
     id: number
-  ): PlayerAttributes {
-    const player = new PlayerAttributes(name, id);
+  ): Promise<PlayerAttributes> {
+    const player = await PlayerAttributes.create(name, id);
+
+    player.setJobClass(status.job);
 
     // Set basic status values
     player.persistent_status = status;
 
     // Set inventory using persistent items from the status
-    player.inventory = Inventory.deserialize(MAX_INVENTORY, status.inventory);
+    player.inventory = await Inventory.deserialize(
+      MAX_INVENTORY,
+      status.inventory
+    );
 
     const equippedItems = player.inventory.getEquippedItems();
 

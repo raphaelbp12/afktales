@@ -1,5 +1,6 @@
 import { ItemDB } from "./ItemDB";
 import { tryParseLoc, equip_pos } from "./types";
+import fs from "fs";
 
 describe("ItemDB types", () => {
   it("tryParseLoc EQP_WEAPON", () => {
@@ -28,7 +29,24 @@ describe("ItemDB types", () => {
 });
 
 describe("ItemData", () => {
-  const itemDB = new ItemDB();
+  let itemDB: ItemDB;
+  beforeAll(async () => {
+    global.fetch = jest.fn(() => {
+      const configContent = fs.readFileSync(
+        "./public/configs/item_db.conf",
+        "utf8"
+      );
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+        text: async () => configContent,
+        // Include other properties if needed
+      } as Response);
+    });
+
+    itemDB = await ItemDB.create();
+  });
 
   it("isTwoHanded Gakkung", () => {
     const itemGakkung = itemDB.getItemByNameid(1714);

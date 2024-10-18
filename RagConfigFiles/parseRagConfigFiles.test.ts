@@ -5,7 +5,7 @@ import { parse } from "./../configParser";
 describe("parseRagConfigFiles", () => {
   it("parses exp_group_db.conf file", () => {
     const configContent = fs.readFileSync(
-      "RagConfigFiles/exp_group_db.conf",
+      "./public/configs/exp_group_db.conf",
       "utf8"
     );
     const configObject = parse(configContent) as any;
@@ -37,7 +37,10 @@ describe("parseRagConfigFiles", () => {
   });
 
   it("parses job_db.conf file", () => {
-    const configContent = fs.readFileSync("RagConfigFiles/job_db.conf", "utf8");
+    const configContent = fs.readFileSync(
+      "./public/configs/job_db.conf",
+      "utf8"
+    );
     const configObject = parse(configContent) as any;
     expect(configObject).toBeTruthy();
 
@@ -72,7 +75,7 @@ describe("parseRagConfigFiles", () => {
 
   it("parses item_db.conf file", () => {
     const configContent = fs.readFileSync(
-      "RagConfigFiles/item_db.conf",
+      "./public/configs/item_db.conf",
       "utf8"
     );
     const configObject = parse(configContent) as any;
@@ -94,7 +97,7 @@ describe("parseRagConfigFiles", () => {
 
   it("parses item_combo_db.conf file", () => {
     const configContent = fs.readFileSync(
-      "RagConfigFiles/item_combo_db.conf",
+      "./public/configs/item_combo_db.conf",
       "utf8"
     );
     const configObject = parse(configContent) as any;
