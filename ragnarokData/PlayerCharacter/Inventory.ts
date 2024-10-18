@@ -16,12 +16,13 @@ export class Inventory {
   }
 
   public static async create(
+    itemDB: ItemDB,
     length: number,
     persistentItems?: item_persistent[]
   ): Promise<Inventory> {
     const inventory = new Inventory();
     inventory.items = Array.from({ length }, () => new ItemData());
-    inventory.itemDB = await ItemDB.create();
+    inventory.itemDB = itemDB;
     if (persistentItems) {
       persistentItems.forEach((itemPersistent) => {
         const item = inventory.itemDB.getItemByNameid(itemPersistent.nameid);
@@ -235,10 +236,11 @@ export class Inventory {
 
   // Deserialize the inventory from persistent items
   public static async deserialize(
+    itemDB: ItemDB,
     invLenght: number,
     serializedData: item_persistent[]
   ): Promise<Inventory> {
-    const inventory = await Inventory.create(invLenght, serializedData);
+    const inventory = await Inventory.create(itemDB, invLenght, serializedData);
 
     return inventory;
   }

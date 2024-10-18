@@ -13,6 +13,7 @@ import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import { AccountService } from "@/services/Account/AccountService";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
 import { ClassesEnum } from "@/ragnarokData/PlayerCharacter/ClassesEnum";
+import { useItemDB } from "./ItemDBContext";
 
 interface AccountContextValue {
   characters: PlayerAttributes[];
@@ -70,6 +71,7 @@ const AccountContext = createContext<AccountContextValue | undefined>(
 export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
+  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
   const [accountService, setAccountService] = useState<AccountService | null>(
     null
   );
@@ -84,9 +86,13 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     let isMounted = true;
 
+    if (!itemDB) {
+      return;
+    }
+
     async function initializeAccountService() {
       try {
-        const service = await AccountService.create();
+        const service = await AccountService.create(itemDB!);
         if (isMounted) {
           setAccountService(service);
           setLoading(false); // Loading is false after the service is initialized
@@ -105,7 +111,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [itemDB]);
 
   // Load characters and storage
   const loadCharacters = useCallback(async () => {
@@ -321,15 +327,16 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const deserializeAccount = useCallback(
     async (data: string) => {
+      if (!itemDB) return;
       if (!accountService) return;
-      await accountService.deserializeAccount(data);
+      await accountService.deserializeAccount(itemDB, data);
       if (!firstLoad) {
         setFirstLoad(true);
       }
       loadCharacters();
       loadStorage();
     },
-    [accountService, firstLoad, loadCharacters, loadStorage]
+    [accountService, firstLoad, itemDB, loadCharacters, loadStorage]
   );
 
   const saveAccountToLocalStorage = useCallback(

@@ -4,8 +4,11 @@ import { Bonuses, bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { Race } from "./map_race_id2mask";
 import { equip_pos } from "./ItemDB/types";
 import fs from "fs";
+import { ItemDB } from "./ItemDB/ItemDB";
 
 describe("BonusHelpers", () => {
+  let itemDB: ItemDB;
+
   beforeAll(async () => {
     global.fetch = jest.fn(() => {
       const configContent = fs.readFileSync(
@@ -20,11 +23,12 @@ describe("BonusHelpers", () => {
         // Include other properties if needed
       } as Response);
     });
+    itemDB = await ItemDB.create();
   });
   let playerAttributes: PlayerAttributes;
 
   beforeEach(async () => {
-    playerAttributes = await PlayerAttributes.create("test", 1, {});
+    playerAttributes = await PlayerAttributes.create(itemDB, "test", 1, {});
   });
 
   test("should process SP_STR bonus correctly", () => {

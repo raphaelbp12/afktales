@@ -2,8 +2,10 @@ import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { BonusHelpers } from "./BonusHelpers";
 import { Bonuses } from "@/ragnarokData/types";
 import fs from "fs";
+import { ItemDB } from "./ItemDB/ItemDB";
 
 describe("BonusHelpers", () => {
+  let itemDB: ItemDB;
   beforeAll(async () => {
     global.fetch = jest.fn(() => {
       const configContent = fs.readFileSync(
@@ -18,12 +20,13 @@ describe("BonusHelpers", () => {
         // Include other properties if needed
       } as Response);
     });
+    itemDB = await ItemDB.create();
   });
 
   let playerAttributes: PlayerAttributes;
 
   beforeEach(async () => {
-    playerAttributes = await PlayerAttributes.create("test", 1, {});
+    playerAttributes = await PlayerAttributes.create(itemDB, "test", 1, {});
   });
 
   test("should process SP_HP_VANISH_RATE bonus correctly", () => {

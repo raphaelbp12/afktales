@@ -4,15 +4,18 @@ import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import { Account } from "@/ragnarokData/Account/Account";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
 import { ClassesEnum } from "@/ragnarokData/PlayerCharacter/ClassesEnum";
+import { ItemDB } from "@/ragnarokData/ItemDB/ItemDB";
 
 export class AccountService {
   public account!: Account;
+  public itemDB!: ItemDB;
 
   private constructor() {}
 
-  public static async create(): Promise<AccountService> {
+  public static async create(itemDB: ItemDB): Promise<AccountService> {
     const accountService = new AccountService();
-    accountService.account = await Account.create();
+    accountService.itemDB = itemDB;
+    accountService.account = await Account.create(accountService.itemDB);
     return accountService;
   }
 
@@ -189,8 +192,8 @@ export class AccountService {
   }
 
   // Deserialize the account data from a string
-  async deserializeAccount(data: string): Promise<void> {
-    const acc = await Account.deserialize(data);
+  async deserializeAccount(itemDB: ItemDB, data: string): Promise<void> {
+    const acc = await Account.deserialize(itemDB, data);
     this.account = acc;
   }
 

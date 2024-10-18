@@ -1,4 +1,5 @@
 // Account.ts
+import { ItemDB } from "../ItemDB/ItemDB";
 import { Inventory } from "../PlayerCharacter/Inventory";
 import {
   deserializePersistentStatus,
@@ -12,14 +13,16 @@ const MAX_STORAGE = 1000;
 export class Account {
   public characters: PlayerAttributes[];
   public storage!: Inventory;
+  public itemDB!: ItemDB;
 
   private constructor() {
     this.characters = [];
   }
 
-  public static async create(): Promise<Account> {
+  public static async create(itemDB: ItemDB): Promise<Account> {
     const account = new Account();
-    account.storage = await Inventory.create(MAX_STORAGE);
+    account.itemDB = itemDB;
+    account.storage = await Inventory.create(account.itemDB, MAX_STORAGE);
     return account;
   }
 
@@ -41,6 +44,7 @@ export class Account {
   public async newCharacter(name: string): Promise<PlayerAttributes> {
     console.log("Creating new character", name);
     const newCharacter = await PlayerAttributes.create(
+      this.itemDB,
       name,
       this.characters.length,
       {}
@@ -75,7 +79,10 @@ export class Account {
   }
 
   // Deserialize the account by reconstructing characters and the inventory
-  public static async deserialize(serializedData: string): Promise<Account> {
+  public static async deserialize(
+    itemDB: ItemDB,
+    serializedData: string
+  ): Promise<Account> {
     let parsedData: any = {};
 
     try {
@@ -84,7 +91,7 @@ export class Account {
       console.error("Error parsing account data", error);
       parsedData = { characters: [], storage: [] };
     }
-    const account = await Account.create();
+    const account = await Account.create(itemDB);
     const persistent_status_characters: persistent_status[] =
       parsedData.characters.map((charData: string) =>
         deserializePersistentStatus(charData)
@@ -93,6 +100,7 @@ export class Account {
     const newCharacters: PlayerAttributes[] = [];
     for (const status of persistent_status_characters) {
       const char = await PlayerAttributes.fromPersistentStatus(
+        itemDB,
         status,
         status.name,
         status.id
@@ -102,6 +110,7 @@ export class Account {
     account.characters = newCharacters;
 
     account.storage = await Inventory.deserialize(
+      itemDB,
       MAX_STORAGE,
       parsedData.storage
     );

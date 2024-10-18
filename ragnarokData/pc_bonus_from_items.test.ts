@@ -6,8 +6,11 @@ import { weapon_type } from "./ItemDB/weapon_type";
 import { map_race_id2mask, Race } from "./map_race_id2mask";
 import { equip_pos } from "./ItemDB/types";
 import fs from "fs";
+import { ItemDB } from "./ItemDB/ItemDB";
 
 describe("pc_bonus from items", () => {
+  let itemDB: ItemDB;
+
   beforeAll(async () => {
     global.fetch = jest.fn(() => {
       const configContent = fs.readFileSync(
@@ -22,12 +25,18 @@ describe("pc_bonus from items", () => {
         // Include other properties if needed
       } as Response);
     });
+    itemDB = await ItemDB.create();
   });
 
   it("should test bonus bStr", async () => {
     const itemString = `bonus bStr,2;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -40,7 +49,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAgi", async () => {
     const itemString = `bonus bAgi,2;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -53,7 +67,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bVit", async () => {
     const itemString = `bonus bVit,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -66,7 +85,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bInt", async () => {
     const itemString = `bonus bInt,2;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -79,7 +103,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDex", async () => {
     const itemString = `bonus bDex,-1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -92,7 +121,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bLuk", async () => {
     const itemString = `bonus bLuk,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -105,7 +139,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtk with lr_flag 0", async () => {
     const itemString = `bonus bAtk,7;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -120,7 +159,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtk with lr_flag 1", async () => {
     const itemString = `bonus bAtk,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -135,7 +179,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtk2 with lr_flag 0", async () => {
     const itemString = `bonus bAtk2,7;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -150,7 +199,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtk2 with lr_flag 1", async () => {
     const itemString = `bonus bAtk2,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -165,7 +219,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bBaseAtk with lr_flag 1", async () => {
     const itemString = `bonus bBaseAtk,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -180,7 +239,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDef with lr_flag 1", async () => {
     const itemString = `bonus bDef,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -195,7 +259,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDef2 with lr_flag 1", async () => {
     const itemString = `bonus bDef2,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -210,7 +279,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMdef with lr_flag 1", async () => {
     const itemString = `bonus bMdef,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -225,7 +299,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMdef2 with lr_flag 1", async () => {
     const itemString = `bonus bMdef2,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
     attributes.base_status.mdef2 = 10;
 
@@ -241,7 +320,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHit with lr_flag 1", async () => {
     const itemString = `bonus bHit,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
     attributes.base_status.hit = 10;
 
@@ -257,7 +341,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHit with lr_flag 2 arrow_hit", async () => {
     const itemString = `bonus bHit,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 2;
     attributes.bonus.arrow_hit = 10;
 
@@ -273,7 +362,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bFlee with lr_flag 1", async () => {
     const itemString = `bonus bFlee,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
     attributes.base_status.flee = 10;
 
@@ -289,7 +383,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bFlee2 with lr_flag 1", async () => {
     const itemString = `bonus bFlee2,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
     attributes.base_status.flee2 = 10;
 
@@ -305,7 +404,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bCritical with lr_flag 1", async () => {
     const itemString = `bonus bCritical,5;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
     attributes.base_status.cri = 10;
 
@@ -325,7 +429,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkEle with lr_flag 0", async () => {
     const itemString = `bonus bAtkEle,Ele_Wind;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -340,7 +449,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkEle with lr_flag 1", async () => {
     const itemString = `bonus bAtkEle,Ele_Ghost;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -355,7 +469,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkEle with lr_flag 2", async () => {
     const itemString = `bonus bAtkEle,Ele_Undead;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 2;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -370,7 +489,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkEle with lr_flag 2 and bow", async () => {
     const itemString = `bonus bAtkEle,Ele_Holy;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 2;
     attributes.weapontype = weapon_type.W_BOW; // Assuming this is a bow type
 
@@ -387,7 +511,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkEle with lr_flag 2 and musical", async () => {
     const itemString = `bonus bAtkEle,Ele_Holy;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 2;
     attributes.weapontype = weapon_type.W_MUSICAL; // Assuming this is a bow type
 
@@ -402,7 +531,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDefEle", async () => {
     const itemString = `bonus bDefEle,Ele_Fire;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -416,7 +550,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMaxHP", async () => {
     const itemString = `bonus bMaxHP,100;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.base_status.max_hp = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -431,7 +570,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMaxSP", async () => {
     const itemString = `bonus bMaxSP,50;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.base_status.max_sp = 23;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -446,7 +590,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bCastrate", async () => {
     const itemString = `bonus bCastrate,-10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -459,7 +608,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMaxHPrate", async () => {
     const itemString = `bonus bMaxHPrate,5;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -472,7 +626,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMaxSPrate", async () => {
     const itemString = `bonus bMaxSPrate,3;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -485,7 +644,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUseSPrate", async () => {
     const itemString = `bonus bUseSPrate,-5;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -498,7 +662,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkRange with lr_flag 0", async () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -513,7 +682,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkRange with lr_flag 1", async () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -528,7 +702,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkRange with lr_flag 2", async () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 2;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -545,7 +724,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkRange with lr_flag 2 and bow", async () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 2;
     attributes.weapontype = weapon_type.W_BOW; // Assuming this is a bow type
 
@@ -562,7 +746,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkRange with lr_flag 2 and musical", async () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 2;
     attributes.weapontype = weapon_type.W_MUSICAL; // Assuming this is a bow type
 
@@ -578,7 +767,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bSpeedRate", async () => {
     const itemString = `bonus bSpeedRate,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -591,7 +785,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bSpeedAddRate", async () => {
     const itemString = `bonus bSpeedAddRate,5;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -604,7 +803,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAspd", async () => {
     const itemString = `bonus bAspd,2;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -617,7 +821,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAspdRate", async () => {
     const itemString = `bonus bAspdRate,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -631,7 +840,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHPrecovRate", async () => {
     const itemString = `bonus bHPrecovRate,3;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -644,7 +858,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bSPrecovRate", async () => {
     const itemString = `bonus bSPrecovRate,4;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -657,7 +876,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bCriticalDef", async () => {
     const itemString = `bonus bCriticalDef,5;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -670,7 +894,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNearAtkDef", async () => {
     const itemString = `bonus bNearAtkDef,6;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -683,7 +912,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bLongAtkDef", async () => {
     const itemString = `bonus bLongAtkDef,7;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -696,7 +930,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDoubleRate with lr_flag 0", async () => {
     const itemString = `bonus bDoubleRate,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
     attributes.bonus.double_rate = 5;
 
@@ -711,7 +950,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDoubleRate decrease with lr_flag 0", async () => {
     const itemString = `bonus bDoubleRate,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
     attributes.bonus.double_rate = 15;
 
@@ -726,7 +970,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDoubleAddRate with lr_flag 0", async () => {
     const itemString = `bonus bDoubleAddRate,3;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -740,7 +989,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMatkRate", async () => {
     const itemString = `bonus bMatkRate,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -754,7 +1008,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bIgnoreDefEle", async () => {
     const itemString = `bonus bIgnoreDefEle,Ele_Dark;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -770,7 +1029,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bIgnoreDefEle all", async () => {
     const itemString = `bonus bIgnoreDefEle,Ele_All;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -795,7 +1059,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bIgnoreDefRace", async () => {
     const itemString = `bonus bIgnoreDefRace,RC_Plant;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -811,7 +1080,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAtkRate", async () => {
     const itemString = `bonus bAtkRate,15;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.atk_rate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -825,7 +1099,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMagicAtkDef", async () => {
     const itemString = `bonus bMagicAtkDef,15;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.magic_def_rate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -839,7 +1118,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMiscAtkDef", async () => {
     const itemString = `bonus bMiscAtkDef,15;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.misc_def_rate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -853,7 +1137,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bIgnoreMdefRate", async () => {
     const itemString = `bonus bIgnoreMdefRate,20;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -867,7 +1156,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bIgnoreMdefEle", async () => {
     const itemString = `bonus bIgnoreMdefEle,Ele_Holy;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -883,7 +1177,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bIgnoreMdefEle all", async () => {
     const itemString = `bonus bIgnoreMdefEle,Ele_All;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -908,7 +1207,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bIgnoreMdefRace", async () => {
     const itemString = `bonus bIgnoreMdefRace,RC_NonBoss;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -924,7 +1228,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bPerfectHitRate", async () => {
     const itemString = `bonus bPerfectHitRate,15;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.perfect_hit = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -938,7 +1247,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bPerfectHitAddRate", async () => {
     const itemString = `bonus bPerfectHitAddRate,7;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -951,7 +1265,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bCriticalRate", async () => {
     const itemString = `bonus bCriticalRate,12;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -964,7 +1283,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDefRatioAtkEle", async () => {
     const itemString = `bonus bDefRatioAtkEle,Ele_Poison;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -980,7 +1304,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDefRatioAtkEle all", async () => {
     const itemString = `bonus bDefRatioAtkEle,Ele_All;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1005,7 +1334,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDefRatioAtkRace", async () => {
     const itemString = `bonus bDefRatioAtkRace,RC_All;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1021,7 +1355,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHitRate", async () => {
     const itemString = `bonus bHitRate,14;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1034,7 +1373,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bFleeRate", async () => {
     const itemString = `bonus bFleeRate,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1047,7 +1391,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bFlee2Rate", async () => {
     const itemString = `bonus bFlee2Rate,9;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1060,7 +1409,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDefRate", async () => {
     const itemString = `bonus bDefRate,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1073,7 +1427,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDef2Rate", async () => {
     const itemString = `bonus bDef2Rate,11;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1086,7 +1445,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMdefRate", async () => {
     const itemString = `bonus bMdefRate,12;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1099,7 +1463,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMdef2Rate", async () => {
     const itemString = `bonus bMdef2Rate,13;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1112,7 +1481,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bRestartFullRecover", async () => {
     const itemString = `bonus bRestartFullRecover,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1125,7 +1499,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoCastCancel", async () => {
     const itemString = `bonus bNoCastCancel,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1138,7 +1517,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoCastCancel2", async () => {
     const itemString = `bonus bNoCastCancel2,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1151,7 +1535,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoSizeFix", async () => {
     const itemString = `bonus bNoSizeFix,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1164,7 +1553,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoMagicDamage", async () => {
     const itemString = `bonus bNoMagicDamage,30;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.special_state.no_magic_damage = 20;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1178,7 +1572,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoWeaponDamage", async () => {
     const itemString = `bonus bNoWeaponDamage,40;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.special_state.no_weapon_damage = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1192,7 +1591,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoMiscDamage", async () => {
     const itemString = `bonus bNoMiscDamage,25;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.special_state.no_misc_damage = 25;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1206,7 +1610,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoGemStone", async () => {
     const itemString = `bonus bNoGemStone,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1219,7 +1628,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bIntravision", async () => {
     const itemString = `bonus bIntravision,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1232,7 +1646,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoKnockback", async () => {
     const itemString = `bonus bNoKnockback,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1245,7 +1664,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bSplashRange", async () => {
     const itemString = `bonus bSplashRange,4;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.splash_range = 3;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1259,7 +1683,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bSplashAddRange", async () => {
     const itemString = `bonus bSplashAddRange,2;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1272,7 +1701,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bShortWeaponDamageReturn", async () => {
     const itemString = `bonus bShortWeaponDamageReturn,5;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1285,7 +1719,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bLongWeaponDamageReturn", async () => {
     const itemString = `bonus bLongWeaponDamageReturn,6;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1298,7 +1737,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMagicDamageReturn", async () => {
     const itemString = `bonus bMagicDamageReturn,7;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1311,7 +1755,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAllStats", async () => {
     const itemString = `bonus bAllStats,3;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.param_bonus["SP_STR"] = 1;
     attributes.param_bonus["SP_AGI"] = 1;
     attributes.param_bonus["SP_VIT"] = 1;
@@ -1335,7 +1784,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAgiVit", async () => {
     const itemString = `bonus bAgiVit,2;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.param_bonus["SP_AGI"] = 3;
     attributes.param_bonus["SP_VIT"] = 3;
 
@@ -1351,7 +1805,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAgiDexStr", async () => {
     const itemString = `bonus bAgiDexStr,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.param_bonus["SP_AGI"] = 4;
     attributes.param_bonus["SP_DEX"] = 4;
     attributes.param_bonus["SP_STR"] = 4;
@@ -1369,7 +1828,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bPerfectHide", async () => {
     const itemString = `bonus bPerfectHide,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1382,7 +1846,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnbreakable", async () => {
     const itemString = `bonus bUnbreakable,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.unbreakable = 5;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1396,7 +1865,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnbreakableWeapon", async () => {
     const itemString = `bonus bUnbreakableWeapon,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1411,7 +1885,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnbreakableArmor", async () => {
     const itemString = `bonus bUnbreakableArmor,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1426,7 +1905,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnbreakableHelm", async () => {
     const itemString = `bonus bUnbreakableHelm,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1444,7 +1928,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnbreakableShield", async () => {
     const itemString = `bonus bUnbreakableShield,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1459,7 +1948,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnbreakableGarment", async () => {
     const itemString = `bonus bUnbreakableGarment,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1474,7 +1968,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnbreakableShoes", async () => {
     const itemString = `bonus bUnbreakableShoes,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1489,7 +1988,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bClassChange", async () => {
     const itemString = `bonus bClassChange,300;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1502,7 +2006,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bLongAtkRate", async () => {
     const itemString = `bonus bLongAtkRate,8;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1515,7 +2024,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bBreakWeaponRate", async () => {
     const itemString = `bonus bBreakWeaponRate,9;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1528,7 +2042,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bBreakArmorRate", async () => {
     const itemString = `bonus bBreakArmorRate,7;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1541,7 +2060,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAddStealRate", async () => {
     const itemString = `bonus bAddStealRate,6;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1554,7 +2078,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bDelayRate", async () => {
     const itemString = `bonus bDelayRate,5;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1567,7 +2096,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bCritAtkRate", async () => {
     const itemString = `bonus bCritAtkRate,4;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1580,7 +2114,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bNoRegen", async () => {
     const itemString = `bonus bNoRegen,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1593,7 +2132,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnstripableWeapon", async () => {
     const itemString = `bonus bUnstripableWeapon,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1608,7 +2152,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnstripableArmor", async () => {
     const itemString = `bonus bUnstripableArmor,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1623,7 +2172,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnstripableHelm", async () => {
     const itemString = `bonus bUnstripableHelm,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1638,7 +2192,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bUnstripableShield", async () => {
     const itemString = `bonus bUnstripableShield,1;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1653,7 +2212,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHPDrainValue with lr_flag 0", async () => {
     const itemString = `bonus bHPDrainValue,10;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1672,7 +2236,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHPDrainValue with lr_flag 1", async () => {
     const itemString = `bonus bHPDrainValue,15;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1691,7 +2260,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bSPDrainValue with lr_flag 0", async () => {
     const itemString = `bonus bSPDrainValue,20;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1710,7 +2284,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bSPDrainValue with lr_flag 1", async () => {
     const itemString = `bonus bSPDrainValue,25;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.state.lr_flag = 1;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1729,7 +2308,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bSPGainValue", async () => {
     const itemString = `bonus bSPGainValue,30;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1742,7 +2326,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHPGainValue", async () => {
     const itemString = `bonus bHPGainValue,35;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1755,7 +2344,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMagicSPGainValue", async () => {
     const itemString = `bonus bMagicSPGainValue,40;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1768,7 +2362,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMagicHPGainValue", async () => {
     const itemString = `bonus bMagicHPGainValue,45;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1781,7 +2380,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHealPower", async () => {
     const itemString = `bonus bHealPower,50;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1794,7 +2398,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bHealPower2", async () => {
     const itemString = `bonus bHealPower2,55;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1807,7 +2416,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAddItemHealRate", async () => {
     const itemString = `bonus bAddItemHealRate,60;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1820,7 +2434,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bMatk", async () => {
     const itemString = `bonus bMatk,65;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
 
     const processedAttributes = BonusHelpers.processBonuses(
       item.Bonuses!,
@@ -1833,7 +2452,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bFixedCastrate", async () => {
     const itemString = `bonus bFixedCastrate,-20;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.fixcastrate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1847,7 +2471,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bFixedCast", async () => {
     const itemString = `bonus bFixedCast,30;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.add_fixcast = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1861,7 +2490,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bVariableCastrate", async () => {
     const itemString = `bonus bVariableCastrate,-40;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.varcastrate = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1875,7 +2509,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bVariableCast", async () => {
     const itemString = `bonus bVariableCast,50;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.bonus.add_varcast = 10;
 
     const processedAttributes = BonusHelpers.processBonuses(
@@ -1889,7 +2528,12 @@ describe("pc_bonus from items", () => {
   it("should test bonus bAddMaxWeight", async () => {
     const itemString = `bonus bAddMaxWeight,100;`;
     const item = parseTestScript(itemString);
-    const attributes = await PlayerAttributes.create("test", 1, item.Bonuses!);
+    const attributes = await PlayerAttributes.create(
+      itemDB,
+      "test",
+      1,
+      item.Bonuses!
+    );
     attributes.max_weight = 0;
 
     const processedAttributes = BonusHelpers.processBonuses(

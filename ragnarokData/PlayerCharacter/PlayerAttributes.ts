@@ -25,6 +25,7 @@ import {
   pc_mapid2jobid,
 } from "./ClassesEnum";
 import { parseValueWithRagEnums } from "../utils";
+import { ItemDB } from "../ItemDB/ItemDB";
 
 export class PlayerAttributes {
   id: number;
@@ -591,12 +592,13 @@ export class PlayerAttributes {
   }
 
   public static async create(
+    itemDB: ItemDB,
     name?: string,
     id?: number,
     bonuses?: Bonuses
   ): Promise<PlayerAttributes> {
     const player = new PlayerAttributes(name, id, bonuses);
-    player.inventory = await Inventory.create(MAX_INVENTORY);
+    player.inventory = await Inventory.create(itemDB, MAX_INVENTORY);
     return player;
   }
 
@@ -1147,11 +1149,12 @@ export class PlayerAttributes {
 
   // This method constructs PlayerAttributes from a persistent_status object
   public static async fromPersistentStatus(
+    itemDB: ItemDB,
     status: persistent_status,
     name: string,
     id: number
   ): Promise<PlayerAttributes> {
-    const player = await PlayerAttributes.create(name, id);
+    const player = await PlayerAttributes.create(itemDB, name, id);
 
     player.setJobClass(status.job);
 
@@ -1160,6 +1163,7 @@ export class PlayerAttributes {
 
     // Set inventory using persistent items from the status
     player.inventory = await Inventory.deserialize(
+      itemDB,
       MAX_INVENTORY,
       status.inventory
     );

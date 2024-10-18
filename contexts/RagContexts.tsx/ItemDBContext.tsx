@@ -29,11 +29,12 @@ export const ItemDBProvider: React.FC<{ children: ReactNode }> = ({
   useEffect(() => {
     let isMounted = true;
 
-    async function initializeAccountService() {
+    async function initializeItemDB() {
       try {
-        const service = await ItemDB.create();
+        console.log("ItemDBProvider: initializeItemDB");
         if (isMounted) {
-          setItemDB(service);
+          const idb = await ItemDB.create();
+          setItemDB(idb);
           setLoading(false); // Loading is false after the service is initialized
         }
       } catch (err) {
@@ -45,7 +46,7 @@ export const ItemDBProvider: React.FC<{ children: ReactNode }> = ({
       }
     }
 
-    initializeAccountService();
+    initializeItemDB();
 
     return () => {
       isMounted = false;
