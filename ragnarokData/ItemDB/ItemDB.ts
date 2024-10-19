@@ -56,7 +56,7 @@ export class ItemDB {
       const itemDB = new ItemDB();
       let configString = "";
 
-      const response = await fetch("/item_db.conf");
+      const response = await fetch("/configs/item_db.conf");
       configString = await response.text();
 
       const configObject = parse(configString) as any;
