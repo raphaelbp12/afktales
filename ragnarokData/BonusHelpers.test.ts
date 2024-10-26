@@ -2,31 +2,60 @@ import { PlayerAttributes } from "./PlayerCharacter/PlayerAttributes";
 import { BonusHelpers } from "./BonusHelpers";
 import { Bonuses } from "@/ragnarokData/types";
 import fs from "fs";
-import { ItemDB } from "./ItemDB/ItemDB";
+import { Databases } from "./Database/Databases";
 
 describe("BonusHelpers", () => {
-  let itemDB: ItemDB;
+  let databases: Databases;
+
   beforeAll(async () => {
-    global.fetch = jest.fn(() => {
-      const configContent = fs.readFileSync(
-        "./public/configs/item_db.conf",
-        "utf8"
-      );
+    // Mock the global.fetch function
+    global.fetch = jest.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      let url: string;
+      if (typeof input === "string") {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.toString();
+      } else if ("url" in input) {
+        // For Request objects
+        url = input.url;
+      } else {
+        throw new Error("Invalid input to fetch");
+      }
+      // Adjust the path to your actual config files location
+      const basePath = "./public"; // Adjust this path as necessary
+      let filePath = "";
+      if (url.endsWith("/configs/job_db.conf")) {
+        filePath = `${basePath}/configs/job_db.conf`;
+      } else if (url.endsWith("/configs/job_db2.txt")) {
+        filePath = `${basePath}/configs/job_db2.txt`;
+      } else if (url.endsWith("/configs/exp_group_db.conf")) {
+        filePath = `${basePath}/configs/exp_group_db.conf`;
+      } else if (url.endsWith("/configs/item_db.conf")) {
+        filePath = `${basePath}/configs/item_db.conf`;
+      } else if (url.endsWith("/configs/item_db2.conf")) {
+        filePath = `${basePath}/configs/item_db2.conf`;
+      } else {
+        throw new Error(`Unexpected fetch URL: ${url}`);
+      }
+      const configContent = fs.readFileSync(filePath, "utf8");
       return Promise.resolve({
         ok: true,
         status: 200,
-        json: async () => ({}),
         text: async () => configContent,
-        // Include other properties if needed
       } as Response);
     });
-    itemDB = await ItemDB.create();
+
+    databases = await Databases.create();
   });
 
+  afterAll(() => {
+    // Restore the original fetch function after tests
+    (global.fetch as jest.Mock).mockRestore();
+  });
   let playerAttributes: PlayerAttributes;
 
   beforeEach(async () => {
-    playerAttributes = await PlayerAttributes.create(itemDB, "test", 1, {});
+    playerAttributes = await PlayerAttributes.create(databases, "test", 1, {});
   });
 
   test("should process SP_HP_VANISH_RATE bonus correctly", () => {

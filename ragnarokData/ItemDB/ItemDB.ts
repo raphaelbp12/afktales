@@ -1,4 +1,4 @@
-import { parse } from "@/configParser";
+import { parse } from "@/PEGJSFiles/configParser";
 import { parseConfigFromConf } from "../parserItemConfig";
 import { ItemData } from "./types";
 // Import the generated parser

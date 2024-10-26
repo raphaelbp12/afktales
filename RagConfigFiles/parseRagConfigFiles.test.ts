@@ -1,6 +1,6 @@
 import * as fs from "fs";
 // Import the generated parser
-import { parse } from "./../configParser";
+import { parse } from "@/PEGJSFiles/configParser";
 
 describe("parseRagConfigFiles", () => {
   it("parses exp_group_db.conf file", () => {

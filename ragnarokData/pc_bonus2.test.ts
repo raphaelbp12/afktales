@@ -5,8 +5,15 @@ import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { ELE_ALL } from "./constants";
 import { Race } from "./map_race_id2mask";
 import fs from "fs";
+import { JobDB } from "./Database/JobDB/JobDB";
+import { JobDBStats } from "./Database/JobDBStats/JobDBStats";
+import { ItemDB } from "./ItemDB/ItemDB";
 
 describe("pc_bonus2", () => {
+  let itemDB: ItemDB;
+  let jobDB: JobDB;
+  let jobDBStats: JobDBStats;
+
   beforeAll(async () => {
     global.fetch = jest.fn(() => {
       const configContent = fs.readFileSync(
@@ -21,12 +28,49 @@ describe("pc_bonus2", () => {
         // Include other properties if needed
       } as Response);
     });
-  });
+    itemDB = await ItemDB.create();
 
+    global.fetch = jest.fn(() => {
+      const configContent = fs.readFileSync(
+        "./public/configs/job_db.conf",
+        "utf8"
+      );
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+        text: async () => configContent,
+        // Include other properties if needed
+      } as Response);
+    });
+    jobDB = await JobDB.create();
+
+    global.fetch = jest.fn(() => {
+      const configContent = fs.readFileSync(
+        "./public/configs/job_db2.txt",
+        "utf8"
+      );
+      return Promise.resolve({
+        ok: true,
+        status: 200,
+        json: async () => ({}),
+        text: async () => configContent,
+        // Include other properties if needed
+      } as Response);
+    });
+    jobDBStats = await JobDBStats.create();
+  });
   let playerAttributes: PlayerAttributes;
 
   beforeEach(async () => {
-    playerAttributes = await PlayerAttributes.create("test", 1, {});
+    playerAttributes = await PlayerAttributes.create(
+      itemDB,
+      jobDBStats,
+      jobDB,
+      "test",
+      1,
+      {}
+    );
   });
 
   test("should process SP_ADDELE bonus correctly", () => {

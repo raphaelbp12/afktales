@@ -1,11 +1,10 @@
 "use client";
-import React, { useState, useEffect, use } from "react";
+import React, { useState, useEffect } from "react";
 import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
-import InputField from "@/components/commonComponents/InputField";
 import ItemDropdownSelector from "@/components/commonComponents/ItemDropdownSelector";
-import { useItemDB } from "@/contexts/RagContexts.tsx/ItemDBContext";
 import { equip_pos, item_types, ItemData } from "@/ragnarokData/ItemDB/types";
 import { weapon_type } from "@/ragnarokData/ItemDB/weapon_type";
+import { useDatabases } from "@/contexts/RagContexts.tsx/DatabasesContext";
 
 const weaponFilters = [
   { label: "Adagas", type: weapon_type.W_DAGGER },
@@ -54,7 +53,11 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
   isPlayerTab,
   characterId,
 }) => {
-  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
+  const {
+    databases,
+    loading: loadingDatabases,
+    error: errorDatabases,
+  } = useDatabases();
   const { addItemToStorage, addItemToPlayerInventory } = useAccountService();
   const [selectedItem, setSelectedItem] = useState<ItemData | null>(null);
   const [selectedFilter, setSelectedFilter] = useState<item_types | null>(null);
@@ -72,8 +75,8 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
   }, [selectedFilter]);
 
   const handleAddItem = (amount: number = 1) => {
-    if (!itemDB) {
-      alert("ItemDB not loaded!");
+    if (!databases) {
+      alert("databases not loaded!");
       return;
     }
     if (!selectedItem) {
@@ -81,7 +84,7 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
       return;
     }
 
-    const item = itemDB.getItemByNameid(selectedItem.nameid);
+    const item = databases.itemDB.getItemByNameid(selectedItem.nameid);
     if (item) {
       if (isPlayerTab) {
         addItemToPlayerInventory(characterId!, item, amount);
@@ -94,12 +97,12 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
   };
 
   const handleChange = (value: ItemData[keyof ItemData] | null) => {
-    if (!itemDB) {
-      alert("ItemDB not loaded!");
+    if (!databases) {
+      alert("databases not loaded!");
       return;
     }
     const nameid = value as string;
-    const item = itemDB.getItemByNameid(parseInt(nameid));
+    const item = databases.itemDB.getItemByNameid(parseInt(nameid));
     console.log(item);
     setSelectedItem(item);
   };
@@ -109,22 +112,22 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
     weaponType?: weapon_type | null,
     locType?: equip_pos | null
   ) => {
-    if (!itemDB) {
-      alert("ItemDB not loaded!");
+    if (!databases) {
+      alert("databases not loaded!");
       return [];
     }
-    return itemDB
+    return databases.itemDB
       .getFilteredItems((item) => (itemType ? item.Type === itemType : true))
       .filter((item) => (weaponType ? item.Subtype === weaponType : true))
       .filter((item) => (locType ? (item.Loc && locType) === item.Loc : true));
   };
 
-  if (loadingItemDB) {
+  if (loadingDatabases) {
     return <div>Loading ItemDB...</div>;
   }
 
-  if (!itemDB) {
-    return <div>{errorItemDB}</div>;
+  if (!databases) {
+    return <div>{errorDatabases}</div>;
   }
 
   return (
@@ -190,7 +193,7 @@ const AddItemTab: React.FC<AddItemTabProps> = ({
           id={"item"}
           label={"Item"}
           selectedItemValue={selectedItem?.nameid || null}
-          items={itemDB
+          items={databases.itemDB
             .getFilteredItems((item) =>
               selectedFilter ? item.Type === selectedFilter : true
             )

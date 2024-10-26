@@ -14,10 +14,14 @@ type params = {
 };
 
 interface AttributeListProps {
+  jobBonus: { [key: string]: number };
   param_bonus: { [key: string]: number };
 }
 
-const AttributeList: React.FC<AttributeListProps> = ({ param_bonus }) => {
+const AttributeList: React.FC<AttributeListProps> = ({
+  jobBonus,
+  param_bonus,
+}) => {
   if (!param_bonus) {
     param_bonus = {
       SP_STR: 0,
@@ -36,32 +40,32 @@ const AttributeList: React.FC<AttributeListProps> = ({ param_bonus }) => {
         <AttributeItem
           label="For"
           baseStat={1}
-          bonusStat={param_bonus.SP_STR}
+          bonusStat={param_bonus.SP_STR + jobBonus.SP_STR}
         />
         <AttributeItem
           label="Agi"
           baseStat={1}
-          bonusStat={param_bonus.SP_AGI}
+          bonusStat={param_bonus.SP_AGI + jobBonus.SP_AGI}
         />
         <AttributeItem
           label="Vit"
           baseStat={1}
-          bonusStat={param_bonus.SP_VIT}
+          bonusStat={param_bonus.SP_VIT + jobBonus.SP_VIT}
         />
         <AttributeItem
           label="Int"
           baseStat={1}
-          bonusStat={param_bonus.SP_INT}
+          bonusStat={param_bonus.SP_INT + jobBonus.SP_INT}
         />
         <AttributeItem
           label="Des"
           baseStat={1}
-          bonusStat={param_bonus.SP_DEX}
+          bonusStat={param_bonus.SP_DEX + jobBonus.SP_DEX}
         />
         <AttributeItem
           label="Sor"
           baseStat={1}
-          bonusStat={param_bonus.SP_LUK}
+          bonusStat={param_bonus.SP_LUK + jobBonus.SP_LUK}
         />
       </div>
     </div>

@@ -12,6 +12,10 @@ const CharacterCard: React.FC<CharacterCardProps> = ({ character }) => {
   return (
     <div className="p-4 border rounded-md shadow-sm bg-gray-700 flex flex-col items-center">
       <h2 className="text-lg font-bold mb-2">{character.name}</h2>
+      <p>
+        Base: {character.persistent_status.base_level} Classe:{" "}
+        {character.persistent_status.job_level}
+      </p>
       <p>Classe: {ClassesEnumString[character.job]}</p>
       {/* You can add more character details here if needed */}
       <div className="flex gap-2 mt-2">

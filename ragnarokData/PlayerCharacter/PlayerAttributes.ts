@@ -19,18 +19,21 @@ import { BonusHelpers } from "../BonusHelpers";
 import { Parser, Value } from "expr-eval";
 import {
   ClassesEnum,
-  ClassesEnumString,
   MAPID_BASEMASK,
   MAPID_UPPERMASK,
   pc_mapid2jobid,
 } from "./ClassesEnum";
 import { parseValueWithRagEnums } from "../utils";
-import { ItemDB } from "../ItemDB/ItemDB";
+import { Databases } from "../Database/Databases";
+import { ExpGroup } from "../Database/ExpGroupDB/ExpGroupDB";
 
 export class PlayerAttributes {
+  public databases!: Databases;
   id: number;
   name: string;
   job: ClassesEnum;
+  baseExpGroup: ExpGroup;
+  jobExpGroup: ExpGroup;
   has_shield: boolean;
   weapontype: weapon_type;
   weapontype1: weapon_type;
@@ -251,6 +254,8 @@ export class PlayerAttributes {
   };
 
   private constructor(name?: string, id?: number, bonuses?: Bonuses) {
+    this.baseExpGroup = { MaxLevel: 0, Exp: [] };
+    this.jobExpGroup = { MaxLevel: 0, Exp: [] };
     this.persistent_status = new persistent_status();
     this.id = id ?? 1;
     this.name = name ?? "test";
@@ -592,13 +597,14 @@ export class PlayerAttributes {
   }
 
   public static async create(
-    itemDB: ItemDB,
+    databases: Databases,
     name?: string,
     id?: number,
     bonuses?: Bonuses
   ): Promise<PlayerAttributes> {
     const player = new PlayerAttributes(name, id, bonuses);
-    player.inventory = await Inventory.create(itemDB, MAX_INVENTORY);
+    player.databases = databases;
+    player.inventory = await Inventory.create(databases.itemDB, MAX_INVENTORY);
     return player;
   }
 
@@ -751,6 +757,75 @@ export class PlayerAttributes {
   public setJobClass(newJob: ClassesEnum): void {
     this.job = newJob;
     this.persistent_status.job = newJob;
+    this.getExpGroups();
+
+    this.calculateItemBonuses();
+  }
+
+  public getExpGroups(): void {
+    const jobName = this.databases.jobDB.getJobNameById(this.job);
+
+    if (jobName && jobName !== "") {
+      const jobInfo = this.databases.jobDB.jobsDict[jobName];
+      if (!jobInfo || !jobInfo.BaseExpGroup) {
+        console.warn("setMaxJobLevel jobInfo.BaseExpGroup not found");
+        return;
+      }
+      if (!jobInfo || !jobInfo.JobExpGroup) {
+        console.warn("setMaxJobLevel jobInfo.JobExpGroup not found");
+        return;
+      }
+      this.baseExpGroup = this.databases.expGroupDB.getBaseExpGroupByString(
+        jobInfo.BaseExpGroup
+      );
+      this.jobExpGroup = this.databases.expGroupDB.getJobExpGroupByString(
+        jobInfo.JobExpGroup
+      );
+    }
+  }
+
+  public setMaxJobLevel(): void {
+    this.setJobLevel(this.jobExpGroup.MaxLevel);
+  }
+
+  public setJobLevel(level: number): void {
+    this.persistent_status.job_level = level;
+  }
+
+  public jobBonusCalculation(): void {
+    const jobId = this.databases.jobDB.getJobValueById(this.job);
+    if (!jobId) return;
+    const bonusArray: number[] =
+      this.databases.jobDBStats.jobsStatsDict[jobId.toString()];
+
+    this.setMaxJobLevel();
+
+    const jobLevel = this.persistent_status.job_level;
+
+    for (let index = 0; index < jobLevel; index++) {
+      const statusIndex = bonusArray[index];
+
+      switch (statusIndex) {
+        case 1:
+          this.base_status.str++;
+          break;
+        case 2:
+          this.base_status.agi++;
+          break;
+        case 3:
+          this.base_status.vit++;
+          break;
+        case 4:
+          this.base_status.int_++;
+          break;
+        case 5:
+          this.base_status.dex++;
+          break;
+        case 6:
+          this.base_status.luk++;
+          break;
+      }
+    }
   }
 
   public evaluateExpression(
@@ -887,6 +962,7 @@ export class PlayerAttributes {
 
   public calculateItemBonuses(): void {
     this.resetValues();
+    this.jobBonusCalculation();
     let newBonuses: Bonuses = {};
     const equippedItems: ItemData[] = [];
     const equippedCards: ItemData[] = [];
@@ -1149,12 +1225,12 @@ export class PlayerAttributes {
 
   // This method constructs PlayerAttributes from a persistent_status object
   public static async fromPersistentStatus(
-    itemDB: ItemDB,
+    databases: Databases,
     status: persistent_status,
     name: string,
     id: number
   ): Promise<PlayerAttributes> {
-    const player = await PlayerAttributes.create(itemDB, name, id);
+    const player = await PlayerAttributes.create(databases, name, id);
 
     player.setJobClass(status.job);
 
@@ -1163,7 +1239,7 @@ export class PlayerAttributes {
 
     // Set inventory using persistent items from the status
     player.inventory = await Inventory.deserialize(
-      itemDB,
+      databases.itemDB,
       MAX_INVENTORY,
       status.inventory
     );

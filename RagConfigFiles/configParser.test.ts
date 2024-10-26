@@ -1,6 +1,6 @@
 import * as fs from "fs";
 // Import the generated parser
-import { parse } from "./../configParser";
+import { parse } from "@/PEGJSFiles/configParser";
 
 const configContent = fs.readFileSync("./public/configs/test.conf", "utf8");
 

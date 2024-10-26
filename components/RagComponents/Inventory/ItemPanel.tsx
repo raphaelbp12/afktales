@@ -1,12 +1,12 @@
 // ItemPanel.tsx
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import InventorySlot from "./InventorySlot";
-import { ItemData, equip_pos } from "@/ragnarokData/ItemDB/types";
-import { useItemDB } from "@/contexts/RagContexts.tsx/ItemDBContext";
+import { ItemData } from "@/ragnarokData/ItemDB/types";
 import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 import ItemDropdownSelector from "@/components/commonComponents/ItemDropdownSelector";
 import InventoryListItem from "./InventoryListItem";
 import DropdownSelector from "@/components/commonComponents/DropdownSelector";
+import { useDatabases } from "@/contexts/RagContexts.tsx/DatabasesContext";
 
 interface ItemPanelProps {
   item: ItemData;
@@ -21,7 +21,11 @@ const ItemPanel: React.FC<ItemPanelProps> = ({
   characterId,
   isPlayerInventory,
 }) => {
-  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
+  const {
+    databases,
+    loading: loadingDatabases,
+    error: errorDatabases,
+  } = useDatabases();
   const {
     setRefineLevelToItem,
     addItemToStorage,
@@ -36,11 +40,11 @@ const ItemPanel: React.FC<ItemPanelProps> = ({
   const [selectedItemGuid, setSelectedItemGuid] = useState<string | null>(null);
 
   const handleAddItem = (amount: number = 1) => {
-    if (!itemDB) {
-      alert("ItemDB not loaded!");
+    if (!databases) {
+      alert("databases not loaded!");
       return;
     }
-    const newItem = itemDB.getItemByNameid(item.nameid);
+    const newItem = databases.itemDB.getItemByNameid(item.nameid);
     if (newItem) {
       addItemToStorage(newItem, amount);
     } else {

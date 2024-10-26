@@ -2,7 +2,7 @@
 
 import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 import React from "react";
-import { useItemDB } from "@/contexts/RagContexts.tsx/ItemDBContext";
+import { useDatabases } from "@/contexts/RagContexts.tsx/DatabasesContext";
 
 type GetBasicItemsButtonProps = {
   characterId: number | null;
@@ -12,11 +12,15 @@ const GetBasicItemsButton: React.FC<GetBasicItemsButtonProps> = ({
   characterId,
 }) => {
   const { addItemToStorage, addItemToPlayerInventory } = useAccountService();
-  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
+  const {
+    databases,
+    loading: loadingDatabases,
+    error: errorDatabases,
+  } = useDatabases();
 
   const handleGetBasicItems = () => {
-    if (!itemDB) {
-      alert("ItemDB not loaded!");
+    if (!databases) {
+      alert("databases not loaded!");
       return;
     }
 
@@ -51,7 +55,7 @@ const GetBasicItemsButton: React.FC<GetBasicItemsButtonProps> = ({
     ];
 
     basicItems.forEach((basic) => {
-      const item = itemDB.getItemByNameid(basic.nameid);
+      const item = databases.itemDB.getItemByNameid(basic.nameid);
       if (characterId === null) {
         addItemToStorage(item, basic.amount);
       } else {
@@ -65,7 +69,7 @@ const GetBasicItemsButton: React.FC<GetBasicItemsButtonProps> = ({
       onClick={() => handleGetBasicItems()}
       className="my-4 px-4 py-2 bg-blue-500 text-white rounded-md"
     >
-      {loadingItemDB ? "Loading" : "Itens Básicos"}
+      {loadingDatabases ? "Loading" : "Itens Básicos"}
     </button>
   );
 };

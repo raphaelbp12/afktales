@@ -6,33 +6,62 @@ import { weapon_type } from "./ItemDB/weapon_type";
 import { map_race_id2mask, Race } from "./map_race_id2mask";
 import { equip_pos } from "./ItemDB/types";
 import fs from "fs";
-import { ItemDB } from "./ItemDB/ItemDB";
+import { Databases } from "./Database/Databases";
 
 describe("pc_bonus from items", () => {
-  let itemDB: ItemDB;
+  let databases: Databases;
 
   beforeAll(async () => {
-    global.fetch = jest.fn(() => {
-      const configContent = fs.readFileSync(
-        "./public/configs/item_db.conf",
-        "utf8"
-      );
+    // Mock the global.fetch function
+    global.fetch = jest.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      let url: string;
+      if (typeof input === "string") {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.toString();
+      } else if ("url" in input) {
+        // For Request objects
+        url = input.url;
+      } else {
+        throw new Error("Invalid input to fetch");
+      }
+      // Adjust the path to your actual config files location
+      const basePath = "./public"; // Adjust this path as necessary
+      let filePath = "";
+      if (url.endsWith("/configs/job_db.conf")) {
+        filePath = `${basePath}/configs/job_db.conf`;
+      } else if (url.endsWith("/configs/job_db2.txt")) {
+        filePath = `${basePath}/configs/job_db2.txt`;
+      } else if (url.endsWith("/configs/exp_group_db.conf")) {
+        filePath = `${basePath}/configs/exp_group_db.conf`;
+      } else if (url.endsWith("/configs/item_db.conf")) {
+        filePath = `${basePath}/configs/item_db.conf`;
+      } else if (url.endsWith("/configs/item_db2.conf")) {
+        filePath = `${basePath}/configs/item_db2.conf`;
+      } else {
+        throw new Error(`Unexpected fetch URL: ${url}`);
+      }
+      const configContent = fs.readFileSync(filePath, "utf8");
       return Promise.resolve({
         ok: true,
         status: 200,
-        json: async () => ({}),
         text: async () => configContent,
-        // Include other properties if needed
       } as Response);
     });
-    itemDB = await ItemDB.create();
+
+    databases = await Databases.create();
+  });
+
+  afterAll(() => {
+    // Restore the original fetch function after tests
+    (global.fetch as jest.Mock).mockRestore();
   });
 
   it("should test bonus bStr", async () => {
     const itemString = `bonus bStr,2;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -50,7 +79,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAgi,2;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -68,7 +97,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bVit,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -86,7 +115,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bInt,2;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -104,7 +133,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDex,-1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -122,7 +151,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bLuk,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -140,7 +169,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtk,7;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -160,7 +189,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtk,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -180,7 +209,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtk2,7;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -200,7 +229,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtk2,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -220,7 +249,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bBaseAtk,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -240,7 +269,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDef,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -260,7 +289,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDef2,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -280,7 +309,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMdef,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -300,7 +329,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMdef2,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -321,7 +350,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHit,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -342,7 +371,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHit,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -363,7 +392,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bFlee,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -384,7 +413,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bFlee2,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -405,7 +434,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bCritical,5;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -430,7 +459,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkEle,Ele_Wind;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -450,7 +479,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkEle,Ele_Ghost;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -470,7 +499,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkEle,Ele_Undead;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -490,7 +519,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkEle,Ele_Holy;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -512,7 +541,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkEle,Ele_Holy;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -532,7 +561,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDefEle,Ele_Fire;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -551,7 +580,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMaxHP,100;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -571,7 +600,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMaxSP,50;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -591,7 +620,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bCastrate,-10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -609,7 +638,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMaxHPrate,5;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -627,7 +656,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMaxSPrate,3;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -645,7 +674,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUseSPrate,-5;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -663,7 +692,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -683,7 +712,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -703,7 +732,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -725,7 +754,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -747,7 +776,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkRange,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -768,7 +797,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bSpeedRate,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -786,7 +815,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bSpeedAddRate,5;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -804,7 +833,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAspd,2;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -822,7 +851,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAspdRate,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -841,7 +870,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHPrecovRate,3;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -859,7 +888,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bSPrecovRate,4;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -877,7 +906,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bCriticalDef,5;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -895,7 +924,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNearAtkDef,6;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -913,7 +942,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bLongAtkDef,7;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -931,7 +960,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDoubleRate,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -951,7 +980,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDoubleRate,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -971,7 +1000,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDoubleAddRate,3;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -990,7 +1019,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMatkRate,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1009,7 +1038,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bIgnoreDefEle,Ele_Dark;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1030,7 +1059,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bIgnoreDefEle,Ele_All;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1060,7 +1089,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bIgnoreDefRace,RC_Plant;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1081,7 +1110,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAtkRate,15;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1100,7 +1129,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMagicAtkDef,15;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1119,7 +1148,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMiscAtkDef,15;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1138,7 +1167,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bIgnoreMdefRate,20;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1157,7 +1186,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bIgnoreMdefEle,Ele_Holy;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1178,7 +1207,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bIgnoreMdefEle,Ele_All;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1208,7 +1237,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bIgnoreMdefRace,RC_NonBoss;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1229,7 +1258,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bPerfectHitRate,15;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1248,7 +1277,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bPerfectHitAddRate,7;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1266,7 +1295,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bCriticalRate,12;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1284,7 +1313,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDefRatioAtkEle,Ele_Poison;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1305,7 +1334,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDefRatioAtkEle,Ele_All;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1335,7 +1364,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDefRatioAtkRace,RC_All;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1356,7 +1385,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHitRate,14;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1374,7 +1403,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bFleeRate,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1392,7 +1421,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bFlee2Rate,9;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1410,7 +1439,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDefRate,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1428,7 +1457,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDef2Rate,11;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1446,7 +1475,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMdefRate,12;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1464,7 +1493,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMdef2Rate,13;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1482,7 +1511,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bRestartFullRecover,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1500,7 +1529,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoCastCancel,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1518,7 +1547,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoCastCancel2,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1536,7 +1565,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoSizeFix,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1554,7 +1583,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoMagicDamage,30;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1573,7 +1602,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoWeaponDamage,40;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1592,7 +1621,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoMiscDamage,25;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1611,7 +1640,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoGemStone,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1629,7 +1658,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bIntravision,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1647,7 +1676,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoKnockback,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1665,7 +1694,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bSplashRange,4;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1684,7 +1713,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bSplashAddRange,2;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1702,7 +1731,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bShortWeaponDamageReturn,5;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1720,7 +1749,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bLongWeaponDamageReturn,6;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1738,7 +1767,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMagicDamageReturn,7;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1756,7 +1785,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAllStats,3;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1785,7 +1814,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAgiVit,2;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1806,7 +1835,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAgiDexStr,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1829,7 +1858,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bPerfectHide,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1847,7 +1876,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnbreakable,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1866,7 +1895,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnbreakableWeapon,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1886,7 +1915,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnbreakableArmor,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1906,7 +1935,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnbreakableHelm,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1929,7 +1958,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnbreakableShield,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1949,7 +1978,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnbreakableGarment,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1969,7 +1998,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnbreakableShoes,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -1989,7 +2018,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bClassChange,300;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2007,7 +2036,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bLongAtkRate,8;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2025,7 +2054,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bBreakWeaponRate,9;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2043,7 +2072,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bBreakArmorRate,7;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2061,7 +2090,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAddStealRate,6;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2079,7 +2108,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bDelayRate,5;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2097,7 +2126,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bCritAtkRate,4;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2115,7 +2144,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bNoRegen,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2133,7 +2162,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnstripableWeapon,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2153,7 +2182,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnstripableArmor,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2173,7 +2202,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnstripableHelm,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2193,7 +2222,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bUnstripableShield,1;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2213,7 +2242,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHPDrainValue,10;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2237,7 +2266,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHPDrainValue,15;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2261,7 +2290,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bSPDrainValue,20;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2285,7 +2314,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bSPDrainValue,25;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2309,7 +2338,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bSPGainValue,30;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2327,7 +2356,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHPGainValue,35;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2345,7 +2374,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMagicSPGainValue,40;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2363,7 +2392,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMagicHPGainValue,45;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2381,7 +2410,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHealPower,50;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2399,7 +2428,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bHealPower2,55;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2417,7 +2446,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAddItemHealRate,60;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2435,7 +2464,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bMatk,65;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2453,7 +2482,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bFixedCastrate,-20;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2472,7 +2501,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bFixedCast,30;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2491,7 +2520,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bVariableCastrate,-40;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2510,7 +2539,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bVariableCast,50;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!
@@ -2529,7 +2558,7 @@ describe("pc_bonus from items", () => {
     const itemString = `bonus bAddMaxWeight,100;`;
     const item = parseTestScript(itemString);
     const attributes = await PlayerAttributes.create(
-      itemDB,
+      databases,
       "test",
       1,
       item.Bonuses!

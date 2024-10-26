@@ -356,3 +356,91 @@ export function classStringToEnum(classString: string): number | null {
     return null;
   }
 }
+
+export const MappingJobNameArray: {
+  name: string;
+  id: ClassesEnumString;
+  value: number;
+}[] = [
+  { name: "Novice", id: ClassesEnumString.Job_Novice, value: 0 },
+  { name: "Swordsman", id: ClassesEnumString.Job_Swordman, value: 1 },
+  { name: "Magician", id: ClassesEnumString.Job_Mage, value: 2 },
+  { name: "Archer", id: ClassesEnumString.Job_Archer, value: 3 },
+  { name: "Acolyte", id: ClassesEnumString.Job_Acolyte, value: 4 },
+  { name: "Merchant", id: ClassesEnumString.Job_Merchant, value: 5 },
+  { name: "Thief", id: ClassesEnumString.Job_Thief, value: 6 },
+  { name: "Taekwon", id: ClassesEnumString.Job_Taekwon, value: 4046 },
+  { name: "Wedding", id: ClassesEnumString.Job_Wedding, value: 22 },
+  { name: "Gunslinger", id: ClassesEnumString.Job_Gunslinger, value: 24 },
+  { name: "Ninja", id: ClassesEnumString.Job_Ninja, value: 25 },
+  { name: "Xmas", id: ClassesEnumString.Job_Xmas, value: 26 },
+  { name: "Summer", id: ClassesEnumString.Job_Summer, value: 27 },
+  { name: "Gangsi", id: ClassesEnumString.Job_Gangsi, value: 4050 },
+  { name: "Summoner", id: ClassesEnumString.Job_Summoner, value: 4218 },
+
+  { name: "Super_Novice", id: ClassesEnumString.Job_Super_Novice, value: 23 },
+  { name: "Knight", id: ClassesEnumString.Job_Knight, value: 7 },
+  { name: "Wizard", id: ClassesEnumString.Job_Wizard, value: 9 },
+  { name: "Hunter", id: ClassesEnumString.Job_Hunter, value: 11 },
+  { name: "Priest", id: ClassesEnumString.Job_Priest, value: 8 },
+  { name: "Blacksmith", id: ClassesEnumString.Job_Blacksmith, value: 10 },
+  { name: "Assassin", id: ClassesEnumString.Job_Assassin, value: 12 },
+  {
+    name: "Star_Gladiator",
+    id: ClassesEnumString.Job_Star_Gladiator,
+    value: 4047,
+  },
+  { name: "Rebellion", id: ClassesEnumString.Job_Rebellion, value: 4215 },
+  { name: "Kagerou", id: ClassesEnumString.Job_Kagerou_Oborou, value: 4211 },
+  { name: "Oboro", id: ClassesEnumString.Job_Kagerou_Oborou, value: 4212 },
+  { name: "Death_Knight", id: ClassesEnumString.Job_Death_Knight, value: 4051 },
+
+  { name: "Crusader", id: ClassesEnumString.Job_Crusader, value: 14 },
+  { name: "Sage", id: ClassesEnumString.Job_Sage, value: 16 },
+  { name: "Bard", id: ClassesEnumString.Job_Bard_Dancer, value: 19 },
+  { name: "Dancer", id: ClassesEnumString.Job_Bard_Dancer, value: 20 },
+  { name: "Monk", id: ClassesEnumString.Job_Monk, value: 15 },
+  { name: "Alchemist", id: ClassesEnumString.Job_Alchemist, value: 18 },
+  { name: "Rogue", id: ClassesEnumString.Job_Rogue, value: 17 },
+  { name: "Soul_Linker", id: ClassesEnumString.Job_Soul_Linker, value: 4049 },
+  {
+    name: "Dark_Collector",
+    id: ClassesEnumString.Job_Dark_Collector,
+    value: 4052,
+  },
+
+  { name: "Novice_High", id: ClassesEnumString.Job_Novice_High, value: 4001 },
+  {
+    name: "Swordsman_High",
+    id: ClassesEnumString.Job_Swordman_High,
+    value: 4002,
+  },
+  { name: "Magician_High", id: ClassesEnumString.Job_Mage_High, value: 4003 },
+  { name: "Archer_High", id: ClassesEnumString.Job_Archer_High, value: 4004 },
+  { name: "Acolyte_High", id: ClassesEnumString.Job_Acolyte_High, value: 4005 },
+  {
+    name: "Merchant_High",
+    id: ClassesEnumString.Job_Merchant_High,
+    value: 4006,
+  },
+  { name: "Thief_High", id: ClassesEnumString.Job_Thief_High, value: 4007 },
+
+  { name: "Lord_Knight", id: ClassesEnumString.Job_Lord_Knight, value: 4008 },
+  { name: "High_Wizard", id: ClassesEnumString.Job_High_Wizard, value: 4010 },
+  { name: "Sniper", id: ClassesEnumString.Job_Sniper, value: 4012 },
+  { name: "High_Priest", id: ClassesEnumString.Job_High_Priest, value: 4009 },
+  { name: "Whitesmith", id: ClassesEnumString.Job_Whitesmith, value: 4011 },
+  {
+    name: "Assassin_Cross",
+    id: ClassesEnumString.Job_Assassin_Cross,
+    value: 4013,
+  },
+
+  { name: "Paladin", id: ClassesEnumString.Job_Paladin, value: 4015 },
+  { name: "Professor", id: ClassesEnumString.Job_Professor, value: 4017 },
+  { name: "Clown", id: ClassesEnumString.Job_Clow_Gypsy, value: 4020 },
+  { name: "Gypsy", id: ClassesEnumString.Job_Clow_Gypsy, value: 4021 },
+  { name: "Champion", id: ClassesEnumString.Job_Champion, value: 4016 },
+  { name: "Creator", id: ClassesEnumString.Job_Creator, value: 4019 },
+  { name: "Stalker", id: ClassesEnumString.Job_Stalker, value: 4018 },
+];

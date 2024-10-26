@@ -1,5 +1,4 @@
-import { parse } from "@/configParser"; // Assuming this is your PEG.js parser
-// Import or define the `parseConfigFromConf` function for exp groups
+import { parse } from "@/PEGJSFiles/configParser"; // Assuming this is your PEG.js parser
 
 export interface ExpGroup {
   MaxLevel: number;
@@ -127,5 +126,19 @@ export class ExpGroupDB {
 
   public getJobExpGroup(key: JobExpGroupKey): ExpGroup {
     return this.JobExpGroupDict[key];
+  }
+
+  public getBaseExpGroupByString(key: string): ExpGroup {
+    if (!(key in BaseExpGroupKey)) {
+      throw new Error(`Invalid BaseExpGroupKey: ${key}`);
+    }
+    return this.getBaseExpGroup(key as BaseExpGroupKey);
+  }
+
+  public getJobExpGroupByString(key: string): ExpGroup {
+    if (!(key in JobExpGroupKey)) {
+      throw new Error(`Invalid JobExpGroupKey: ${key}`);
+    }
+    return this.getJobExpGroup(key as JobExpGroupKey);
   }
 }

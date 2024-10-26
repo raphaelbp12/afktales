@@ -1,6 +1,6 @@
 // InventorySlot.tsx
 import ItemSpriteImage from "@/components/commonComponents/ItemSpriteImage";
-import { useItemDB } from "@/contexts/RagContexts.tsx/ItemDBContext";
+import { useDatabases } from "@/contexts/RagContexts.tsx/DatabasesContext";
 import { equip_pos, ItemData } from "@/ragnarokData/ItemDB/types";
 import React from "react";
 
@@ -10,9 +10,13 @@ interface InventorySlotProps {
 }
 
 const InventorySlot: React.FC<InventorySlotProps> = ({ item, onClick }) => {
-  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
+  const {
+    databases,
+    loading: loadingDatabases,
+    error: errorDatabases,
+  } = useDatabases();
 
-  if (!itemDB) {
+  if (!databases) {
     return null;
   }
 
@@ -42,7 +46,7 @@ const InventorySlot: React.FC<InventorySlotProps> = ({ item, onClick }) => {
         <>
           {item.Cards.map((cardId, index) => {
             if (!cardId) return null;
-            const card = itemDB.getItemByNameid(cardId);
+            const card = databases.itemDB.getItemByNameid(cardId);
             if (!card) return null;
             return (
               <div

@@ -1,20 +1,24 @@
 // AddItemPanel.tsx
 import React, { useState } from "react";
-import { useItemDB } from "@/contexts/RagContexts.tsx/ItemDBContext";
 import { useAccountService } from "@/contexts/RagContexts.tsx/AccountContext";
 import ItemDropdownSelector from "@/components/commonComponents/ItemDropdownSelector";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
+import { useDatabases } from "@/contexts/RagContexts.tsx/DatabasesContext";
 
 interface AddItemPanelProps {}
 
 const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
-  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
+  const {
+    databases,
+    loading: loadingDatabases,
+    error: errorDatabases,
+  } = useDatabases();
   const { addItemToStorage } = useAccountService();
   const [selectedItem, setSelectedItem] = useState<ItemData | null>(null);
 
   const handleAddItem = (amount: number = 1) => {
-    if (!itemDB) {
-      alert("ItemDB not loaded!");
+    if (!databases) {
+      alert("databases not loaded!");
       return;
     }
 
@@ -23,7 +27,7 @@ const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
       return;
     }
 
-    const item = itemDB.getItemByNameid(selectedItem.nameid);
+    const item = databases.itemDB.getItemByNameid(selectedItem.nameid);
     if (item) {
       addItemToStorage(item, amount);
     } else {
@@ -32,23 +36,23 @@ const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
   };
 
   const handleChange = (value: ItemData[keyof ItemData] | null) => {
-    if (!itemDB) {
-      alert("ItemDB not loaded!");
+    if (!databases) {
+      alert("databases not loaded!");
       return;
     }
 
     const nameid = value as string;
-    const item = itemDB.getItemByNameid(parseInt(nameid));
+    const item = databases.itemDB.getItemByNameid(parseInt(nameid));
     console.log(item);
     setSelectedItem(item);
   };
 
-  if (loadingItemDB) {
+  if (loadingDatabases) {
     return <div>Loading ItemDB...</div>;
   }
 
-  if (!itemDB) {
-    return <div>{errorItemDB}</div>;
+  if (!databases) {
+    return <div>{errorDatabases}</div>;
   }
 
   return (
@@ -59,7 +63,7 @@ const AddItemPanel: React.FC<AddItemPanelProps> = ({}) => {
           id={"item"}
           label={"Item"}
           selectedItemValue={selectedItem?.nameid || null}
-          items={itemDB.getFilteredItems((item) => true)}
+          items={databases.itemDB.getFilteredItems((item) => true)}
           onChange={handleChange}
           optionValueKey={"nameid"}
         />

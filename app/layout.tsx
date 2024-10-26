@@ -8,7 +8,7 @@ import NavBar from "../components/commonComponents/NavBar";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
 import { AccountProvider } from "@/contexts/RagContexts.tsx/AccountContext";
-import { ItemDBProvider } from "@/contexts/RagContexts.tsx/ItemDBContext";
+import { DatabasesProvider } from "@/contexts/RagContexts.tsx/DatabasesContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,7 +27,7 @@ export default function RootLayout({
       <SpeedInsights />
       <Analytics />
       <body className={`${inter.className} h-full`}>
-        <ItemDBProvider>
+        <DatabasesProvider>
           <AccountProvider>
             <AlertProvider>
               <InventoryProvider>
@@ -38,7 +38,7 @@ export default function RootLayout({
               </InventoryProvider>
             </AlertProvider>
           </AccountProvider>
-        </ItemDBProvider>
+        </DatabasesProvider>
       </body>
     </html>
   );

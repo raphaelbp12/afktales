@@ -60,6 +60,14 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
             inventory={character.inventory}
           />
           <SetupCharacterPanel
+            jobBonus={{
+              SP_STR: character.base_status.str,
+              SP_AGI: character.base_status.agi,
+              SP_VIT: character.base_status.vit,
+              SP_INT: character.base_status.int_,
+              SP_DEX: character.base_status.dex,
+              SP_LUK: character.base_status.luk,
+            }}
             param_bonus={character.param_bonus}
             characterId={characterId}
           />

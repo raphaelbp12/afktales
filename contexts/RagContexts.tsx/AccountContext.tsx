@@ -6,14 +6,15 @@ import React, {
   useState,
   useEffect,
   useCallback,
-  useMemo,
 } from "react";
 import { PlayerAttributes } from "@/ragnarokData/PlayerCharacter/PlayerAttributes";
 import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import { AccountService } from "@/services/Account/AccountService";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
 import { ClassesEnum } from "@/ragnarokData/PlayerCharacter/ClassesEnum";
-import { useItemDB } from "./ItemDBContext";
+import { JobDB } from "@/ragnarokData/Database/JobDB/JobDB";
+import { JobDBStats } from "@/ragnarokData/Database/JobDBStats/JobDBStats";
+import { useDatabases } from "./DatabasesContext";
 
 interface AccountContextValue {
   characters: PlayerAttributes[];
@@ -71,7 +72,11 @@ const AccountContext = createContext<AccountContextValue | undefined>(
 export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const { itemDB, loading: loadingItemDB, error: errorItemDB } = useItemDB();
+  const {
+    databases,
+    loading: loadingDatabases,
+    error: errorDatabases,
+  } = useDatabases();
   const [accountService, setAccountService] = useState<AccountService | null>(
     null
   );
@@ -86,13 +91,13 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
   useEffect(() => {
     let isMounted = true;
 
-    if (!itemDB) {
+    if (!databases) {
       return;
     }
 
     async function initializeAccountService() {
       try {
-        const service = await AccountService.create(itemDB!);
+        const service = await AccountService.create(databases!);
         if (isMounted) {
           setAccountService(service);
           setLoading(false); // Loading is false after the service is initialized
@@ -111,7 +116,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
     return () => {
       isMounted = false;
     };
-  }, [itemDB]);
+  }, [databases]);
 
   // Load characters and storage
   const loadCharacters = useCallback(async () => {
@@ -327,16 +332,16 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const deserializeAccount = useCallback(
     async (data: string) => {
-      if (!itemDB) return;
+      if (!databases) return;
       if (!accountService) return;
-      await accountService.deserializeAccount(itemDB, data);
+      await accountService.deserializeAccount(databases, data);
       if (!firstLoad) {
         setFirstLoad(true);
       }
       loadCharacters();
       loadStorage();
     },
-    [accountService, firstLoad, itemDB, loadCharacters, loadStorage]
+    [accountService, firstLoad, databases, loadCharacters, loadStorage]
   );
 
   const saveAccountToLocalStorage = useCallback(

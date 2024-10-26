@@ -4,11 +4,13 @@ import SelectJobClass from "./SelectJobClass";
 import AttributeList from "./AttributeList";
 
 interface SetupCharacterPanelProps {
+  jobBonus: { [key: string]: number };
   param_bonus: { [key: string]: number };
   characterId: number;
 }
 
 const SetupCharacterPanel: React.FC<SetupCharacterPanelProps> = ({
+  jobBonus,
   param_bonus,
   characterId,
 }) => {
@@ -18,7 +20,7 @@ const SetupCharacterPanel: React.FC<SetupCharacterPanelProps> = ({
         <SelectJobClass characterId={characterId} />
       </div>
       <div>
-        <AttributeList param_bonus={param_bonus} />
+        <AttributeList param_bonus={param_bonus} jobBonus={jobBonus} />
       </div>
     </div>
   );
