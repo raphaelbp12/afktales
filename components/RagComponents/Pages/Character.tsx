@@ -12,6 +12,7 @@ import InventoryTab from "./Tabs/InventoryTab";
 import AddItemTab from "./Tabs/AddItemTab";
 import BattleInfoTab from "./Tabs/BattleInfoTab";
 import SetupCharacterPanel from "../Character/SetupCharacterPanel";
+import { StatsType } from "../Character/AttributeList";
 
 type CharacterProps = {
   characterId: number;
@@ -34,6 +35,7 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
     }
 
     const character = characters[characterId];
+    character.setStat(StatsType.SP_STR, 10);
     setCharacter(character);
   }, [characters, characterId]);
 
@@ -60,6 +62,14 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
             inventory={character.inventory}
           />
           <SetupCharacterPanel
+            persistStats={{
+              SP_STR: character.persistent_status.str,
+              SP_AGI: character.persistent_status.agi,
+              SP_VIT: character.persistent_status.vit,
+              SP_INT: character.persistent_status.int_,
+              SP_DEX: character.persistent_status.dex,
+              SP_LUK: character.persistent_status.luk,
+            }}
             jobBonus={{
               SP_STR: character.base_status.str,
               SP_AGI: character.base_status.agi,

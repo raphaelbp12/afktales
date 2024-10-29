@@ -770,22 +770,22 @@ export class PlayerAttributes {
   public setStat(type: StatsType, value: number): number {
     switch (type) {
       case StatsType.SP_STR:
-        this.base_status.str = value;
+        this.persistent_status.str = value;
         break;
       case StatsType.SP_AGI:
-        this.base_status.agi = value;
+        this.persistent_status.agi = value;
         break;
       case StatsType.SP_VIT:
-        this.base_status.vit = value;
+        this.persistent_status.vit = value;
         break;
       case StatsType.SP_INT:
-        this.base_status.int_ = value;
+        this.persistent_status.int_ = value;
         break;
       case StatsType.SP_DEX:
-        this.base_status.dex = value;
+        this.persistent_status.dex = value;
         break;
       case StatsType.SP_LUK:
-        this.base_status.luk = value;
+        this.persistent_status.luk = value;
         break;
       default:
         return -1;
@@ -797,17 +797,17 @@ export class PlayerAttributes {
   public getStat(type: StatsType): number {
     switch (type) {
       case StatsType.SP_STR:
-        return this.base_status.str;
+        return this.persistent_status.str;
       case StatsType.SP_AGI:
-        return this.base_status.agi;
+        return this.persistent_status.agi;
       case StatsType.SP_VIT:
-        return this.base_status.vit;
+        return this.persistent_status.vit;
       case StatsType.SP_INT:
-        return this.base_status.int_;
+        return this.persistent_status.int_;
       case StatsType.SP_DEX:
-        return this.base_status.dex;
+        return this.persistent_status.dex;
       case StatsType.SP_LUK:
-        return this.base_status.luk;
+        return this.persistent_status.luk;
 
       default:
         return -1;
