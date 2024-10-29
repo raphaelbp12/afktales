@@ -1,3 +1,4 @@
+import { StatsType } from "@/components/RagComponents/Character/AttributeList";
 import { Databases } from "../Database/Databases";
 import { equip_pos } from "../ItemDB/types";
 import { Race } from "../map_race_id2mask";
@@ -1207,5 +1208,27 @@ describe("PlayerAttributes", () => {
     expect(playerAttributes.job).toBe(ClassesEnum.MAPID_CREATOR);
     expect(playerAttributes.baseExpGroup.MaxLevel).toBe(99);
     expect(playerAttributes.jobExpGroup.MaxLevel).toBe(70);
+  });
+
+  it("get status point", async () => {
+    expect(playerAttributes.getStatusPoint(1)).toBe(3);
+    expect(playerAttributes.getStatusPoint(4)).toBe(3);
+    expect(playerAttributes.getStatusPoint(5)).toBe(4);
+    expect(playerAttributes.getStatusPoint(8)).toBe(4);
+    expect(playerAttributes.getStatusPoint(10)).toBe(5);
+  });
+
+  it("get status point needed to change", async () => {
+    playerAttributes.setStat(StatsType.SP_DEX, 90);
+
+    expect(
+      playerAttributes.getStatusPointNeededToChange(StatsType.SP_DEX, 1)
+    ).toBe(10);
+    expect(
+      playerAttributes.getStatusPointNeededToChange(StatsType.SP_DEX, 2)
+    ).toBe(21);
+    expect(
+      playerAttributes.getStatusPointNeededToChange(StatsType.SP_DEX, 3)
+    ).toBe(32);
   });
 });

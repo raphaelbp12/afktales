@@ -4,6 +4,15 @@ import EquippedItem from "./EquippedItem";
 import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import AttributeItem from "./AttributeItem";
 
+export enum StatsType {
+  SP_STR,
+  SP_AGI,
+  SP_VIT,
+  SP_INT,
+  SP_DEX,
+  SP_LUK,
+}
+
 type params = {
   SP_STR: number;
   SP_AGI: number;

@@ -6,7 +6,7 @@ import {
   s_add_drop,
 } from "@/ragnarokData/types";
 import { WeaponData, initializeWeaponData } from "../WeaponData"; // Import the WeaponData interface and initialization function
-import { ELE_MAX, MAX_INVENTORY, MAX_PC_BONUS } from "../constants";
+import { ELE_MAX, MAX_INVENTORY, MAX_PC_BONUS, MAX_STATS } from "../constants";
 import { weapon_type } from "../ItemDB/weapon_type";
 import { StatusData } from "../StatusData";
 import { AddEffect } from "../AutoTriggerFlag";
@@ -26,6 +26,7 @@ import {
 import { parseValueWithRagEnums } from "../utils";
 import { Databases } from "../Database/Databases";
 import { ExpGroup } from "../Database/ExpGroupDB/ExpGroupDB";
+import { StatsType } from "@/components/RagComponents/Character/AttributeList";
 
 export class PlayerAttributes {
   public databases!: Databases;
@@ -760,6 +761,73 @@ export class PlayerAttributes {
     this.getExpGroups();
 
     this.calculateItemBonuses();
+  }
+
+  public getStatusPoint(level: number): number {
+    return Math.floor((level + 15) / 5);
+  }
+
+  public setStat(type: StatsType, value: number): number {
+    switch (type) {
+      case StatsType.SP_STR:
+        this.base_status.str = value;
+        break;
+      case StatsType.SP_AGI:
+        this.base_status.agi = value;
+        break;
+      case StatsType.SP_VIT:
+        this.base_status.vit = value;
+        break;
+      case StatsType.SP_INT:
+        this.base_status.int_ = value;
+        break;
+      case StatsType.SP_DEX:
+        this.base_status.dex = value;
+        break;
+      case StatsType.SP_LUK:
+        this.base_status.luk = value;
+        break;
+      default:
+        return -1;
+    }
+
+    return value;
+  }
+
+  public getStat(type: StatsType): number {
+    switch (type) {
+      case StatsType.SP_STR:
+        return this.base_status.str;
+      case StatsType.SP_AGI:
+        return this.base_status.agi;
+      case StatsType.SP_VIT:
+        return this.base_status.vit;
+      case StatsType.SP_INT:
+        return this.base_status.int_;
+      case StatsType.SP_DEX:
+        return this.base_status.dex;
+      case StatsType.SP_LUK:
+        return this.base_status.luk;
+
+      default:
+        return -1;
+    }
+  }
+
+  public getStatusPointNeededToChange(type: StatsType, value: number): number {
+    if (value <= 0) return 0;
+    const currentStat = this.getStat(type);
+
+    if (currentStat >= MAX_STATS) return 0;
+
+    const futureStat = currentStat + value;
+
+    let statusPointNeeded = 0;
+    for (let i = currentStat; i < futureStat; i++) {
+      statusPointNeeded += 1 + (currentStat + 9) / 10;
+    }
+
+    return Math.floor(statusPointNeeded);
   }
 
   public getExpGroups(): void {
