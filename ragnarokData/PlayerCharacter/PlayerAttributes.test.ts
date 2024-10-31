@@ -1301,4 +1301,16 @@ describe("PlayerAttributes", () => {
 
     expect(playerAttributes.persistent_status.status_point).toBe(15);
   });
+
+  it("increase stats more than max", async () => {
+    playerAttributes.baseLevelUp(200);
+
+    expect(playerAttributes.persistent_status.base_level).toBe(99);
+    expect(playerAttributes.persistent_status.status_point).toBe(1273);
+
+    playerAttributes.increaseStats(StatsType.SP_STR, 200);
+
+    expect(playerAttributes.persistent_status.str).toBe(99);
+    expect(playerAttributes.persistent_status.status_point).toBe(645);
+  });
 });

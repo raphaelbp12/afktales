@@ -612,6 +612,7 @@ export class PlayerAttributes {
     const player = new PlayerAttributes(name, id, bonuses);
     player.databases = databases;
     player.inventory = await Inventory.create(databases.itemDB, MAX_INVENTORY);
+    player.getExpGroups();
     return player;
   }
 
@@ -775,10 +776,12 @@ export class PlayerAttributes {
 
   public baseLevelUp(levelsToIncrease: number): number {
     const newLevel = this.persistent_status.base_level + levelsToIncrease;
-    this.persistent_status.base_level = newLevel;
     let newStatusPoint = INITIAL_STATUS_POINTS;
 
-    for (let i = 1; i < newLevel; i++) {
+    const maxBaseLevel = this.baseExpGroup.MaxLevel;
+    const clampedLevel = Math.min(newLevel, maxBaseLevel);
+
+    for (let i = 1; i < clampedLevel; i++) {
       const increment = this.getStatusPoint(i);
       newStatusPoint += increment;
     }
@@ -786,21 +789,30 @@ export class PlayerAttributes {
     this.persistent_status.status_point =
       newStatusPoint - this.getTotalStatusPointSpentInAllStats();
 
-    return newLevel;
+    this.persistent_status.base_level = clampedLevel;
+    return clampedLevel;
   }
 
   public increaseStats(type: StatsType, value: number): number {
     const currentStat = this.getStat(type);
-    const statusPointNeeded = this.getStatusPointNeededToChange(type, value);
+    const newStat = currentStat + value;
+    const clampedStat = Math.min(newStat, MAX_STATS);
+
+    const statsToAdd = clampedStat - currentStat;
+
+    const statusPointNeeded = this.getStatusPointNeededToChange(
+      type,
+      statsToAdd
+    );
 
     if (statusPointNeeded > this.persistent_status.status_point) {
       return -1;
     }
 
-    this.setStat(type, currentStat + value);
+    this.setStat(type, currentStat + statsToAdd);
     this.persistent_status.status_point -= statusPointNeeded;
 
-    return currentStat + value;
+    return currentStat + statsToAdd;
   }
 
   public setStat(type: StatsType, value: number): number {

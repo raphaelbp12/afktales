@@ -5,72 +5,60 @@ import { bonusTypeToStatusPointType } from "@/ragnarokData/types";
 import { ELE_ALL } from "./constants";
 import { Race } from "./map_race_id2mask";
 import fs from "fs";
-import { JobDB } from "./Database/JobDB/JobDB";
-import { JobDBStats } from "./Database/JobDBStats/JobDBStats";
-import { ItemDB } from "./ItemDB/ItemDB";
+import { Databases } from "./Database/Databases";
 
 describe("pc_bonus2", () => {
-  let itemDB: ItemDB;
-  let jobDB: JobDB;
-  let jobDBStats: JobDBStats;
+  let databases: Databases;
 
   beforeAll(async () => {
-    global.fetch = jest.fn(() => {
-      const configContent = fs.readFileSync(
-        "./public/configs/item_db.conf",
-        "utf8"
-      );
+    // Mock the global.fetch function
+    global.fetch = jest.fn((input: RequestInfo | URL, init?: RequestInit) => {
+      let url: string;
+      if (typeof input === "string") {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.toString();
+      } else if ("url" in input) {
+        // For Request objects
+        url = input.url;
+      } else {
+        throw new Error("Invalid input to fetch");
+      }
+      // Adjust the path to your actual config files location
+      const basePath = "./public"; // Adjust this path as necessary
+      let filePath = "";
+      if (url.endsWith("/configs/job_db.conf")) {
+        filePath = `${basePath}/configs/job_db.conf`;
+      } else if (url.endsWith("/configs/job_db2.txt")) {
+        filePath = `${basePath}/configs/job_db2.txt`;
+      } else if (url.endsWith("/configs/exp_group_db.conf")) {
+        filePath = `${basePath}/configs/exp_group_db.conf`;
+      } else if (url.endsWith("/configs/item_db.conf")) {
+        filePath = `${basePath}/configs/item_db.conf`;
+      } else if (url.endsWith("/configs/item_db2.conf")) {
+        filePath = `${basePath}/configs/item_db2.conf`;
+      } else {
+        throw new Error(`Unexpected fetch URL: ${url}`);
+      }
+      const configContent = fs.readFileSync(filePath, "utf8");
       return Promise.resolve({
         ok: true,
         status: 200,
-        json: async () => ({}),
         text: async () => configContent,
-        // Include other properties if needed
       } as Response);
     });
-    itemDB = await ItemDB.create();
 
-    global.fetch = jest.fn(() => {
-      const configContent = fs.readFileSync(
-        "./public/configs/job_db.conf",
-        "utf8"
-      );
-      return Promise.resolve({
-        ok: true,
-        status: 200,
-        json: async () => ({}),
-        text: async () => configContent,
-        // Include other properties if needed
-      } as Response);
-    });
-    jobDB = await JobDB.create();
+    databases = await Databases.create();
+  });
 
-    global.fetch = jest.fn(() => {
-      const configContent = fs.readFileSync(
-        "./public/configs/job_db2.txt",
-        "utf8"
-      );
-      return Promise.resolve({
-        ok: true,
-        status: 200,
-        json: async () => ({}),
-        text: async () => configContent,
-        // Include other properties if needed
-      } as Response);
-    });
-    jobDBStats = await JobDBStats.create();
+  afterAll(() => {
+    // Restore the original fetch function after tests
+    (global.fetch as jest.Mock).mockRestore();
   });
   let playerAttributes: PlayerAttributes;
 
   beforeEach(async () => {
-    playerAttributes = await PlayerAttributes.create(
-      itemDB,
-      jobDBStats,
-      jobDB,
-      "test",
-      1,
-      {}
-    );
+    playerAttributes = await PlayerAttributes.create(databases, "test", 1, {});
   });
 
   test("should process SP_ADDELE bonus correctly", () => {
