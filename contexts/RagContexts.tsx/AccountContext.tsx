@@ -12,9 +12,8 @@ import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import { AccountService } from "@/services/Account/AccountService";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
 import { ClassesEnum } from "@/ragnarokData/PlayerCharacter/ClassesEnum";
-import { JobDB } from "@/ragnarokData/Database/JobDB/JobDB";
-import { JobDBStats } from "@/ragnarokData/Database/JobDBStats/JobDBStats";
 import { useDatabases } from "./DatabasesContext";
+import { StatsType } from "@/ragnarokData/PlayerCharacter/StatsTypeEnum";
 
 interface AccountContextValue {
   characters: PlayerAttributes[];
@@ -35,6 +34,11 @@ interface AccountContextValue {
     refineLevel: number
   ) => Promise<boolean>;
   setJobClass: (playerIndex: number, newJob: ClassesEnum) => Promise<void>;
+  increaseCharacterStats: (
+    playerIndex: number,
+    type: StatsType,
+    valueToAdd: number
+  ) => Promise<void>;
   addItemToPlayerInventory: (
     playerIndex: number,
     item: ItemData,
@@ -245,6 +249,25 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
     [accountService, loadCharacters]
   );
 
+  const increaseCharacterStats = useCallback(
+    async (playerIndex: number, type: StatsType, valueToAdd: number) => {
+      if (!accountService) return;
+      try {
+        await accountService.increaseCharacterStats(
+          playerIndex,
+          type,
+          valueToAdd
+        );
+        loadCharacters();
+        return Promise.resolve();
+      } catch (err) {
+        console.error("Failed to set increaseCharacterStats to Character", err);
+        return Promise.reject(err);
+      }
+    },
+    [accountService, loadCharacters]
+  );
+
   const addItemToPlayerInventory = useCallback(
     async (playerIndex: number, item: ItemData, amount: number = 1) => {
       if (!accountService) return;
@@ -427,6 +450,7 @@ export const AccountProvider: React.FC<{ children: React.ReactNode }> = ({
         addItemToStorage,
         setRefineLevelToItem,
         setJobClass,
+        increaseCharacterStats,
         addItemToPlayerInventory,
         moveItemFromStorageToPlayer,
         moveItemFromPlayerToStorage,

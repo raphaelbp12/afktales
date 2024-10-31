@@ -12,7 +12,6 @@ import InventoryTab from "./Tabs/InventoryTab";
 import AddItemTab from "./Tabs/AddItemTab";
 import BattleInfoTab from "./Tabs/BattleInfoTab";
 import SetupCharacterPanel from "../Character/SetupCharacterPanel";
-import { StatsType } from "../Character/AttributeList";
 
 type CharacterProps = {
   characterId: number;
@@ -35,7 +34,6 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
     }
 
     const character = characters[characterId];
-    character.setStat(StatsType.SP_STR, 10);
     setCharacter(character);
   }, [characters, characterId]);
 
@@ -80,6 +78,7 @@ const Character: React.FC<CharacterProps> = ({ characterId }) => {
             }}
             param_bonus={character.param_bonus}
             characterId={characterId}
+            character={character}
           />
         </div>
 

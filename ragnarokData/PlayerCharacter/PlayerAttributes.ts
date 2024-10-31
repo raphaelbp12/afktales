@@ -793,9 +793,9 @@ export class PlayerAttributes {
     return clampedLevel;
   }
 
-  public increaseStats(type: StatsType, value: number): number {
+  public increaseStats(type: StatsType, valueToAdd: number): number {
     const currentStat = this.getStat(type);
-    const newStat = currentStat + value;
+    const newStat = currentStat + valueToAdd;
     const clampedStat = Math.min(newStat, MAX_STATS);
 
     const statsToAdd = clampedStat - currentStat;
@@ -806,6 +806,7 @@ export class PlayerAttributes {
     );
 
     if (statusPointNeeded > this.persistent_status.status_point) {
+      console.log("Not enough status points");
       return -1;
     }
 

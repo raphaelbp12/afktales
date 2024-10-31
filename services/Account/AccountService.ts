@@ -5,6 +5,7 @@ import { Account } from "@/ragnarokData/Account/Account";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
 import { ClassesEnum } from "@/ragnarokData/PlayerCharacter/ClassesEnum";
 import { Databases } from "@/ragnarokData/Database/Databases";
+import { StatsType } from "@/ragnarokData/PlayerCharacter/StatsTypeEnum";
 
 export class AccountService {
   public account!: Account;
@@ -139,6 +140,20 @@ export class AccountService {
       const player = this.account.getCharacter(playerIndex);
       player.setJobClass(newJob);
       return Promise.resolve();
+    } catch (error) {
+      return Promise.reject(error);
+    }
+  }
+
+  increaseCharacterStats(
+    playerIndex: number,
+    type: StatsType,
+    valueToAdd: number
+  ): Promise<number> {
+    try {
+      const player = this.account.getCharacter(playerIndex);
+      const stats = player.increaseStats(type, valueToAdd);
+      return Promise.resolve(stats);
     } catch (error) {
       return Promise.reject(error);
     }
