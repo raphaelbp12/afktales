@@ -1,26 +1,6 @@
 // CharacterCard.tsx
 import React from "react";
-import EquippedItem from "./EquippedItem";
-import { Inventory } from "@/ragnarokData/PlayerCharacter/Inventory";
 import AttributeItem from "./AttributeItem";
-
-export enum StatsType {
-  SP_STR,
-  SP_AGI,
-  SP_VIT,
-  SP_INT,
-  SP_DEX,
-  SP_LUK,
-}
-
-type params = {
-  SP_STR: number;
-  SP_AGI: number;
-  SP_VIT: number;
-  SP_INT: number;
-  SP_DEX: number;
-  SP_LUK: number;
-};
 
 interface AttributeListProps {
   persistStats: { [key: string]: number };

@@ -1,3 +1,4 @@
+import { INITIAL_STATUS_POINTS } from "../constants";
 import { item_persistent } from "../ItemDB/types";
 
 export class persistent_status {
@@ -23,6 +24,8 @@ export class persistent_status {
   job_level: number;
   job: number;
 
+  status_point: number;
+
   constructor() {
     this.id = 0;
     this.name = "";
@@ -31,12 +34,12 @@ export class persistent_status {
     this.sp = 0;
     this.max_sp = 0;
 
-    this.str = 0;
-    this.agi = 0;
-    this.vit = 0;
-    this.int_ = 0;
-    this.dex = 0;
-    this.luk = 0;
+    this.str = 1;
+    this.agi = 1;
+    this.vit = 1;
+    this.int_ = 1;
+    this.dex = 1;
+    this.luk = 1;
 
     this.inventory = [];
 
@@ -45,6 +48,8 @@ export class persistent_status {
     this.base_level = 1;
     this.job_level = 1;
     this.job = 0;
+
+    this.status_point = INITIAL_STATUS_POINTS;
   }
 }
 
@@ -75,6 +80,8 @@ export function deserializePersistentStatus(
   status.job_level = parsedData.job_level;
 
   status.job = parsedData.job;
+
+  status.status_point = parsedData.status_point;
 
   return status;
 }

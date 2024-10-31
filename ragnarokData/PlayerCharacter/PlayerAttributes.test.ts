@@ -1,10 +1,11 @@
-import { StatsType } from "@/components/RagComponents/Character/AttributeList";
 import { Databases } from "../Database/Databases";
 import { equip_pos } from "../ItemDB/types";
 import { Race } from "../map_race_id2mask";
 import { ClassesEnum } from "./ClassesEnum";
 import { PlayerAttributes } from "./PlayerAttributes";
 import fs from "fs";
+import { INITIAL_STATUS_POINTS } from "../constants";
+import { StatsType } from "./StatsTypeEnum";
 
 describe("PlayerAttributes", () => {
   let databases: Databases;
@@ -1230,5 +1231,74 @@ describe("PlayerAttributes", () => {
     expect(
       playerAttributes.getStatusPointNeededToChange(StatsType.SP_DEX, 3)
     ).toBe(32);
+  });
+
+  it("get total status point spent", async () => {
+    expect(playerAttributes.getTotalStatusPointSpent(45)).toBe(
+      116 + INITIAL_STATUS_POINTS
+    );
+    expect(playerAttributes.getTotalStatusPointSpent(90)).toBe(
+      482 + INITIAL_STATUS_POINTS
+    );
+    expect(playerAttributes.getTotalStatusPointSpent(98)).toBe(
+      569 + INITIAL_STATUS_POINTS
+    );
+  });
+
+  it("get total status point spent in all stats - all stats 1", async () => {
+    expect(playerAttributes.getTotalStatusPointSpentInAllStats()).toBe(0);
+  });
+
+  it("get total status point spent in all stats - all stats 5", async () => {
+    playerAttributes.setStat(StatsType.SP_STR, 2);
+    playerAttributes.setStat(StatsType.SP_AGI, 1);
+    playerAttributes.setStat(StatsType.SP_VIT, 1);
+    playerAttributes.setStat(StatsType.SP_INT, 1);
+    playerAttributes.setStat(StatsType.SP_DEX, 1);
+    playerAttributes.setStat(StatsType.SP_LUK, 1);
+
+    expect(playerAttributes.getTotalStatusPointSpentInAllStats()).toBe(2);
+  });
+
+  it("get total status point spent in all stats - all stats 30", async () => {
+    playerAttributes.setStat(StatsType.SP_STR, 30);
+    playerAttributes.setStat(StatsType.SP_AGI, 30);
+    playerAttributes.setStat(StatsType.SP_VIT, 30);
+    playerAttributes.setStat(StatsType.SP_INT, 30);
+    playerAttributes.setStat(StatsType.SP_DEX, 30);
+    playerAttributes.setStat(StatsType.SP_LUK, 30);
+
+    expect(playerAttributes.getTotalStatusPointSpentInAllStats()).toBe(
+      468 + INITIAL_STATUS_POINTS
+    );
+  });
+
+  it("base level up to 2 - distribute points", async () => {
+    playerAttributes.baseLevelUp(1);
+
+    expect(playerAttributes.persistent_status.base_level).toBe(2);
+    expect(playerAttributes.persistent_status.status_point).toBe(51);
+
+    playerAttributes.increaseStats(StatsType.SP_STR, 9);
+    playerAttributes.increaseStats(StatsType.SP_AGI, 9);
+    playerAttributes.increaseStats(StatsType.SP_VIT, 7);
+
+    expect(playerAttributes.persistent_status.status_point).toBe(1);
+  });
+
+  it("base level up to 60 - distribute points", async () => {
+    playerAttributes.baseLevelUp(59);
+
+    expect(playerAttributes.persistent_status.base_level).toBe(60);
+    expect(playerAttributes.persistent_status.status_point).toBe(555);
+
+    playerAttributes.increaseStats(StatsType.SP_STR, 30);
+    playerAttributes.increaseStats(StatsType.SP_AGI, 30);
+    playerAttributes.increaseStats(StatsType.SP_VIT, 30);
+    playerAttributes.increaseStats(StatsType.SP_INT, 30);
+    playerAttributes.increaseStats(StatsType.SP_DEX, 30);
+    playerAttributes.increaseStats(StatsType.SP_LUK, 30);
+
+    expect(playerAttributes.persistent_status.status_point).toBe(15);
   });
 });

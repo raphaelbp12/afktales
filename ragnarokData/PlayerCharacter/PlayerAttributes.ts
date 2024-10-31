@@ -6,7 +6,13 @@ import {
   s_add_drop,
 } from "@/ragnarokData/types";
 import { WeaponData, initializeWeaponData } from "../WeaponData"; // Import the WeaponData interface and initialization function
-import { ELE_MAX, MAX_INVENTORY, MAX_PC_BONUS, MAX_STATS } from "../constants";
+import {
+  ELE_MAX,
+  INITIAL_STATUS_POINTS,
+  MAX_INVENTORY,
+  MAX_PC_BONUS,
+  MAX_STATS,
+} from "../constants";
 import { weapon_type } from "../ItemDB/weapon_type";
 import { StatusData } from "../StatusData";
 import { AddEffect } from "../AutoTriggerFlag";
@@ -26,7 +32,7 @@ import {
 import { parseValueWithRagEnums } from "../utils";
 import { Databases } from "../Database/Databases";
 import { ExpGroup } from "../Database/ExpGroupDB/ExpGroupDB";
-import { StatsType } from "@/components/RagComponents/Character/AttributeList";
+import { StatsType } from "./StatsTypeEnum";
 
 export class PlayerAttributes {
   public databases!: Databases;
@@ -767,6 +773,36 @@ export class PlayerAttributes {
     return Math.floor((level + 15) / 5);
   }
 
+  public baseLevelUp(levelsToIncrease: number): number {
+    const newLevel = this.persistent_status.base_level + levelsToIncrease;
+    this.persistent_status.base_level = newLevel;
+    let newStatusPoint = INITIAL_STATUS_POINTS;
+
+    for (let i = 1; i < newLevel; i++) {
+      const increment = this.getStatusPoint(i);
+      newStatusPoint += increment;
+    }
+
+    this.persistent_status.status_point =
+      newStatusPoint - this.getTotalStatusPointSpentInAllStats();
+
+    return newLevel;
+  }
+
+  public increaseStats(type: StatsType, value: number): number {
+    const currentStat = this.getStat(type);
+    const statusPointNeeded = this.getStatusPointNeededToChange(type, value);
+
+    if (statusPointNeeded > this.persistent_status.status_point) {
+      return -1;
+    }
+
+    this.setStat(type, currentStat + value);
+    this.persistent_status.status_point -= statusPointNeeded;
+
+    return currentStat + value;
+  }
+
   public setStat(type: StatsType, value: number): number {
     switch (type) {
       case StatsType.SP_STR:
@@ -814,6 +850,33 @@ export class PlayerAttributes {
     }
   }
 
+  public getTotalStatusPointSpent(value: number): number {
+    if (value <= 0) return 0;
+
+    let statusPointNeeded = 0;
+    for (let i = 1; i < value; i++) {
+      const increment = 1 + Math.floor((i + 9) / 10);
+      statusPointNeeded += increment;
+    }
+
+    return Math.floor(statusPointNeeded);
+  }
+
+  public getTotalStatusPointSpentInAllStats(): number {
+    let totalStatusPointSpent = 0;
+
+    const statValues = Object.values(StatsType).filter(
+      (value) => typeof value === "number"
+    ) as StatsType[];
+
+    for (const statType of statValues) {
+      const stat = this.getStat(statType);
+      totalStatusPointSpent += this.getTotalStatusPointSpent(stat);
+    }
+
+    return totalStatusPointSpent;
+  }
+
   public getStatusPointNeededToChange(type: StatsType, value: number): number {
     if (value <= 0) return 0;
     const currentStat = this.getStat(type);
@@ -822,12 +885,10 @@ export class PlayerAttributes {
 
     const futureStat = currentStat + value;
 
-    let statusPointNeeded = 0;
-    for (let i = currentStat; i < futureStat; i++) {
-      statusPointNeeded += 1 + (currentStat + 9) / 10;
-    }
-
-    return Math.floor(statusPointNeeded);
+    return (
+      this.getTotalStatusPointSpent(futureStat) -
+      this.getTotalStatusPointSpent(currentStat)
+    );
   }
 
   public getExpGroups(): void {
