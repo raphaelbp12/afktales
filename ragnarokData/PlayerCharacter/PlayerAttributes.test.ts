@@ -6,9 +6,12 @@ import { PlayerAttributes } from "./PlayerAttributes";
 import fs from "fs";
 import { INITIAL_STATUS_POINTS } from "../constants";
 import { StatsType } from "./StatsTypeEnum";
+import { CharacterFactory } from "./CharacterFactory";
 
 describe("PlayerAttributes", () => {
   let databases: Databases;
+  let characterFactory: CharacterFactory; // Add the factory
+  let playerAttributes: PlayerAttributes;
 
   beforeAll(async () => {
     // Mock the global.fetch function
@@ -49,16 +52,20 @@ describe("PlayerAttributes", () => {
     });
 
     databases = await Databases.create();
+    characterFactory = CharacterFactory.create(databases); // Initialize the factory
   });
 
   afterAll(() => {
     // Restore the original fetch function after tests
     (global.fetch as jest.Mock).mockRestore();
   });
-  let playerAttributes: PlayerAttributes;
 
   beforeEach(async () => {
-    playerAttributes = await PlayerAttributes.create(databases, "test", 1, {});
+    playerAttributes = await characterFactory.createPlayerAttributes(
+      "test",
+      1,
+      {}
+    );
   });
 
   it("add item", async () => {

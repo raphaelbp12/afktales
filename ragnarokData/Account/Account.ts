@@ -7,6 +7,7 @@ import {
 } from "../PlayerCharacter/persistentStatus";
 import { PlayerAttributes } from "../PlayerCharacter/PlayerAttributes";
 import { ItemData } from "@/ragnarokData/ItemDB/types";
+import { CharacterFactory } from "../PlayerCharacter/CharacterFactory";
 
 const MAX_STORAGE = 1000;
 
@@ -14,6 +15,7 @@ export class Account {
   public characters: PlayerAttributes[];
   public storage!: Inventory;
   public databases!: Databases;
+  private characterFactory!: CharacterFactory;
 
   private constructor() {
     this.characters = [];
@@ -22,6 +24,7 @@ export class Account {
   public static async create(databases: Databases): Promise<Account> {
     const account = new Account();
     account.databases = databases;
+    account.characterFactory = CharacterFactory.create(databases); // Initialize the factory
     account.storage = await Inventory.create(
       account.databases.itemDB,
       MAX_STORAGE
@@ -46,8 +49,7 @@ export class Account {
 
   public async newCharacter(name: string): Promise<PlayerAttributes> {
     console.log("Creating new character", name);
-    const newCharacter = await PlayerAttributes.create(
-      this.databases,
+    const newCharacter = await this.characterFactory.createPlayerAttributes(
       name,
       this.characters.length,
       {}
