@@ -104,8 +104,7 @@ export class Account {
 
     const newCharacters: PlayerAttributes[] = [];
     for (const status of persistent_status_characters) {
-      const char = await PlayerAttributes.fromPersistentStatus(
-        databases,
+      const char = await account.characterFactory.createPlayerFromStatus(
         status,
         status.name,
         status.id
